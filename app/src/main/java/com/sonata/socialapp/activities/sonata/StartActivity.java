@@ -49,11 +49,6 @@ public class StartActivity extends AppCompatActivity {
                     finish();
                 }
             });
-
-
-
-
-
         }
         else{
             startActivity(new Intent(this,LoginActivity.class));
