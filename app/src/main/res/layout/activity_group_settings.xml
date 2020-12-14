@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.groups.GroupSettingsActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="50dp"
+                app:corner_radius="25dp"
+                android:id="@+id/backbutton"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_height="50dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/backbuttonbutton"
+                    android:background="?attr/selectableItemBackground"
+
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="6dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icback"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_toEndOf="@+id/backbutton"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:text="@string/groupsettings"
+                android:gravity="start"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:background="?attr/recyclerbackground"
+        android:layout_height="match_parent"
+        android:layout_below="@id/z_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:layout_height="60dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/createnewgroup"
+                    android:background="?attr/selectableItemBackground">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="2dp"
+                            android:src="@drawable/ic_create"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginEnd="15dp"
+                            android:id="@+id/createnewgroupicon"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/createnewgroup"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/createnewgroupicon"
+                            android:textStyle="bold"
+                            android:textColor="?attr/siyahyazı"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:layout_height="60dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/groupsyouhavecreated"
+                    android:background="?attr/selectableItemBackground">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="2dp"
+                            android:src="@drawable/ic_created_grous"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginEnd="15dp"
+                            android:id="@+id/groupsyouhavecreatedicon"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/createdgroups"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/groupsyouhavecreatedicon"
+                            android:textStyle="bold"
+                            android:textColor="?attr/siyahyazı"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:layout_height="60dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/groupsyouhavejoined"
+                    android:background="?attr/selectableItemBackground">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="2dp"
+                            android:src="@drawable/ic_joined_grous"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginEnd="15dp"
+                            android:id="@+id/groupsyouhavejoinedicon"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/joinedgroups"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/groupsyouhavejoinedicon"
+                            android:textStyle="bold"
+                            android:textColor="?attr/siyahyazı"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

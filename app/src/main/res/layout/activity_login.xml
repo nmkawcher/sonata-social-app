@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".activities.sonata.LoginActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/loginlogoimage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="?attr/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/newl" />
+
+
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="165dp"
+                android:padding="10dp"
+                android:background="@color/white"
+                android:layout_marginRight="30dp"
+                android:layout_height="wrap_content"
+                app:corner_radius="15dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="match_parent"
+                            app:corner_radius="15dp"
+                            android:background="@drawable/login_edittext_background"
+                            android:id="@+id/yutrsd"
+                            android:layout_height="wrap_content">
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                android:maxLines="1"
+                                android:inputType="text"
+                                android:id="@+id/loginusernameedittext"
+                                android:hint="@string/emailorusername"
+                                android:drawableLeft="@drawable/ic_at"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_below="@+id/loginusernameedittext"
+                                android:id="@+id/betwview"
+                                android:background="@color/black"/>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                android:maxLines="1"
+                                android:layout_below="@+id/betwview"
+                                android:inputType="textPassword"
+                                android:id="@+id/loginpasswordedittext"
+                                android:hint="@string/password"
+                                android:drawableLeft="@drawable/ic_pass"/>
+
+
+
+
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/loginforgottenpassword"
+                            android:textColor="#116ef9"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="7dp"
+                            android:layout_below="@id/yutrsd"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/forgottenpassword"/>
+
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_below="@+id/loginforgottenpassword"
+                            android:layout_marginTop="5dp"
+                            android:id="@+id/loginloginbuttonlayout"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="wrap_content"
+                            app:corner_radius="100dp">
+                            <Button
+                                android:layout_width="match_parent"
+                                android:backgroundTint="#a64942"
+                                android:textAllCaps="false"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:id="@+id/loginloginbutton"
+                                android:textColor="@color/white"
+                                android:layout_height="wrap_content"
+                                android:text="@string/login"/>
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/donthaveanaccount"
+                            android:textColor="@color/black"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_below="@id/loginloginbuttonlayout"
+                            android:layout_marginTop="25dp"
+                            android:text="@string/donthaveanaccount"/>
+
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_below="@+id/donthaveanaccount"
+                            android:layout_marginTop="25dp"
+                            android:id="@+id/loginregisterbuttonlayout"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="wrap_content"
+                            app:corner_radius="100dp">
+                            <Button
+                                android:layout_width="match_parent"
+                                android:backgroundTint="#a64942"
+                                android:textAllCaps="false"
+                                android:id="@+id/loginregisterbutton"
+                                android:textColor="@color/white"
+                                android:layout_height="wrap_content"
+                                android:text="@string/register"/>
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+                    </RelativeLayout>
+
+
+
+                </androidx.cardview.widget.CardView>
+
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "342400289624",
+    "project_id": "sonata-social-app",
+    "storage_bucket": "sonata-social-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342400289624:android:1ce35a9c7b7a9956e6332d",
+        "android_client_info": {
+          "package_name": "com.sonata.socialapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342400289624-9c3mm75mtob2ba2deuf03c1akvrfj7lv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSHT961kfFQ_6mVLdt8dLlLWDlL9pixi8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342400289624-9c3mm75mtob2ba2deuf03c1akvrfj7lv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

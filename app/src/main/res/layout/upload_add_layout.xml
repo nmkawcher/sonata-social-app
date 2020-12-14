@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.takwolf.android.aspectratio.AspectRatioLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:arl_heightRatio="10"
+        app:arl_widthRatio="5">
+
+
+
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:corner_radius="30dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/upload_post_add_ripple"
+            android:background="?attr/selectableItemBackground">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="?attr/siyahyazı"
+                android:text="@string/addmewimage"/>
+
+
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+    </com.takwolf.android.aspectratio.AspectRatioLayout>
+
+</RelativeLayout>

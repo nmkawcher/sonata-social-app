@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#a64942</color>
+    <color name="colorPrimaryDark">#a64942</color>
+    <color name="colorAccent">#a64942</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="colorPrimaryNight">#a64942</color>
+    <color name="colorPrimaryDarkNight">#a64942</color>
+    <color name="colorAccentNight">#a64942</color>
+
+
+    <color name="placeholder_gray">#A9A9A9</color>
+
+
+
+
+    <color name="colorRed">#a64942</color>
+
+    <color name="ripplecolor">#999999</color>
+
+
+    <color name="blue">#0384BE</color>
+
+
+    <color name="toolbarcolorgunduz">#ffffff</color>
+    <color name="toolbarcolorgece">#212121</color>
+
+    <color name="siyahyazıgunduz">#000000</color>
+    <color name="siyahyazıgece">#ffffff</color>
+
+
+    <color name="notif">#999999</color>
+
+    <color name="ayracgece">#eeeeee</color>
+    <color name="ayracgunduz">#000000</color>
+
+    <color name="recyclerbackgroundgunduz">#c8cdd1</color>
+    <color name="recyclerbackgroundgece">#000000</color>
+
+    <color name="beyazbackgroundgunduz">#ffffff</color>
+    <color name="beyazbackgroundgece">#212121</color>
+
+    <color name="tersbeyazbackgroundgunduz">#212121</color>
+    <color name="tersbeyazbackgroundgece">#ffffff</color>
+
+    <color name="popupbackgroundgunduz">#D8D4D4</color>
+    <color name="popupbackgroundgece">#636262</color>
+
+    <color name="linkcercevegunduz">#CCCCCC</color>
+    <color name="linkcercevegece">#4B4A4A</color>
+
+
+    <color name="ortakoyu">#00677a</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+
+
+
+
+
+
+
+
+
+</resources>

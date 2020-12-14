@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="?attr/recyclerbackground"
+    android:layout_height="match_parent"
+    tools:context=".activities.sonata.MainActivity">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/homeframehome"
+        android:layout_above="@+id/bottomnav"
+        android:visibility="visible"
+        android:layout_height="match_parent"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/homeframebackyard"
+        android:visibility="invisible"
+        android:layout_above="@+id/bottomnav"
+        android:layout_height="match_parent"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/homeframediscover"
+        android:layout_above="@+id/bottomnav"
+        android:visibility="invisible"
+        android:layout_height="match_parent"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/homeframenotif"
+        android:layout_above="@+id/bottomnav"
+        android:visibility="invisible"
+        android:layout_height="match_parent"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/homeframeprofile"
+        android:visibility="invisible"
+        android:layout_above="@+id/bottomnav"
+        android:layout_height="match_parent"/>
+
+
+
+    <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+        android:layout_width="match_parent"
+        android:id="@+id/bottomnav"
+        android:background="?attr/toolbarcolor"
+        android:elevation="5dp"
+        app:itemTextColor="?attr/bottombartint"
+        app:itemIconTint="?attr/bottombartint"
+        app:menu="@menu/bottom_menu"
+        android:layout_alignParentBottom="true"
+        android:layout_height="50dp"/>
+
+</RelativeLayout>

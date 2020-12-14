@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="?attr/beyazbackground"
+    android:layout_marginBottom="5dp"
+
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="15dp"
+        android:layout_above="@+id/asdcderty"
+        android:id="@+id/cubuklay"
+        android:layout_alignParentTop="true"
+        android:background="?attr/recyclerbackground"
+        android:layout_alignParentLeft="true"
+        android:layout_height="match_parent">
+        <View
+            android:layout_width="3dp"
+
+            android:layout_height="match_parent"
+            android:background="@color/notif"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
+
+
+    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+        android:layout_width="42dp"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@+id/cubuklay"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:id="@+id/commentpplayout"
+        app:corner_radius="21dp"
+        android:layout_height="42dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/commentppimage"/>
+
+    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+        android:layout_width="match_parent"
+        app:corner_radius="12dp"
+        android:id="@+id/cccccccccc"
+        android:layout_toRightOf="@id/commentpplayout"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:id="@+id/commentnametext"
+            android:layout_width="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="3dp"
+            android:maxLines="1"
+            android:textColor="?attr/siyahyazı"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/commentusernametext"
+            android:layout_width="wrap_content"
+            android:layout_toLeftOf="@+id/corlrkl"
+            android:gravity="left"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/commentnametext"
+            android:maxLines="1"
+            android:textSize="14dp" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/commentnametext"
+            android:layout_marginBottom="3dp"
+            android:id="@+id/textLayout"
+            android:layout_height="wrap_content">
+            <com.tylersuehr.socialtextview.SocialTextView
+                android:layout_width="match_parent"
+                android:textSize="14.8sp"
+                android:lineSpacingMultiplier="1.2"
+                app:hashtagColor="@color/blue"
+                app:mentionColor="@color/blue"
+                app:urlColor="@color/blue"
+                app:linkModes="hashtag|mention|url"
+                android:id="@+id/commentdesc"
+                android:textColor="?attr/siyahyazı"
+                android:layout_marginRight="6dp"
+                android:layout_marginLeft="6dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/commentdesc"
+                android:textSize="14.8sp"
+                android:textColor="#999999"
+                android:layout_marginStart="6dp"
+                android:layout_alignParentStart="true"
+                android:text="@string/readmore"
+                android:visibility="gone"
+                android:id="@+id/readMoreText"/>
+        </RelativeLayout>
+
+        <com.takwolf.android.aspectratio.AspectRatioLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/textLayout"
+            android:background="?attr/beyazbackground"
+            app:arl_widthRatio="1"
+            app:arl_heightRatio="1"
+            android:id="@+id/postratiolayout">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/beyazbackground"
+                android:scaleType="centerCrop"
+                android:id="@+id/postimageview"/>
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_margin="10dp"
+                android:indeterminate="true"
+                android:layout_gravity="center"
+                android:id="@+id/postimageprogressbar"/>
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="60dp"
+                android:background="?attr/tersbeyazbackground"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                android:id="@+id/postimagefail"
+                app:corner_radius="30dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:background="?attr/selectableItemBackground"
+
+                    android:id="@+id/postfailimageripple"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/tersicreload"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:adjustViewBounds="true"
+                android:layout_gravity="bottom|left"
+                android:id="@+id/postImageNsfwIcon"
+                android:layout_margin="10dp"
+                android:src="@drawable/nsfwico"
+                android:visibility="invisible"/>
+
+        </com.takwolf.android.aspectratio.AspectRatioLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center_vertical|right"
+            android:layout_toRightOf="@+id/commentreplyripple"
+            android:layout_below="@id/postratiolayout"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="6dp"
+            android:id="@+id/commentdate"/>
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/corlrkl"
+            android:layout_height="30dp"
+            app:corner_radius="15dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+
+                android:id="@+id/commentoptions">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="3dp"
+                    android:src="?attr/postoptions"/>
+            </RelativeLayout>
+
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="30dp"
+            android:layout_below="@id/postratiolayout"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="6dp"
+            android:id="@+id/commentupvotelayout"
+            android:layout_height="30dp"
+            app:corner_radius="15dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+
+                android:id="@+id/commentupvoteripple">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="6dp"
+                    android:id="@+id/commentupvoteimage"
+                    android:src="@drawable/ic_upvote"/>
+            </RelativeLayout>
+
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:id="@+id/commentvotecounttext"
+            android:layout_below="@id/postratiolayout"
+            android:text="124"
+            android:layout_toRightOf="@+id/commentupvotelayout"
+            android:layout_marginLeft="6dp"
+            />
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="30dp"
+            android:layout_below="@id/postratiolayout"
+            android:layout_toRightOf="@+id/commentvotecounttext"
+            android:layout_marginLeft="6dp"
+            android:id="@+id/commentdownvotelayout"
+            android:layout_height="30dp"
+            app:corner_radius="15dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+
+                android:id="@+id/commentdownvoteripple">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/commentdownvoteimage"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_downvote"/>
+            </RelativeLayout>
+
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:background="?attr/selectableItemBackground"
+
+            android:layout_marginLeft="10dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_below="@id/postratiolayout"
+            android:layout_toRightOf="@+id/commentdownvotelayout"
+            android:id="@+id/commentreplyripple"
+            android:layout_height="30dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/reply"
+                android:textStyle="bold"
+                android:gravity="center_vertical|left"/>
+        </RelativeLayout>
+
+
+    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@+id/cccccccccc"
+        android:id="@+id/asdcderty"/>
+
+
+
+</RelativeLayout>

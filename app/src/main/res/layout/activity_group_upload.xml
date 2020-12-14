@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.groups.GroupUploadActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="?attr/beyazbackground"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="match_parent">
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="50dp"
+                app:corner_radius="25dp"
+                android:id="@+id/backbutton"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_height="50dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/backbuttonbutton"
+                    android:background="?attr/selectableItemBackground"
+
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="6dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icback"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_toStartOf="@id/uploadtextripple"
+                android:layout_toEndOf="@+id/backbutton"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:text="@string/Upload"
+                android:gravity="start|center_horizontal"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
+
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/uploadtextripple"
+                android:visibility="invisible"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:textColor="@color/blue"
+                    android:text="@string/postfiil"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_settings"/>
+            </RelativeLayout>
+
+
+
+
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/z_toolbar"
+        android:background="?attr/beyazbackground"
+        android:id="@+id/uploadtolayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/uploadttotext"
+            android:layout_marginEnd="10dp"
+            android:text="@string/uploadto"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_below="@+id/uploadttotext"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_above="@id/ghhyt"
+                android:scaleType="centerCrop"
+                android:background="?attr/recyclerbackground"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/group_image"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="invisible"
+                android:layout_below="@id/groupdesc"
+                android:id="@+id/ghhyt"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:id="@+id/groupname"
+                android:layout_toEndOf="@id/group_image"
+                android:layout_marginStart="10dp"
+                android:textColor="?attr/siyahyazı"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:id="@+id/groupdesc"
+                android:layout_below="@id/groupname"
+                android:layout_toEndOf="@id/group_image"
+                android:layout_marginStart="10dp"
+                android:textColor="?attr/siyahyazı"/>
+
+
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+    </RelativeLayout>
+
+    <com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_above="@+id/uploadRecyclerView"
+        android:padding="10dp"
+        android:layout_below="@+id/uploadtolayout"
+        android:gravity="start"
+        android:id="@+id/postdesc"
+        android:inputType="textCapSentences|textMultiLine"
+        android:textColor="?attr/siyahyazı"
+        android:background="?attr/beyazbackground"
+        android:hint="@string/typesomething" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:paddingEnd="10dp"
+        android:clipToPadding="false"
+        android:background="?attr/beyazbackground"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/uploadRecyclerView"
+        android:visibility="visible"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/uploadmedialayout"
+        android:background="?attr/beyazbackground"
+        android:elevation="4dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="2"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:id="@+id/uploadaddphoto"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+
+                android:layout_weight="1">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="30dp"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_photo"
+                        android:id="@+id/upphic"
+                        android:layout_centerVertical="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/photo"
+                        android:paddingLeft="5dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/upphic"
+                        />
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:id="@+id/uploadaddvideo"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+
+                android:layout_weight="1">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="30dp"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_video"
+                        android:id="@+id/upphic2"
+                        android:layout_centerVertical="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/video"
+                        android:paddingLeft="5dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/upphic2"
+                        />
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr format="dimension" name="top_left_corner_radius"/>
+    <attr format="dimension" name="top_right_corner_radius"/>
+    <attr format="dimension" name="bottom_right_corner_radius"/>
+    <attr format="dimension" name="bottom_left_corner_radius"/>
+
+    <declare-styleable name="SocialViewStyle">
+        <attr name="socialViewStyle" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SocialView">
+        <!-- Determine whether each feature should be turned on/off.
+             Default is `hashtag|mention|hyperlink`. -->
+        <attr name="socialFlags">
+            <flag name="hashtag" value="1" />
+            <flag name="mention" value="2" />
+            <flag name="hyperlink" value="4" />
+        </attr>
+
+        <!-- Color of each feature.
+             If particular feature is not enabled, this value will be ignored.
+             Default is color accent of current theme. -->
+        <attr name="hashtagColor" format="color" />
+        <attr name="mentionColor" format="color" />
+        <attr name="hyperlinkColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableTextView">
+        <attr name="trimLength" format="integer"/>
+    </declare-styleable>
+    <attr name="siyahyazı" format="color"/>
+
+    <attr name="beyazbackground" format="color"/>
+
+    <attr name="tersbeyazbackground" format="color"/>
+
+    <attr name="recyclerbackground" format="color"/>
+
+    <attr name="toolbarcolor" format="color"/>
+
+    <attr name="ayracrenk" format="color"/>
+
+    <attr name="linkcercevecolor" format="color"/>
+
+    <attr name="colorPrimary" format="color"/>
+
+    <attr name="colorPrimaryDark" format="color"/>
+
+    <attr name="colorAccent" format="color"/>
+
+
+    <attr name="icsearch" format="integer"/>
+
+
+    <attr name="selectbanner" format="integer"/>
+
+
+    <attr name="icback" format="integer"/>
+
+    <attr name="iccancel2" format="integer"/>
+
+
+    <attr name="icsettings" format="integer"/>
+
+    <attr name="icadmin" format="integer"/>
+
+    <attr name="icmember" format="integer"/>
+
+    <attr name="bottombartint" format="integer"/>
+
+    <attr name="selectposttint" format="integer"/>
+
+
+    <attr name="postoptions" format="integer"/>
+
+    <attr name="tersicreload" format="integer"/>
+
+    <attr name="icreload" format="integer"/>
+
+    <attr name="icpin" format="integer"/>
+
+    <attr name="icprivate" format="integer"/>
+
+    <attr name="date" format="integer"/>
+
+    <attr name="icadd" format="integer"/>
+
+
+
+</resources>

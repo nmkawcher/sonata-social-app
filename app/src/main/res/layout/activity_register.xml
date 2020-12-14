@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activities.sonata.RegisterActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/loginlogoimage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:padding="55dp"
+                android:background="?attr/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/adduser" />
+
+
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="165dp"
+                android:padding="10dp"
+                android:background="@color/white"
+                android:layout_marginRight="30dp"
+                android:layout_height="wrap_content"
+                app:corner_radius="15dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="match_parent"
+                            app:corner_radius="15dp"
+                            android:background="@drawable/login_edittext_background"
+                            android:id="@+id/yutrsd"
+                            android:layout_height="wrap_content">
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:inputType="text|textCapWords"
+                                android:maxLength="30"
+                                android:backgroundTint="@color/white"
+                                android:id="@+id/registernamesurnameedittext"
+                                android:hint="@string/namesurname"
+                                android:drawableLeft="@drawable/ic_profile"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_below="@+id/registernamesurnameedittext"
+                                android:id="@+id/betwview1"
+                                android:background="@color/black"/>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:maxLength="25"
+
+                                android:digits="abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ._"
+                                android:backgroundTint="@color/white"
+                                android:layout_below="@+id/betwview1"
+                                android:inputType="text|textVisiblePassword"
+                                android:id="@+id/registerusernameedittext"
+                                android:hint="@string/username"
+                                android:drawableLeft="@drawable/ic_at"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_below="@+id/registerusernameedittext"
+                                android:id="@+id/betwview2"
+                                android:background="@color/black"/>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:backgroundTint="@color/white"
+                                android:layout_below="@+id/betwview2"
+                                android:inputType="textEmailAddress"
+                                android:id="@+id/registeremailedittext"
+                                android:hint="@string/email"
+                                android:drawableLeft="@drawable/ic_mail"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_below="@+id/registeremailedittext"
+                                android:id="@+id/betwview3"
+                                android:background="@color/black"/>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:backgroundTint="@color/white"
+                                android:layout_below="@+id/betwview3"
+                                android:inputType="textPassword"
+                                android:id="@+id/registerpasswordedittext"
+                                android:hint="@string/password"
+                                android:drawableLeft="@drawable/ic_pass"/>
+
+
+
+
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_below="@+id/yutrsd"
+                            android:layout_marginTop="10dp"
+                            android:id="@+id/registerregisterbuttonlayout"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="wrap_content"
+                            app:corner_radius="100dp">
+
+                            <Button
+                                android:layout_width="match_parent"
+                                android:backgroundTint="#a64942"
+                                android:textAllCaps="false"
+                                android:id="@+id/registerregisterbutton"
+                                android:textColor="@color/white"
+                                android:layout_height="wrap_content"
+                                android:text="@string/register"/>
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+
+
+                    </RelativeLayout>
+
+
+
+                </androidx.cardview.widget.CardView>
+
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

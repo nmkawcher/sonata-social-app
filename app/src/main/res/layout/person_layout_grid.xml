@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginEnd="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/recyclerbackground"
+    android:layout_height="match_parent">
+
+    <com.takwolf.android.aspectratio.AspectRatioLayout
+        android:layout_width="wrap_content"
+        app:arl_heightRatio="10"
+        app:arl_widthRatio="12"
+        android:layout_height="match_parent">
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/mainLay"
+            android:layout_height="match_parent"
+            app:corner_radius="10dp"
+            android:background="@drawable/link_layout_background">
+
+
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+
+                android:id="@+id/gridPersonRipple">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                        android:layout_width="80dp"
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/pplayout"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        app:corner_radius="40dp"
+                        android:layout_height="80dp">
+                        <com.takwolf.android.aspectratio.AspectRatioLayout
+                            android:layout_width="match_parent"
+                            app:arl_heightRatio="1"
+                            app:arl_widthRatio="1"
+                            android:layout_height="wrap_content">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/emptypp"
+                                android:id="@+id/followreqlayoutpp"/>
+                        </com.takwolf.android.aspectratio.AspectRatioLayout>
+                    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"
+                        android:textSize="16sp"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginStart="20dp"
+                        android:id="@+id/followreqname"
+                        android:maxLines="1"
+                        android:layout_below="@id/pplayout"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginStart="20dp"
+                        android:maxLines="1"
+                        android:id="@+id/followrequsername"
+                        android:layout_below="@id/followreqname"/>
+                </RelativeLayout>
+            </RelativeLayout>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+    </com.takwolf.android.aspectratio.AspectRatioLayout>
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

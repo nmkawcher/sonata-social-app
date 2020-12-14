@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="0.5dp"
+    android:background="?attr/recyclerbackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.takwolf.android.aspectratio.AspectRatioLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:arl_heightRatio="1"
+        app:arl_widthRatio="1">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:id="@+id/image"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="invisible"
+            android:src="@drawable/jz_play_normal"
+            android:layout_gravity="center"
+            android:id="@+id/videoIcon"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="12dp"
+            android:adjustViewBounds="true"
+            android:layout_gravity="bottom|left"
+            android:id="@+id/postImageNsfwIcon"
+            android:layout_margin="5dp"
+            android:src="@drawable/nsfwico"
+            android:visibility="invisible"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/grid_ripple"/>
+
+    </com.takwolf.android.aspectratio.AspectRatioLayout>
+
+</RelativeLayout>

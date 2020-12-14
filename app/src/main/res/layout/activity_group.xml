@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.groups.GroupActivity">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:id="@+id/profile_main_layout"
+        android:layout_height="match_parent"
+        tools:context=".fragments.ProfilFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
+                android:layout_width="match_parent"
+                android:background="?attr/recyclerbackground"
+
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:background="?attr/recyclerbackground"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="50dp"
+                        android:paddingBottom="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:background="?attr/beyazbackground"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/ortalayout">
+
+
+
+                        <com.takwolf.android.aspectratio.AspectRatioLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:arl_widthRatio="10"
+                            android:layout_alignParentTop="true"
+                            app:arl_heightRatio="5"
+                            android:id="@+id/grp_banner">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/group_banner"
+                                android:scaleType="centerCrop"/>
+
+                        </com.takwolf.android.aspectratio.AspectRatioLayout>
+
+
+
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            app:corner_radius="17dp"
+                            android:id="@+id/join_group_button"
+                            android:layout_below="@+id/grp_banner"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/button_background_dolu">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/join_group_button_ripple"
+                                android:background="?attr/selectableItemBackground">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:gravity="center"
+                                    android:layout_height="match_parent"
+                                    android:paddingStart="20dp"
+                                    android:id="@+id/followButtonText"
+                                    android:textColor="@color/white"
+                                    android:paddingEnd="20dp"
+                                    android:textStyle="bold"/>
+
+                            </RelativeLayout>
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:id="@+id/group_name_bottom"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:layout_marginStart="15dp"
+                            android:textColor="?attr/siyahyazı"
+                            android:layout_below="@+id/join_group_button"
+                            android:layout_marginTop="5dp"
+                            android:textStyle="bold"
+                            android:textSize="17sp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:maxLines="4"
+                            android:ellipsize="end"
+                            android:id="@+id/group_description"
+                            android:layout_below="@+id/group_name_bottom"
+                            android:layout_marginTop="5dp"
+                            android:textSize="15sp"/>
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_below="@+id/group_description"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginBottom="5dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="match_parent"
+                                android:src="?attr/icmember"
+                                android:layout_alignParentStart="true"
+                                android:id="@+id/member_icon"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:id="@+id/group_member_number"
+                                android:textColor="?attr/siyahyazı"
+                                android:layout_toEndOf="@+id/member_icon"
+                                android:layout_marginStart="2dp"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="20dp"
+                                android:layout_toEndOf="@id/group_member_number"
+                                android:id="@+id/group_private_layout">
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="match_parent"
+                                    android:src="?attr/icprivate"
+                                    android:layout_alignParentStart="true"
+                                    android:id="@+id/private_icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerVertical="true"
+                                    android:text="@string/privategroup"
+                                    android:textColor="?attr/siyahyazı"
+                                    android:layout_toEndOf="@+id/private_icon"
+                                    android:layout_marginStart="2dp"/>
+                            </RelativeLayout>
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+
+
+
+
+
+
+                </RelativeLayout>
+
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/z_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="?attr/toolbarcolor"
+                    android:elevation="4dp"
+                    app:contentInsetStart="10dp"
+                    app:layout_collapseMode="pin">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="50dp"
+                            app:corner_radius="25dp"
+                            android:id="@+id/backbutton"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_height="50dp">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:id="@+id/backbuttonbutton"
+                                android:background="?attr/selectableItemBackground"
+
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:padding="6dp"
+                                    android:layout_height="match_parent"
+                                    android:src="?attr/icback"/>
+                            </RelativeLayout>
+
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                        <TextView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="match_parent"
+                            android:layout_toEndOf="@+id/backbutton"
+                            android:layout_toStartOf="@+id/admin_panel"
+                            android:layout_height="wrap_content"
+                            android:textSize="19sp"
+                            android:textColor="?attr/siyahyazı"
+                            android:maxLines="1"
+                            android:textStyle="bold"
+                            android:gravity="start"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/profileusernametext"
+                            />
+
+
+
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="50dp"
+                            app:corner_radius="25dp"
+                            android:id="@+id/admin_panel"
+                            android:layout_marginEnd="5dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_height="50dp">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:id="@+id/adminpanelripple"
+                                android:background="?attr/selectableItemBackground"
+
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:padding="9dp"
+                                    android:layout_height="match_parent"
+                                    android:src="?attr/icadmin"/>
+                            </RelativeLayout>
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+
+
+
+                    </RelativeLayout>
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:background="?attr/recyclerbackground"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:clipToPadding="false"
+            android:layout_height="match_parent"
+            android:id="@+id/grouprecyclerview"/>
+
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add"
+            android:layout_gravity="bottom|right"
+            app:rippleColor="@color/white"
+            android:layout_margin="15dp"
+            app:fabSize="normal"
+            android:backgroundTint="@color/colorRed"
+            app:borderWidth="0dp"
+            android:id="@+id/uploadbutton"
+            android:layout_alignParentBottom="true"
+
+            />
+
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</RelativeLayout>

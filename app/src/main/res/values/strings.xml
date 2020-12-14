@@ -1,0 +1,405 @@
+<resources>
+    <string name="app_name">Sonata</string>
+
+    <string name="appsettings">App settings</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_backyard">Groups</string>
+    <string name="tab_discover">Discover</string>
+    <string name="tab_notif">Notifications</string>
+    <string name="tab_profile">Profile</string>
+    <string name="namesurname">Name</string>
+    <string name="email">E-mail</string>
+
+
+    <string name="groupname">Group name</string>
+
+    <string name="groupdesc">Group description</string>
+
+    <string name="enteremail">Enter the email that you used for registering</string>
+
+    <string name="sendPasswordResetEmail">Send Password Reset Link</string>
+
+    <string name="commentreplytext">You\'re replying to:</string>
+    <string name="show">Show</string>
+    <string name="uploadisdone">Uploading is complete</string>
+
+    <string name="postnotexist">Post doesn\'t exist</string>
+
+
+    <string name="settings">Settings</string>
+
+    <string name="groupsettings">Group options</string>
+
+    <string name="search">Search</string>
+
+    <string name="searchgroups">Search groups</string>
+
+    <string name="readMore">Read more</string>
+
+    <string name="uploading">Uploading</string>
+
+    <string name="preparingimage">Preparing image</string>
+
+    <string name="preparingvideo">Preparing video</string>
+
+    <string name="trimmingvieo">Trimming video</string>
+
+    <string name="videoedit">Edit video</string>
+
+    <string name="Upload">Upload</string>
+    <string name="postfiil">Post</string>
+
+    <string name="create">Create</string>
+
+    <string name="typesomething">Type something…</string>
+    <string name="videosure">Video can\'t be longer than 60 seconds</string>
+
+
+    <string name="videosure2">Video is too long to process</string>
+
+    <string name="photo">Photo</string>
+    <string name="posts">Posts</string>
+
+    <string name="users">Users</string>
+
+
+    <string name="options">Options</string>
+
+    <string name="link">Link</string>
+
+    <string name="cropimage">Crop image</string>
+
+    <string name="crop">Crop</string>
+
+    <string name="normalpost">Single Post</string>
+    <string name="blockpost">Chain Post</string>
+
+    <string name="username">Username</string>
+
+    <string name="usernametoolong">Username too long</string>
+
+    <string name="usernamemustcontainletter">Username must contain letter</string>
+
+    <string name="emailorusername">E-mail or username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="error">Error</string>
+
+
+    <string name="youcantselectmorethanfour">You can\'t select more than four images</string>
+
+    <string name="youmusttransferownershipofgroup">You have to transfer ownership of the group to somebody else before leaving.</string>
+
+    <string name="youmustdropadminrights">You have to drop your administration before leaving.</string>
+
+    <string name="unsupportedvideo">Unsupported video</string>
+
+    <string name="emailsent">Email sent. Check your inbox.</string>
+
+
+    <string name="restore">Servers currently being maintained. Thank you for your patience</string>
+
+    <string name="taskfailed">Task failed</string>
+
+    <string name="enterurl">Enter URL</string>
+    <string name="choosefromgallery">Choose from gallery</string>
+
+    <string name="ffmpegnotsupported">This device doesn\'t suppor video decoding</string>
+    <string name="invalidemailorusername">Invalid e-mail or username</string>
+
+    <string name="register">Register</string>
+
+    <string name="report">Report</string>
+
+    <string name="reporttoadmin">Report to admin</string>
+
+    <string name="trimf15">Upload first 15 seconds</string>
+    <string name="triml15">Upload last 15 seconds</string>
+
+    <string name="videomessage">Videos are limited to 15 seconds</string>
+
+    <string name="adId">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="orjAdId">ca-app-pub-6330447107833737/8151350391</string>
+    <string name="testAdId">ca-app-pub-3940256099942544/2247696110</string>
+
+
+    <string name="removetag">Remove tag</string>
+
+    <string name="reportsucces">Reported</string>
+
+    <string name="block">Block</string>
+    <string name="unblock">Unblock</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+
+    <string name="joingroup">Join group</string>
+
+    <string name="leavegroup">Leave group</string>
+
+
+    <string name="followreqs">Follow requests</string>
+
+    <string name="requestsent">Request sent</string>
+    <string name="removerequest">remove request</string>
+
+    <string name="followpublicly">Follow publicly</string>
+    <string name="followprivately">Follow privately</string>
+
+
+    <string name="donthaveanaccount">Don\'t have an account?</string>
+    <string name="forgottenpassword">Forgotten password?</string>
+
+    <string name="usernametaken">Username taken</string>
+    <string name="emailtaken">E-mail taken</string>
+    <string name="shortpass">Short password. Password must be at least 6 characters long.</string>
+    <string name="invalidemail">Invalid e-mail</string>
+    <string name="invalidchars">Invalid characters</string>
+
+    <string name="invalidsessiontoken">Oturum süresi bitti veya geçersiz. Lütfen tekrar giriş yapın.</string>
+
+    <string name="emailfieldcantbeempty">E-mail field can\'t be empty</string>
+    <string name="namecantbeempty">Name field can\'t be empty</string>
+    <string name="usernamecantbeempty">Username field can\'t be empty</string>
+
+
+    <string name="editprofile">Edit profile</string>
+
+
+    <string name="followers">Followers</string>
+
+    <string name="showothercomments">View other comments</string>
+
+    <string name="showotherreplies">View other replies</string>
+
+
+    <string name="followings">Followings</string>
+
+    <string name="loading">Loading…</string>
+
+    <string name="creatinggroup">Creating group</string>
+
+    <string name="errorvideopreview">Loading preview of video failed</string>
+
+
+    <string name="pastelink">Paste link…</string>
+    <string name="addlink">Add link</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="okk">OK</string>
+    <string name="next">Next</string>
+    <string name="cancell">Cancel</string>
+
+    <string name="pleasewaitwhileimageloading">Image loading</string>
+    <string name="failedtoloadimage">Failed to load image</string>
+
+    <string name="removelink">Remove link</string>
+    <string name="removeimage">Remove photo</string>
+
+    <string name="disabledcomment">Disabled</string>
+
+    <string name="copytext">Copy text</string>
+    <string name="copylink">Copy link</string>
+
+    <string name="textcopied">Text copied</string>
+
+    <string name="linkcopied">Link copied</string>
+
+    <string name="disablecomment">Disable comments</string>
+    <string name="enablecomment">Enable comments</string>
+
+    <string name="delete">Delete</string>
+
+    <string name="deletenban">Delete and ban</string>
+
+    <string name="deleteandbanuser">Delete and ban user</string>
+
+    <string name="savepost">Save post</string>
+
+    <string name="savecomment">Save comment</string>
+
+    <string name="gotocomment">Go to comment</string>
+
+    <string name="unsavecomment">Unsave comment</string>
+
+    <string name="commenting">Commenting</string>
+
+    <string name="commentdisable">Comments are disabled for this post</string>
+
+    <string name="unsavepost">Unsave post</string>
+
+    <string name="postsaved">Post saved</string>
+    <string name="postunsaved">Post unsaved</string>
+
+    <string name="commentsaved">Comment saved</string>
+    <string name="commentunsaved">Comment unsaved</string>
+
+    <string name="deletetitle">Delete post?</string>
+
+    <string name="deleteandbantitle">Delete post and ban user?</string>
+
+    <string name="deletetitlecomment">Delete comment?</string>
+
+
+    <string name="bio">Biography</string>
+
+    <string name="newphoto">New photo</string>
+    <string name="removephoto">Remove photo</string>
+
+    <string name="savechanges">Save</string>
+
+    <string name="saving">Saving</string>
+
+    <string name="saved">Saved</string>
+
+
+    <string name="resmikirp">Crop Image</string>
+    <string name="kirp">Crop</string>
+
+    <string name="bin">k</string>
+    <string name="now">Now</string>
+    <string name="milyon">m</string>
+
+    <string name="empty">Empty</string>
+
+    <string name="darkmode">Dark mode</string>
+
+    <string name="nopostshareone">Seems like you have no posts. Click the circle button at the bottom right to share one.</string>
+
+    <string name="removevideo">Remove video</string>
+
+    <string name="addpost">Add post</string>
+
+    <string name="privategroup">Private group</string>
+
+    <string name="readmore">Read more</string>
+    <string name="readless">Read less</string>
+
+    <string name="uploadto">Upload to:</string>
+
+    <string name="privateprofile">This profile is private. You have to follow in order to see posts.</string>
+
+    <string name="exit">Exit?</string>
+    <string name="uploaddonewaitforadmin">Uploading completed. You will get a notification when admin approved your post.</string>
+
+    <string name="uploaddonewaitfor">Uploading completed. You will get a notification when once processing is complete.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="nocomment">No comment</string>
+
+    <string name="comments">Comments</string>
+    <string name="comment">Comment</string>
+
+    <string name="replies">Replies</string>
+
+    <string name="replies2cogul">replies</string>
+
+    <string name="replies2tekil">reply</string>
+
+    <string name="comments2cogul">comments</string>
+
+    <string name="comments2tekil">comment</string>
+
+    <string name="showreplies">Show replies</string>
+
+
+    <string name="replysent">Reply sent</string>
+
+    <string name="ad">Ad</string>
+
+    <string name="addmewimage">Add New Image</string>
+
+    <string name="followedyou">started following you</string>
+
+    <string name="followrequest">wants to follow you</string>
+
+    <string name="mentionpost">mentioned you in a post</string>
+
+    <string name="likedyourpost">liked your post</string>
+
+    <string name="commentyourpost">commented to your post</string>
+
+    <string name="mentioncomment">mentioned you in a commented</string>
+
+    <string name="replycomment">replied to your commented</string>
+
+    <string name="uplcompttitle">Uploading is complete!</string>
+
+    <string name="uplcompt">You can view your post by clicking this notification.</string>
+
+
+    <string name="acceptfollowrequest">accepted your follow request</string>
+
+    <string name="finishingup">Finishing Up</string>
+
+    <string name="reply">Reply</string>
+    <string name="account">Account</string>
+
+    <string name="close">Close</string>
+
+    <string name="confirm">Confirm</string>
+
+    <string name="privaccount">Private account</string>
+
+    <string name="accounttype">Account type</string>
+
+    <string name="personal">Personal account</string>
+
+    <string name="swtocr">Switch account type to Content creator?</string>
+
+    <string name="swtocrdesc">If you select Content creator, your posts will be visible on discover tab</string>
+
+    <string name="swtopa">Switch account type to Personal account?</string>
+
+    <string name="swtopadesc">If you select Personal account, your posts will not be visible on discover tab</string>
+
+    <string name="atchanged">Account type changed successfully</string>
+
+    <string name="ifyouselect">If you select Content creator, your posts will be visible on discover tab. Posts of personal accounts doesn\'t reach to discover tab.</string>
+
+    <string name="contentcreator">Content creator</string>
+
+
+    <string name="privateaccount">Private account. You have to follow to see posts.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+
+    <string name="notifications_admin_channel_name">notifications_admin_channel_name</string>
+    <string name="notifications_admin_channel_description">notifications_admin_channel_description</string>
+
+
+    <string name="blockedaccounts">Blocked accounts</string>
+
+    <string name="createnewgroup">Create new group</string>
+
+    <string name="selectnewimage">Select new image</string>
+
+    <string name="pendingfollowreqs">Pending follow requests</string>
+
+    <string name="likedposts">Posts you\'ve liked</string>
+
+    <string name="createdgroups">Groups you\'ve created</string>
+
+    <string name="joinedgroups">Groups you\'ve joined</string>
+
+    <string name="trimvideo">Trim Video</string>
+
+    <string name="yourcomments">Comments you\'ve made</string>
+
+    <string name="savedposts">Saved posts</string>
+
+    <string name="savedcomments">Saved comments</string>
+
+    <string name="changeusername">Change username</string>
+
+    <string name="opensourcelicences">Open source licences</string>
+
+    <string name="logout">Log out</string>
+
+    <string name="accept">Accept</string>
+    <string name="video">Video</string>
+
+
+</resources>

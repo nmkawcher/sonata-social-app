@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.sonata.ChangeUsernameActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="50dp"
+                app:corner_radius="25dp"
+                android:id="@+id/backbutton"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_height="50dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/backbuttonbutton"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="6dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icback"/>
+                </RelativeLayout>
+
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_toEndOf="@+id/backbutton"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:layout_toStartOf="@id/savetextripple"
+                android:textStyle="bold"
+                android:text="@string/changeusername"
+                android:gravity="start"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/savetextripple"
+                android:visibility="invisible"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:textColor="@color/blue"
+                    android:text="@string/savechanges"
+                    android:layout_height="match_parent"
+                    />
+            </RelativeLayout>
+
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/z_toolbar"
+        android:background="?attr/recyclerbackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:maxLines="1"
+                android:importantForAutofill="no"
+                android:textColor="?attr/siyahyazı"
+                android:paddingStart="5dp"
+                android:textSize="20sp"
+                android:paddingEnd="5dp"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:drawablePadding="15dp"
+                android:maxLength="25"
+                android:background="@drawable/link_layout_background"
+                android:digits="abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ._"
+                android:inputType="text|textVisiblePassword"
+                android:id="@+id/changeusernameedittext"
+                android:hint="@string/username"
+                android:drawableStart="@drawable/ic_at_settings"/>
+
+            <ProgressBar
+                android:layout_width="28dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:layout_height="28dp"
+                android:indeterminate="true"
+                android:id="@+id/usernameCheckProgress"
+                android:visibility="invisible"
+                />
+
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

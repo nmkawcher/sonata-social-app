@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/recyclerbackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.sonata.EditProfileActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="50dp"
+                app:corner_radius="25dp"
+                android:id="@+id/backbutton"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_height="50dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/backbuttonbutton"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="6dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icback"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_toRightOf="@+id/backbutton"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:text="@string/editprofile"
+                android:gravity="left"
+                android:layout_toLeftOf="@+id/uploadtextripple"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/uploadtextripple"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:textColor="@color/blue"
+                    android:text="@string/savechanges"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_settings"/>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_below="@id/z_toolbar"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:id="@+id/toppplayout"
+                android:layout_marginTop="15dp"
+                android:layout_height="110dp">
+                <RelativeLayout
+                    android:layout_width="90dp"
+                    android:id="@+id/editprofileppclick"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_height="90dp">
+                    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/profilephoto"
+                        android:layout_height="match_parent"
+                        app:corner_radius="45dp">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:id="@+id/profilephotophoto"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/emptypp"
+                            android:scaleType="centerCrop"
+                            />
+                    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                        android:layout_width="30dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        app:corner_radius="15dp"
+                        android:background="@color/blue"
+                        android:layout_height="30dp">
+
+                        <ImageView
+                            android:layout_margin="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_pen"/>
+                    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_below="@+id/toppplayout"
+                android:layout_marginTop="20dp"
+                android:id="@+id/puplicinfolayout"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/editprofilenamelayout"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="?attr/siyahyazı"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/editprofilenametext"
+                        android:text="@string/namesurname"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"/>
+                    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/editprofilenametext"
+                        app:corner_radius="10dp">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:hint="@string/namesurname"
+                            android:id="@+id/nameedittext"
+
+                            android:background="@drawable/link_layout_background"
+                            android:gravity="center_vertical"
+                            android:inputType="textPersonName|textCapSentences"
+                            android:textColor="?attr/siyahyazı"
+
+                            android:paddingLeft="15dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginTop="2dp"
+                            android:paddingRight="15dp"
+                            android:maxLines="1"
+                            android:maxLength="25"
+                            android:layout_height="match_parent" />
+
+                    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/editprofilenamelayout"
+                    android:id="@+id/editprofilebiolayout"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="120dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?attr/siyahyazı"
+
+                        android:layout_marginLeft="20dp"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/editprofilebiotext"
+                        android:text="@string/bio"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"/>
+                    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+
+                        android:layout_below="@+id/editprofilebiotext"
+                        app:corner_radius="10dp">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:hint="@string/bio"
+                            android:id="@+id/bioedittext"
+                            android:gravity="start|top"
+                            android:inputType="textMultiLine"
+                            android:background="@drawable/link_layout_background"
+
+                            android:textColor="?attr/siyahyazı"
+                            android:paddingLeft="15dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginTop="2dp"
+                            android:paddingRight="15dp"
+                            android:maxLines="4"
+                            android:maxLength="250"
+                            android:layout_height="match_parent" />
+
+                    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+                </RelativeLayout>
+
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

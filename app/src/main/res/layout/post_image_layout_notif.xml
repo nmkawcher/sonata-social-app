@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="?attr/beyazbackground"
+        android:id="@+id/postmainlayout"
+        android:layout_marginTop="5dp"
+
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/rel1"
+            android:layout_height="50dp">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/pplayout"
+                app:corner_radius="21dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:scaleType="centerCrop"
+                    android:layout_height="match_parent"
+                    android:id="@+id/postprofilephoto"
+                    />
+
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+
+
+
+            <TextView
+                android:id="@+id/postnametext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/pplayout"
+                android:maxLines="1"
+                android:textColor="?attr/siyahyazı"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/postusernametext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_toLeftOf="@+id/postoptions"
+                android:layout_toRightOf="@+id/postnametext"
+                android:maxLines="1"
+                android:textSize="14dp" />
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="35dp"
+                app:corner_radius="17.5dp"
+                android:id="@+id/postoptions"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:layout_height="35dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/postopripple"
+                    android:background="?attr/selectableItemBackground"
+
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="7dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/postoptions"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginBottom="9dp"
+            android:id="@+id/textLayout"
+            android:layout_height="wrap_content">
+            <com.tylersuehr.socialtextview.SocialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14.8sp"
+                android:lineSpacingMultiplier="1.2"
+                android:id="@+id/postdesc"
+                app:hashtagColor="@color/blue"
+                app:mentionColor="@color/blue"
+                app:urlColor="@color/blue"
+                app:linkModes="hashtag|mention|url"
+                android:visibility="gone"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="?attr/siyahyazı" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/postdesc"
+                android:textSize="14.8sp"
+                android:textColor="#999999"
+                android:layout_marginStart="10dp"
+                android:layout_alignParentStart="true"
+                android:text="@string/readmore"
+                android:visibility="gone"
+                android:id="@+id/readMoreText"/>
+
+        </RelativeLayout>
+
+        <com.takwolf.android.aspectratio.AspectRatioLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/beyazbackground"
+            app:arl_widthRatio="1"
+            app:arl_heightRatio="1"
+            android:id="@+id/postratiolayout">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/beyazbackground"
+                android:scaleType="centerCrop"
+                android:id="@+id/postimageview"/>
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_margin="10dp"
+                android:indeterminate="true"
+                android:layout_gravity="center"
+                android:id="@+id/postimageprogressbar"/>
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="60dp"
+                android:background="?attr/tersbeyazbackground"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                android:id="@+id/postimagefail"
+                app:corner_radius="30dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:background="?attr/selectableItemBackground"
+
+                    android:id="@+id/postfailimageripple"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/tersicreload"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+
+        </com.takwolf.android.aspectratio.AspectRatioLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+
+            android:weightSum="3"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:background="?attr/selectableItemBackground"
+                android:layout_weight="1"
+                android:id="@+id/postlikeripple"
+                android:layout_height="match_parent">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/postlikeicon"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_like" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/postlikenumber"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:textStyle="bold"
+                        android:layout_toRightOf="@+id/postlikeicon"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:id="@+id/postcommentripple"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/postcommentimage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_comment" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/postcommentnumber"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:textStyle="bold"
+                        android:layout_toRightOf="@+id/postcommentimage"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/postquotelayout"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:id="@+id/postdate"
+                    android:layout_height="match_parent"
+                    android:text="24.08.2019"/>
+
+            </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="?attr/recyclerbackground"
+        android:layout_below="@id/postmainlayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:textStyle="bold"
+            android:id="@+id/commentreplyfirst"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_height="match_parent"
+            android:id="@+id/showothercommentripple"
+            android:layout_toEndOf="@id/commentreplyfirst"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="20dp"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/blue"
+                android:text="@string/showothercomments"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

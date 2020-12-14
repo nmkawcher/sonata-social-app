@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:clickable="true"
+    android:id="@+id/mainLay"
+    tools:context=".activities.sonata.SearchActivity">
+
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:background="?attr/recyclerbackground"
+        android:id="@+id/guestmainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:background="?attr/recyclerbackground"
+
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="50dp"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/ortalayout">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:id="@+id/sutxcv"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:textColor="?attr/siyahyazı"
+                            android:text="@string/users"/>
+
+
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_below="@+id/sutxcv"
+                            android:background="?attr/recyclerbackground"
+                            android:layout_height="165dp"
+                            android:id="@+id/profileRecyclerView"/>
+
+
+
+
+
+                    </RelativeLayout>
+
+
+
+                </RelativeLayout>
+
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/z_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true"
+                    android:background="?attr/toolbarcolor"
+                    android:elevation="4dp"
+                    app:contentInsetStart="10dp"
+                    app:layout_collapseMode="pin">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="50dp"
+                            app:corner_radius="25dp"
+                            android:id="@+id/backbutton"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_height="50dp">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:id="@+id/backbuttonbutton"
+                                android:focusable="true"
+                                android:clickable="true"
+                                android:background="?attr/selectableItemBackground"
+
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:padding="6dp"
+                                    android:layout_height="match_parent"
+                                    android:src="?attr/icback"/>
+                            </RelativeLayout>
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+                        <androidx.appcompat.widget.SearchView
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            app:queryHint="@string/search"
+
+                            android:layout_centerVertical="true"
+                            app:iconifiedByDefault="false"
+                            android:layout_toEndOf="@id/backbutton"
+                            android:id="@+id/searchView"/>
+
+
+                    </RelativeLayout>
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:id="@+id/jjhh"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="?attr/siyahyazı"
+                android:text="@string/posts"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:background="?attr/recyclerbackground"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/jjhh"
+                android:id="@+id/searchPostRecycler"/>
+
+        </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
