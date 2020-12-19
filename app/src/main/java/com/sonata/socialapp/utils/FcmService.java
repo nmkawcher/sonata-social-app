@@ -20,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.parse.ParseCloud;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
@@ -53,9 +54,12 @@ public class FcmService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        HashMap<String,String> params = new HashMap<>();
-        params.put("token",s);
-        ParseCloud.callFunctionInBackground("updateToken",params);
+        if(ParseUser.getCurrentUser()!=null){
+            if(ParseInstallation.getCurrentInstallation()!=null){
+                ParseInstallation.getCurrentInstallation().put("token",s);
+                ParseInstallation.getCurrentInstallation().saveInBackground();
+            }
+        }
     }
 
     @Override

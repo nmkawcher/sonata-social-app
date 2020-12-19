@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -152,33 +153,29 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             }
         });
-        if(ParseUser.getCurrentUser()!=null){
-            if(ParseInstallation.getCurrentInstallation()!=null){
-                ParseInstallation.getCurrentInstallation().put("user",ParseUser.getCurrentUser());
-                ParseInstallation.getCurrentInstallation().saveInBackground();
-            }
-        }
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
                             return;
                         }
 
-                        if(task.getResult()!=null){
-                            String token = task.getResult().getToken();
-                            if(ParseUser.getCurrentUser()!=null){
-                                if(ParseInstallation.getCurrentInstallation()!=null){
-                                    ParseInstallation.getCurrentInstallation().put("token",token);
-                                    ParseInstallation.getCurrentInstallation().saveInBackground();
-                                }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        if(ParseUser.getCurrentUser()!=null){
+                            if(ParseInstallation.getCurrentInstallation()!=null){
+                                ParseInstallation.getCurrentInstallation().put("token",token);
+                                ParseInstallation.getCurrentInstallation().saveInBackground();
                             }
                         }
 
                     }
                 });
+
+
 
 
         bottombar = findViewById(R.id.bottomnav);

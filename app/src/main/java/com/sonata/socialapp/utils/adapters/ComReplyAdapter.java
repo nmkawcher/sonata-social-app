@@ -232,6 +232,9 @@ public class ComReplyAdapter extends RecyclerView.Adapter<ComReplyAdapter.ViewHo
                 holder.postdesc.setVisibility(View.VISIBLE);
 
             }
+            else{
+                holder.postdesc.setVisibility(View.GONE);
+            }
 
             if(getItemViewType(holder.getAdapterPosition())==COMMENT_TYPE_IMAGE_FIRST){
 

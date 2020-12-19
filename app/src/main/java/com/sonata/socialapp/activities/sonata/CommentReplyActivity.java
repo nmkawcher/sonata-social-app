@@ -778,7 +778,8 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
     public void onCommentOptionsClick(int position) {
         Comment post = (Comment)list.get(position);
         ArrayList<String> other = new ArrayList<>();
-        if(post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+        String id = ParseUser.getCurrentUser().getObjectId();
+        if(post.getUser().getObjectId().equals(id)||this.post.getUser().getObjectId().equals(id)){
             //Bu gönderi benim
             other.add(getString(R.string.delete));
 
