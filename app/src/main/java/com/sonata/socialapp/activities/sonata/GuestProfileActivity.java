@@ -336,7 +336,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             }
             else{
                 if(getIntent().getStringExtra("username")!=null){
-                    getUser(null,getIntent().getStringExtra("username"),false);
+                    getUser(null,getIntent().getStringExtra("username").toLowerCase(),false);
                 }
             }
         }

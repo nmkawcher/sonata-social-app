@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MyApp.ses=false;
+        //GenelUtil.ToastLong(this,Build.MODEL);
         if(getIntent() != null && getIntent().getBooleanExtra("newregister",false)){
             startActivity(new Intent(this,EditProfileActivity.class));
         }
@@ -401,6 +404,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 assert homeFragment != null;
                 homeFragment.Refresh();
             }
+
 
         }
         if(item.getItemId()==R.id.tab_back_yard){
