@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -38,6 +39,7 @@ import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
@@ -142,6 +144,9 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
         addphoto=findViewById(R.id.uploadaddphoto);
         addvideo=findViewById(R.id.uploadaddvideo);
         postdesc=findViewById(R.id.postdesc);
+
+        String text = String.format(getResources().getString(R.string.upload_hint), "@"+ParseUser.getCurrentUser().getUsername());
+        postdesc.setHint(text);
         postdesc.setMentionPattern(Pattern.compile("(^|[^\\w])@([\\w\\_\\.]+)"));
         postdesc.setHashtagColor(getResources().getColor(R.color.blue));
         postdesc.setMentionColor(getResources().getColor(R.color.blue));

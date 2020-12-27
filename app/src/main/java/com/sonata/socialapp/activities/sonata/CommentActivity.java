@@ -278,6 +278,8 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
         });
         sendbutton = findViewById(R.id.sendbutton);
         commenttext = findViewById(R.id.commentedittext);
+        String text = String.format(getResources().getString(R.string.comment_hint), "@"+ParseUser.getCurrentUser().getUsername());
+        commenttext.setHint(text);
         commenttext.setMentionPattern(Pattern.compile("(^|[^\\w])@([\\w\\_\\.]+)"));
         commenttext.setHashtagColor(getResources().getColor(R.color.blue));
         commenttext.setMentionColor(getResources().getColor(R.color.blue));
