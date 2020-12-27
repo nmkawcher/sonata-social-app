@@ -87,6 +87,8 @@
 
     <attr name="icadd" format="integer"/>
 
+    <attr name="icarrowdown" format="integer"/>
+
 
 
 </resources>

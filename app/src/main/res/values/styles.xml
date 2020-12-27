@@ -63,6 +63,8 @@
 
         <item name="icadmin">@drawable/ic_admin_day</item>
 
+        <item name="icarrowdown">@drawable/ic_arrow_down_day</item>
+
 
 
 
@@ -130,6 +132,8 @@
         <item name="selectbanner">@drawable/ic_select_banner_night</item>
 
         <item name="icmember">@drawable/ic_member_night</item>
+
+        <item name="icarrowdown">@drawable/ic_arrow_down_night</item>
 
 
 

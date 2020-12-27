@@ -85,7 +85,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     private SonataUser user;
     private RecyclerView.OnScrollListener onScrollListener;
 
-    private ImageView profilephoto;
+    private ImageView profilephoto,arrowdown;
     private RelativeLayout editprofile;
     private RecyclerView recyclerView;
     private TextView name,bio,followers,followerstext,followingtext,followings,username;
@@ -175,6 +175,19 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
 
                 dialog.show(getActivity().getSupportFragmentManager(),"bottomSheet");
 
+            }
+        });
+        arrowdown = view.findViewById(R.id.usernarrd);
+        arrowdown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog = new BottomSheetDialog(
+                        GenelUtil.getSavedUsersFinal(getActivity())
+                        ,getActivity()
+                        ,ParseUser.getCurrentUser().getObjectId()
+                        ,ProfilFragment.this);
+
+                dialog.show(getActivity().getSupportFragmentManager(),"bottomSheet");
             }
         });
         profilephoto=view.findViewById(R.id.profilephotophoto);
@@ -1050,7 +1063,6 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     @Override
     public void addAccount() {
         getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
-
     }
 
     @Override
