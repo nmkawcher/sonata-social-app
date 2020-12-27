@@ -399,6 +399,9 @@
     <string name="logout">Log out</string>
 
     <string name="accept">Accept</string>
+
+    <string name="switchaccount">Switch Account</string>
+    <string name="addaccount">Add Account</string>
     <string name="video">Video</string>
 
 

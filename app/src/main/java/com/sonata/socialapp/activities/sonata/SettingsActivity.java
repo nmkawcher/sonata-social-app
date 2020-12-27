@@ -26,6 +26,8 @@ import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +76,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.spinner_item,list);
         spinner.setAdapter(adapter);
+
+
         if(user.getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR){
             spinner.setSelection(1);
             prvAccountLayout.setVisibility(View.GONE);
@@ -435,7 +439,9 @@ public class SettingsActivity extends AppCompatActivity {
                 alertDialog.setPositiveButton(getString(R.string.logout), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        String id = ParseUser.getCurrentUser().getObjectId();
                         ParseUser.logOut();
+                        GenelUtil.removeUserFromCache(id,SettingsActivity.this);
                         startActivity(new Intent(SettingsActivity.this, StartActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         dialog.dismiss();
                         SettingsActivity.this.onBackPressed();
@@ -445,7 +451,7 @@ public class SettingsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).setCancelable(false).setTitle(getString(R.string.logout)).show();
+                }).setCancelable(true).setTitle(getString(R.string.logout)).show();
 
             }
         });

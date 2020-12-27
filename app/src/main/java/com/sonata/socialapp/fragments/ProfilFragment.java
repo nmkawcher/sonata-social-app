@@ -36,6 +36,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -45,15 +46,19 @@ import com.sonata.socialapp.activities.sonata.FollowersActivity;
 import com.sonata.socialapp.activities.sonata.FollowingsActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
+import com.sonata.socialapp.activities.sonata.LoginActivity;
 import com.sonata.socialapp.activities.sonata.MainActivity;
+import com.sonata.socialapp.activities.sonata.SettingsActivity;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.GridProfilAdapter;
 import com.sonata.socialapp.utils.adapters.HomeAdapter;
 import com.sonata.socialapp.utils.adapters.ProfilAdapter;
+import com.sonata.socialapp.utils.classes.BottomSheetDialog;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
+import com.sonata.socialapp.utils.interfaces.AccountManagerClicks;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 
 import java.util.ArrayList;
@@ -68,7 +73,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 import static com.parse.Parse.getApplicationContext;
 
 
-public class ProfilFragment extends Fragment implements RecyclerViewClick {
+public class ProfilFragment extends Fragment implements RecyclerViewClick, AccountManagerClicks {
     private Date date;
 
     private List<ListObject> list;
@@ -93,7 +98,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick {
     private CoordinatorLayout mainlayout;
     private RelativeLayout listPostLayout,backButton;
 
-
+    BottomSheetDialog dialog;
 
 
 
@@ -158,6 +163,20 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick {
 
 
         username = view.findViewById(R.id.profileusernametext);
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog = new BottomSheetDialog(
+                        GenelUtil.getSavedUsersFinal(getActivity())
+                        ,getActivity()
+                        ,ParseUser.getCurrentUser().getObjectId()
+                        ,ProfilFragment.this);
+
+                dialog.show(getActivity().getSupportFragmentManager(),"bottomSheet");
+
+            }
+        });
         profilephoto=view.findViewById(R.id.profilephotophoto);
         profilephoto.setOnClickListener(view1 -> {
             if(user.getHasPp()){
@@ -1028,4 +1047,40 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick {
     }
 
 
+    @Override
+    public void addAccount() {
+        getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+
+    }
+
+    @Override
+    public void switchAccount(String session,String id) {
+        Log.e("session",session);
+
+        if(!session.equals(ParseUser.getCurrentUser().getSessionToken())){
+            ProgressDialog progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage(getString(R.string.switchaccount));
+            progressDialog.show();
+            ParseUser.becomeInBackground(session, new LogInCallback() {
+                @Override
+                public void done(ParseUser user, ParseException e) {
+
+                    if(e==null){
+                        progressDialog.dismiss();
+                        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+                        getActivity().finish();
+                    }
+                    else{
+                        if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
+                            GenelUtil.removeUserFromCache(id, getActivity());
+                        }
+                        progressDialog.dismiss();
+                        GenelUtil.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
+                    }
+                }
+            });
+        }
+
+
+    }
 }

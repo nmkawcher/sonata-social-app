@@ -28,6 +28,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseDecoder;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.fragments.GroupFragment;
@@ -40,6 +41,8 @@ import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -156,7 +159,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             }
         });
+        JSONArray arr = GenelUtil.getSavedUsers(this);
 
+        Log.e("array",arr+"");
+        Log.e("arrayLength",arr.length()+"");
 
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -168,12 +174,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                         // Get new FCM registration token
                         String token = task.getResult();
-                        if(ParseUser.getCurrentUser()!=null){
-                            if(ParseInstallation.getCurrentInstallation()!=null){
-                                ParseInstallation.getCurrentInstallation().put("token",token);
-                                ParseInstallation.getCurrentInstallation().saveInBackground();
-                            }
-                        }
+                        HashMap<String,String> hash = new HashMap<>();
+                        hash.put("token",token);
+                        ParseCloud.callFunctionInBackground("saveUserDeviceToken",hash);
 
                     }
                 });

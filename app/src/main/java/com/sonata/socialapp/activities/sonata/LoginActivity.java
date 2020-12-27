@@ -162,6 +162,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void done(ParseUser user, ParseException e) {
                             if(e==null){
                                 if(user!=null){
+                                    GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),LoginActivity.this);
                                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                                     progressDialog.dismiss();
                                     finish();

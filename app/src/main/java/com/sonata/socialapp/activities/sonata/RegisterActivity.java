@@ -97,6 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                             public void done(ParseUser user, ParseException e) {
                                                                 if(user!=null){
                                                                     if(e==null){
+                                                                        GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),RegisterActivity.this);
                                                                         startActivity(new Intent(RegisterActivity.this,MainActivity.class).putExtra("newregister",true));
                                                                         finish();
                                                                     }

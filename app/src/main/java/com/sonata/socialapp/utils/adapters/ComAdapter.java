@@ -152,12 +152,10 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
                 }
             }
             else{
-                switch (Objects.requireNonNull(list.get(i).getString("type"))) {
-                    case "boş":
-                        return POST_TYPE_EMPTY;
-                    default:
-                        return POST_TYPE_LOAD;
+                if ("boş".equals(Objects.requireNonNull(list.get(i).getString("type")))) {
+                    return POST_TYPE_EMPTY;
                 }
+                return POST_TYPE_LOAD;
             }
 
 

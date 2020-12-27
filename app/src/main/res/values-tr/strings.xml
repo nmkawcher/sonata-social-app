@@ -212,4 +212,6 @@
     <string name="readless">Daha az</string>
     <string name="youcantselectmorethanfour">Dörtten fazla resim seçemezsin</string>
     <string name="close">Kapat</string>
+    <string name="switchaccount">Hesap Değiştir</string>
+    <string name="addaccount">Hesap Ekle</string>
 </resources>

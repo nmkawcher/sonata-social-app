@@ -10,10 +10,16 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
+import com.parse.LogInCallback;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.MyApp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class StartActivity extends AppCompatActivity {
@@ -49,6 +55,46 @@ public class StartActivity extends AppCompatActivity {
                     finish();
                 }
             });
+        }
+        else{
+            JSONArray userList = GenelUtil.getSavedUsersFinal(this);
+            asdasdas(0,userList);
+
+        }
+    }
+
+    private void asdasdas (int a,JSONArray userList){
+
+        if(userList.length()>a){
+            try {
+                JSONObject usob = (JSONObject) userList.get(a);
+                ParseUser.becomeInBackground(usob.getString("session"), new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException e) {
+                        if(e==null){
+                            MobileAds.initialize(StartActivity.this, new OnInitializationCompleteListener() {
+                                @Override
+                                public void onInitializationComplete(InitializationStatus initializationStatus) {
+                                    startActivity(new Intent(StartActivity.this,MainActivity.class));
+                                    finish();
+                                }
+                            });
+                        }
+                        else{
+                            if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
+                                try {
+                                    GenelUtil.removeUserFromCache(usob.getString("id"), StartActivity.this);
+                                } catch (JSONException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                            asdasdas(a+1,userList);
+                        }
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         else{
             startActivity(new Intent(this,LoginActivity.class));

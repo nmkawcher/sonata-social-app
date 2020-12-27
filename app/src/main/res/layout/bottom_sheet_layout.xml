@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:layout_height="wrap_content">
+
+    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="?attr/beyazbackground">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/switchaccount"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone"
+        android:id="@+id/user_lay_1"
+        android:background="?attr/beyazbackground">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/freqlcay"/>
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:corner_radius="25dp"
+            android:id="@+id/followreqlayoutpplayout">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/notif"
+                android:id="@+id/followreqlayoutpp"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/followreqname"
+            android:ellipsize="end"
+            android:layout_toEndOf="@id/followreqlayoutpplayout"
+            android:layout_above="@id/freqlcay"
+            android:layout_toStartOf="@+id/folreqacceptlayout"
+            android:maxLines="1"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:id="@+id/followrequsername"
+            android:layout_toStartOf="@+id/folreqacceptlayout"
+            android:layout_toEndOf="@id/followreqlayoutpplayout"
+            android:layout_below="@id/freqlcay"
+            android:maxLines="1"/>
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:corner_radius="12.5dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:id="@+id/folreqacceptlayout"
+
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_background_dolu">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                app:corner_radius="6dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/siyahyazı"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/rippleselect"
+            android:background="?attr/selectableItemBackground"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingTop="5dp"
+        android:visibility="gone"
+        android:paddingBottom="5dp"
+        android:id="@+id/user_lay_2"
+        android:background="?attr/beyazbackground">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/freqlcay2"/>
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:corner_radius="25dp"
+            android:id="@+id/followreqlayoutpplayout2">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/notif"
+                android:id="@+id/followreqlayoutpp2"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/followreqname2"
+            android:ellipsize="end"
+            android:layout_toEndOf="@id/followreqlayoutpplayout2"
+            android:layout_above="@id/freqlcay2"
+            android:layout_toStartOf="@+id/folreqacceptlayout2"
+            android:maxLines="1"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:id="@+id/followrequsername2"
+            android:layout_toStartOf="@+id/folreqacceptlayout2"
+            android:layout_toEndOf="@id/followreqlayoutpplayout2"
+            android:layout_below="@id/freqlcay2"
+            android:maxLines="1"/>
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:corner_radius="12.5dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:id="@+id/folreqacceptlayout2"
+
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_background_dolu">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                app:corner_radius="6dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/siyahyazı"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/rippleselect2"
+            android:background="?attr/selectableItemBackground"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone"
+        android:id="@+id/user_lay_3"
+        android:background="?attr/beyazbackground">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/freqlcay3"/>
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:corner_radius="25dp"
+            android:id="@+id/followreqlayoutpplayout3">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/notif"
+                android:id="@+id/followreqlayoutpp3"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/followreqname3"
+            android:ellipsize="end"
+            android:layout_toEndOf="@id/followreqlayoutpplayout3"
+            android:layout_above="@id/freqlcay3"
+            android:layout_toStartOf="@+id/folreqacceptlayout3"
+            android:maxLines="1"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:id="@+id/followrequsername3"
+            android:layout_toStartOf="@+id/folreqacceptlayout3"
+            android:layout_toEndOf="@id/followreqlayoutpplayout3"
+            android:layout_below="@id/freqlcay3"
+            android:maxLines="1"/>
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:corner_radius="12.5dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:id="@+id/folreqacceptlayout3"
+
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_background_dolu">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                app:corner_radius="6dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/siyahyazı"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/rippleselect3"
+            android:background="?attr/selectableItemBackground"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone"
+        android:id="@+id/user_lay_4"
+        android:background="?attr/beyazbackground">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/freqlcay4"/>
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:corner_radius="25dp"
+            android:id="@+id/followreqlayoutpplayout4">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/notif"
+                android:id="@+id/followreqlayoutpp4"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/followreqname4"
+            android:ellipsize="end"
+            android:layout_toEndOf="@id/followreqlayoutpplayout4"
+            android:layout_above="@id/freqlcay4"
+            android:layout_toStartOf="@+id/folreqacceptlayout4"
+            android:maxLines="1"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:id="@+id/followrequsername4"
+            android:layout_toStartOf="@+id/folreqacceptlayout4"
+            android:layout_toEndOf="@id/followreqlayoutpplayout4"
+            android:layout_below="@id/freqlcay4"
+            android:maxLines="1"/>
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:corner_radius="12.5dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:id="@+id/folreqacceptlayout4"
+
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_background_dolu">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                app:corner_radius="6dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/siyahyazı"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/rippleselect4"
+            android:background="?attr/selectableItemBackground"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone"
+        android:id="@+id/user_lay_5"
+        android:background="?attr/beyazbackground">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/freqlcay5"/>
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:corner_radius="25dp"
+            android:id="@+id/followreqlayoutpplayout5">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/notif"
+                android:id="@+id/followreqlayoutpp5"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/followreqname5"
+            android:ellipsize="end"
+            android:layout_toEndOf="@id/followreqlayoutpplayout5"
+            android:layout_above="@id/freqlcay5"
+            android:layout_toStartOf="@+id/folreqacceptlayout5"
+            android:maxLines="1"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:id="@+id/followrequsername5"
+            android:layout_toStartOf="@+id/folreqacceptlayout5"
+            android:layout_toEndOf="@id/followreqlayoutpplayout5"
+            android:layout_below="@id/freqlcay5"
+            android:maxLines="1"/>
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:corner_radius="12.5dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:id="@+id/folreqacceptlayout5"
+
+            android:layout_marginEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_background_dolu">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                app:corner_radius="6dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/siyahyazı"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/rippleselect5"
+            android:background="?attr/selectableItemBackground"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/user_lay_add_account"
+        android:background="?attr/beyazbackground">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/addaccount"
+            android:textColor="?attr/siyahyazı"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/rippleaddacc"
+            android:background="?attr/selectableItemBackground"/>
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="?attr/beyazbackground"/>
+</LinearLayout>

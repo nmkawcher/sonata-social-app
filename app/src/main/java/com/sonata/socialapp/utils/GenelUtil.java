@@ -32,6 +32,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.classes.Comment;
@@ -39,6 +40,10 @@ import com.sonata.socialapp.utils.classes.SonataUser;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.listeners.OnDismissListener;
 import com.tylersuehr.socialtextview.SocialTextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,15 +64,151 @@ public class GenelUtil {
 
     public static Comment comment = null;
     private static long a;
+    public static final int ACCOUNT_LIMIT = 5;
 
-    public static void loadProfilePhotoBig(ImageView profilephoto,SonataUser user){
+    public static void saveNewUser(JSONObject user,Context context){
+        SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
+        String userArrayStr = pref.getString("accounts","");
+
+        try {
+            if(userArrayStr != null && userArrayStr.length()>0){
+                Log.e("deneme","string not null");
+                JSONObject jsonObject = new JSONObject(userArrayStr);
+                JSONArray array = jsonObject.getJSONArray("users");
+
+                if(array.length() < ACCOUNT_LIMIT){
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    JSONArray newArr = new JSONArray();
+                    newArr.put(user);
+
+                    for(int i=0;i<array.length();i++){
+                        JSONObject us = array.getJSONObject(i);
+                        if(!us.get("id").equals(user.get("id"))){
+                            newArr.put(us);
+                        }
+                    }
+
+                    jsonObject2.put("users",newArr);
+                    SharedPreferences.Editor editor = pref.edit();
+
+                    editor.putString("accounts",jsonObject2.toString());
+                    editor.apply();
+
+                }
+            }
+            else{
+                Log.e("deneme","string null yada uzunluk 0");
+                JSONObject jsonObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                array.put(user);
+                jsonObject.put("users",array);
+                SharedPreferences.Editor editor = pref.edit();
+
+                editor.putString("accounts",jsonObject.toString());
+                editor.apply();
+            }
+
+        } catch (JSONException e) {
+            Log.e("saveUser",e.toString());
+            e.printStackTrace();
+        }
 
     }
 
-    public static void setCollapseSetting(SocialTextView textView){
-        if(textView == null) return;
+    public static void removeUserFromCache(String id,Context context){
 
+        JSONObject jsonObject = new JSONObject();
+        JSONArray array = getSavedUsers(context);
+        JSONArray newArr = new JSONArray();
+        for(int i=0;i<array.length();i++){
+            JSONObject us = null;
+            try {
+                us = array.getJSONObject(i);
+                if(!us.get("id").equals(id)){
+                    newArr.put(us);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+        try {
+            jsonObject.put("users",newArr);
+            SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
+            SharedPreferences.Editor editor = pref.edit();
+
+            editor.putString("accounts",jsonObject.toString());
+            editor.apply();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
+    public static JSONArray getSavedUsers(Context context){
+        SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
+        String userArrayStr = pref.getString("accounts","");
+        try {
+            assert userArrayStr != null;
+            return new JSONObject(userArrayStr).getJSONArray("users");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONArray();
+    }
+
+    public static JSONArray getSavedUsersFinal(Context context){
+        JSONArray ar2 = new JSONArray();
+        JSONArray array = getSavedUsers(context);
+        if(ParseUser.getCurrentUser()!=null){
+            ar2.put(convertUserToJson((SonataUser) ParseUser.getCurrentUser()));
+            for(int i=0;i<array.length();i++){
+                JSONObject us = null;
+                try {
+                    us = array.getJSONObject(i);
+                    if(!us.get("id").equals(ParseUser.getCurrentUser().getObjectId())){
+                        ar2.put(us);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        else{
+            for(int i=0;i<array.length();i++){
+                JSONObject us = null;
+                try {
+                    us = array.getJSONObject(i);
+                    ar2.put(us);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        return ar2;
+    }
+
+    public static JSONObject convertUserToJson(SonataUser user){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("namesurname",user.getName());
+            json.put("haspp",user.getHasPp());
+            json.put("id",user.getObjectId());
+            json.put("username",user.getUsername());
+            json.put("pp",user.getPPbig());
+            json.put("session",user.getSessionToken());
+            return json;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     public static boolean isAlive(Activity activity){
         return !activity.isFinishing() && !activity.isDestroyed();

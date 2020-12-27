@@ -167,11 +167,9 @@ public class SafCommentAdapter extends RecyclerView.Adapter<SafCommentAdapter.Vi
             }
             if(post.getVote()<0){
                 holder.votecount.setText("-"+ GenelUtil.ConvertNumber((int)post.getVote()*(-1),holder.itemView.getContext()));
-
             }
             if(post.getVote()>=0){
                 holder.votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),holder.itemView.getContext()));
-
             }
 
 

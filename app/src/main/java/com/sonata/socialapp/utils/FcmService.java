@@ -52,14 +52,11 @@ public class FcmService extends FirebaseMessagingService {
 
 
     @Override
-    public void onNewToken(@NonNull String s) {
-        super.onNewToken(s);
-        if(ParseUser.getCurrentUser()!=null){
-            if(ParseInstallation.getCurrentInstallation()!=null){
-                ParseInstallation.getCurrentInstallation().put("token",s);
-                ParseInstallation.getCurrentInstallation().saveInBackground();
-            }
-        }
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+        HashMap<String,String> hash = new HashMap<>();
+        hash.put("token",token);
+        ParseCloud.callFunctionInBackground("saveUserDeviceToken",hash);
     }
 
     @Override
@@ -99,7 +96,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setContentIntent(pendingIntent)//dismisses the notification on click
                                     .setSound(defaultSoundUri)
                                     .setStyle( new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(followedyou, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("i"+remoteMessage.getData().get("username")), notificationBuilder.build());
                         }
                         else if(remoteMessage.getData().get("type").equals("followrequest")){
                             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -126,7 +123,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setSound(defaultSoundUri)
                                     .setStyle(new NotificationCompat.BigTextStyle()
                                             .bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(followrequest, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("h"+remoteMessage.getData().get("name")), notificationBuilder.build());
                         }
                         else if(remoteMessage.getData().get("type").equals("acceptedfollowrequest")){
                             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -153,7 +150,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setContentIntent(pendingIntent)//dismisses the notification on click
                                     .setSound(defaultSoundUri)
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(acceptfollowrequest, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("g"+remoteMessage.getData().get("username")), notificationBuilder.build());
                         }
                         else if(remoteMessage.getData().get("type").equals("mentionpost")){
                             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -181,7 +178,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setContentIntent(pendingIntent)//dismisses the notification on click
                                     .setSound(defaultSoundUri)
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(mentionPost, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("f"+remoteMessage.getData().get("postid")), notificationBuilder.build());
                         }
                         else if(remoteMessage.getData().get("type").equals("likedpost")){
                             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -210,7 +207,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setContentIntent(pendingIntent)//dismisses the notification on click
                                     .setSound(defaultSoundUri)
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(likePost, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("e"+remoteMessage.getData().get("postid")), notificationBuilder.build());
 
                         }
                         else if(remoteMessage.getData().get("type").equals("commentpost")){
@@ -239,7 +236,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setContentIntent(pendingIntent)//dismisses the notification on click
                                     .setSound(defaultSoundUri)
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(commentPost, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("d"+remoteMessage.getData().get("commentid")), notificationBuilder.build());
 
                         }
                         else if(remoteMessage.getData().get("type").equals("mentioncomment")){
@@ -268,7 +265,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setContentIntent(pendingIntent)//dismisses the notification on click
                                     .setSound(defaultSoundUri)
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(mentionComment, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("c"+remoteMessage.getData().get("commentid")), notificationBuilder.build());
 
                         }
 
@@ -298,7 +295,7 @@ public class FcmService extends FirebaseMessagingService {
                                     .setContentIntent(pendingIntent)//dismisses the notification on click
                                     .setSound(defaultSoundUri)
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(replyComment, notificationBuilder.build());
+                            notificationManager.notify(getUniqueNumberFromString("b"+remoteMessage.getData().get("commentid")), notificationBuilder.build());
 
                         }
 
@@ -331,8 +328,8 @@ public class FcmService extends FirebaseMessagingService {
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(title));
                             Random rand = new Random(); //instance of random class
 
-                            int int_random = rand.nextInt(100000);
-                            notificationManager.notify(int_random, notificationBuilder.build());
+
+                            notificationManager.notify(getUniqueNumberFromString("a"+remoteMessage.getData().get("postid")), notificationBuilder.build());
 
                         }
                     }
@@ -412,6 +409,19 @@ public class FcmService extends FirebaseMessagingService {
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(adminChannel);
         }
+    }
+
+    private int getUniqueNumberFromString(String string){
+        /*String news = "";
+        for(int i = 0; i < string.length(); i++){
+            news=news+String.valueOf(Character.codePointAt(string, i));
+        }
+        if(news.length()>9){
+            news = news.substring(0,9);
+            return Integer.parseInt(news);
+        }
+        return Integer.parseInt(news);*/
+        return string.hashCode();
     }
 
 }
