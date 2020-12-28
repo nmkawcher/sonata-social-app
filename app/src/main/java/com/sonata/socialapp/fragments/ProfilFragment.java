@@ -1078,6 +1078,8 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                 public void done(ParseUser user, ParseException e) {
 
                     if(e==null){
+                        String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
+                        GenelUtil.ToastLong(getActivity(),text);
                         progressDialog.dismiss();
                         getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
                         getActivity().finish();

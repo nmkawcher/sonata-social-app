@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -155,6 +156,32 @@ public class GenelUtil {
             e.printStackTrace();
         }
         return new JSONArray();
+    }
+
+
+
+    public static List<Object> isUserSaved(Context context, String id){
+        List<Object> list = new ArrayList<>();
+        boolean exist = false;
+        String username = "";
+        String session = "";
+        JSONArray array = getSavedUsers(context);
+        for(int i=0;i<array.length();i++){
+            try {
+                JSONObject user = (JSONObject) array.get(i);
+                if(user.getString("id").equals(id)){
+                    exist = true;
+                    username = user.getString("username");
+                    session = user.getString("session");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        list.add(exist);
+        list.add(username);
+        list.add(session);
+        return list;
     }
 
     public static JSONArray getSavedUsersFinal(Context context){

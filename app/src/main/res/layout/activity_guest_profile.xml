@@ -55,7 +55,6 @@
                     android:textColor="?attr/siyahyazı"
                     android:maxLines="1"
                     android:textStyle="bold"
-                    android:text="@string/tab_home"
                     android:gravity="left"
                     android:layout_centerVertical="true"
                     android:id="@+id/profileusernametext1"

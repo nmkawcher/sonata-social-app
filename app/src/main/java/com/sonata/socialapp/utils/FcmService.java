@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -28,6 +29,7 @@ import com.sonata.socialapp.activities.sonata.FollowRequestActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -65,276 +67,320 @@ public class FcmService extends FirebaseMessagingService {
 
         if(ParseUser.getCurrentUser()!=null){
             if(remoteMessage.getData().get("to")!=null){
-                if(remoteMessage.getData().get("to").equals(ParseUser.getCurrentUser().getObjectId())){
-
+                List<Object> res = GenelUtil.isUserSaved(this,remoteMessage.getData().get("to"));
+                if((Boolean) res.get(0)){
+                    String toId = remoteMessage.getData().get("to");
+                    String usna = (String) res.get(1);
+                    String addition = "[@" + usna + "] ";
+                    boolean iseq = ParseUser.getCurrentUser().getObjectId().equals(toId);
                     if(remoteMessage.getData().get("type")!=null){
 
+                        switch (remoteMessage.getData().get("type")) {
+                            case "followedyou": {
 
-                        if(remoteMessage.getData().get("type").equals("followedyou")){
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.followedyou);
+                                Intent intent = new Intent(this, GuestProfileActivity.class);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                intent.putExtra("username", remoteMessage.getData().get("username"));
+                                intent.putExtra("notif", true);
+                                intent.putExtra("to", toId);
 
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
+
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition+ remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("i" + remoteMessage.getData().get("username")), notificationBuilder.build());
+                                break;
                             }
-                            String title=getString(R.string.followedyou);
-                            Intent intent = new Intent(this, GuestProfileActivity.class);
-                            intent.putExtra("username",remoteMessage.getData().get("username"));
-                            intent.putExtra("notif",true);
+                            case "followrequest": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.followrequest);
+                                Intent intent = new Intent(this, FollowRequestActivity.class);
+                                intent.putExtra("notif", true);
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle( new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("i"+remoteMessage.getData().get("username")), notificationBuilder.build());
-                        }
-                        else if(remoteMessage.getData().get("type").equals("followrequest")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
 
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition + remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle()
+                                                .bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("h" + remoteMessage.getData().get("name")), notificationBuilder.build());
+                                break;
                             }
-                            String title=getString(R.string.followrequest);
-                            Intent intent = new Intent(this, FollowRequestActivity.class);
-                            intent.putExtra("notif",true);
+                            case "acceptedfollowrequest": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.acceptfollowrequest);
+                                Intent intent = new Intent(this, GuestProfileActivity.class);
+                                intent.putExtra("username", remoteMessage.getData().get("username"));
+                                intent.putExtra("notif", true);
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle()
-                                            .bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("h"+remoteMessage.getData().get("name")), notificationBuilder.build());
-                        }
-                        else if(remoteMessage.getData().get("type").equals("acceptedfollowrequest")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
 
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition+ remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("g" + remoteMessage.getData().get("username")), notificationBuilder.build());
+                                break;
                             }
-                            String title=getString(R.string.acceptfollowrequest);
-                            Intent intent = new Intent(this, GuestProfileActivity.class);
-                            intent.putExtra("username",remoteMessage.getData().get("username"));
-                            intent.putExtra("notif",true);
+                            case "mentionpost": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.mentionpost);
+                                Intent intent = new Intent(this, CommentActivity.class);
+                                intent.putExtra("notif", true);
+                                intent.putExtra("id", remoteMessage.getData().get("postid"));
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("g"+remoteMessage.getData().get("username")), notificationBuilder.build());
-                        }
-                        else if(remoteMessage.getData().get("type").equals("mentionpost")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
 
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition + remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("f" + remoteMessage.getData().get("postid")), notificationBuilder.build());
+                                break;
                             }
-                            String title=getString(R.string.mentionpost);
-                            Intent intent = new Intent(this, CommentActivity.class);
-                            intent.putExtra("notif",true);
-                            intent.putExtra("id",remoteMessage.getData().get("postid"));
+                            case "likedpost": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.likedyourpost);
+                                Intent intent = new Intent(this, CommentActivity.class);
+                                intent.putExtra("id", remoteMessage.getData().get("postid"));
+                                intent.putExtra("notif", true);
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("f"+remoteMessage.getData().get("postid")), notificationBuilder.build());
-                        }
-                        else if(remoteMessage.getData().get("type").equals("likedpost")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
 
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition + remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("e" + remoteMessage.getData().get("postid")), notificationBuilder.build());
+
+                                break;
                             }
-                            String title=getString(R.string.likedyourpost);
-                            Intent intent = new Intent(this, CommentActivity.class);
-                            intent.putExtra("id",remoteMessage.getData().get("postid"));
-                            intent.putExtra("notif",true);
+                            case "commentpost": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.commentyourpost);
+                                Intent intent = new Intent(this, CommentActivity.class);
+                                intent.putExtra("notif", true);
+                                intent.putExtra("commentid", remoteMessage.getData().get("commentid"));
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition + remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("d" + remoteMessage.getData().get("commentid")), notificationBuilder.build());
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("e"+remoteMessage.getData().get("postid")), notificationBuilder.build());
-
-                        }
-                        else if(remoteMessage.getData().get("type").equals("commentpost")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                break;
                             }
-                            String title=getString(R.string.commentyourpost);
-                            Intent intent = new Intent(this, CommentActivity.class);
-                            intent.putExtra("notif",true);
-                            intent.putExtra("commentid",remoteMessage.getData().get("commentid"));
+                            case "mentioncomment": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.mentioncomment);
+                                Intent intent = new Intent(this, CommentActivity.class);
+                                intent.putExtra("notif", true);
+                                intent.putExtra("commentid", remoteMessage.getData().get("commentid"));
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("d"+remoteMessage.getData().get("commentid")), notificationBuilder.build());
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition + remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("c" + remoteMessage.getData().get("commentid")), notificationBuilder.build());
 
-                        }
-                        else if(remoteMessage.getData().get("type").equals("mentioncomment")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                break;
                             }
-                            String title=getString(R.string.mentioncomment);
-                            Intent intent = new Intent(this, CommentActivity.class);
-                            intent.putExtra("notif",true);
-                            intent.putExtra("commentid",remoteMessage.getData().get("commentid"));
+                            case "replycomment": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.replycomment);
+                                Intent intent = new Intent(this, CommentActivity.class);
+                                intent.putExtra("notif", true);
+                                intent.putExtra("commentid", remoteMessage.getData().get("commentid"));
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("c"+remoteMessage.getData().get("commentid")), notificationBuilder.build());
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
+                                        .setContentText(addition + remoteMessage.getData().get("name") + " " + title) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("b" + remoteMessage.getData().get("commentid")), notificationBuilder.build());
 
-                        }
-
-                        else if(remoteMessage.getData().get("type").equals("replycomment")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                break;
                             }
-                            String title=getString(R.string.replycomment);
-                            Intent intent = new Intent(this, CommentActivity.class);
-                            intent.putExtra("notif",true);
-                            intent.putExtra("commentid",remoteMessage.getData().get("commentid"));
+                            case "postUploadComplete": {
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.uplcompt);
+                                Intent intent = new Intent(this, CommentActivity.class);
+                                intent.setAction(Long.toString(System.currentTimeMillis()));
+                                intent.putExtra("id", remoteMessage.getData().get("postid"));
+                                intent.putExtra("to", toId);
+                                if (!iseq) {
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                }
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+                                Bitmap bitmap = getBitmapPost(remoteMessage.getData().get("image")); //obtain the image
 
 
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setContentTitle(getString(R.string.uplcompttitle)) //the "title" value you sent in your notification
+                                        .setContentText(addition + title) //ditto
+                                        .setLargeIcon(bitmap)
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ title));
+                                Random rand = new Random(); //instance of random class
 
-                            Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setLargeIcon(bitmap)//a resource for your custom small icon
-                                    .setContentTitle(getString(R.string.app_name)) //the "title" value you sent in your notification
-                                    .setContentText(remoteMessage.getData().get("name")+" "+title) //ditto
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get("name")+" "+title));
-                            notificationManager.notify(getUniqueNumberFromString("b"+remoteMessage.getData().get("commentid")), notificationBuilder.build());
 
-                        }
+                                notificationManager.notify(getUniqueNumberFromString("a" + remoteMessage.getData().get("postid")), notificationBuilder.build());
 
-                        else if(remoteMessage.getData().get("type").equals("postUploadComplete")){
-                            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                setupChannels();
+                                break;
                             }
-                            String title=getString(R.string.uplcompt);
-                            Intent intent = new Intent(this, CommentActivity.class);
-                            intent.setAction(Long.toString(System.currentTimeMillis()));
-                            intent.putExtra("id",remoteMessage.getData().get("postid"));
-
-
-                            PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
-
-                            Bitmap bitmap = getBitmapPost(remoteMessage.getData().get("image")); //obtain the image
-
-                            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,ADMIN_CHANNEL_ID )
-                                    .setSmallIcon(R.drawable.ic_new_notification_icon)
-                                    .setColor(getResources().getColor(R.color.notif))
-                                    .setContentTitle(getString(R.string.uplcompttitle)) //the "title" value you sent in your notification
-                                    .setContentText(title) //ditto
-                                    .setLargeIcon(bitmap)
-                                    .setAutoCancel(true)
-                                    .setContentIntent(pendingIntent)//dismisses the notification on click
-                                    .setSound(defaultSoundUri)
-                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(title));
-                            Random rand = new Random(); //instance of random class
-
-
-                            notificationManager.notify(getUniqueNumberFromString("a"+remoteMessage.getData().get("postid")), notificationBuilder.build());
-
                         }
                     }
-
                 }
+
             }
         }
 

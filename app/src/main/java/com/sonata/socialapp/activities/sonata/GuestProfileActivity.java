@@ -34,6 +34,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -158,6 +159,52 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guest_profile);
+
+        if(getIntent().getStringExtra("to")!=null){
+            String to = getIntent().getStringExtra("to");
+            if(ParseUser.getCurrentUser().getObjectId().equals(to)){
+                setUpOnCreate();
+            }
+            else{
+                List<Object> an = GenelUtil.isUserSaved(this,to);
+                boolean isExist = (boolean) an.get(0);
+                if(isExist){
+                    String session = (String) an.get(2);
+                    ParseUser.becomeInBackground(session, new LogInCallback() {
+                        @Override
+                        public void done(ParseUser user, ParseException e) {
+
+                            if(e==null){
+                                String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
+                                GenelUtil.ToastLong(GuestProfileActivity.this,text);
+
+                                setUpOnCreate();
+                            }
+                            else{
+                                if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
+                                    GenelUtil.removeUserFromCache(to, GuestProfileActivity.this);
+                                }
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.invalidsessiontoken));
+                                startActivity(new Intent(GuestProfileActivity.this, StartActivity.class));
+                                finish();
+                            }
+                        }
+                    });
+                }
+                else{
+                    startActivity(new Intent(this, StartActivity.class));
+                    finish();
+                }
+            }
+        }
+        else{
+            setUpOnCreate();
+        }
+
+    }
+
+    private void setUpOnCreate(){
         loadingLayout=findViewById(R.id.guestprofileloading);
 
         mainLayout=findViewById(R.id.guestmainlayout);
@@ -340,7 +387,6 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                 }
             }
         }
-
     }
 
     @Override
