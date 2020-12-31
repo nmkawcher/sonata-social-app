@@ -231,10 +231,10 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
         }
     }
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam) {
+    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam,boolean isrefresh) {
         Log.e("done","InitList");
 
-        if(GenelUtil.isAlive(SavedPostsActivity.this)){
+        if(GenelUtil.isAlive(this)){
             Log.e("done","InitListActive");
 
             if(objects.size()==0){
@@ -245,21 +245,19 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                         ListObject post = new ListObject();
                         post.setType("boş");
                         list.add(post);
+                        adapter.notifyItemInserted(0);
                     }
                     else{
                         if(list.get(list.size()-1).getType().equals("load")){
-                            list.remove(list.get(list.size()-1));
+                            int in = list.size()-1;
+                            list.remove(in);
+                            adapter.notifyItemRemoved(in);
                         }
-                        if(list.size()==0){
-                            ListObject post = new ListObject();
-                            post.setType("boş");
-                            list.add(post);
-                        }
+
                     }
                 }
 
                 swipeRefreshLayout.setRefreshing(false);
-                adapter.notifyDataSetChanged();
                 Log.e("done","adapterNotified");
 
 
@@ -267,10 +265,12 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
             else{
                 if(list.size()>0){
                     if(list.get(list.size()-1).getType().equals("load")){
-                        list.remove(list.get(list.size()-1));
+                        int in = list.size()-1;
+                        list.remove(in);
+                        adapter.notifyItemRemoved(in);
                     }
                 }
-
+                int an = list.size();
                 date=objects.get(objects.size()-1).getCreatedAt();
                 for(int i=0;i<objects.size();i++){
                     String a = String.valueOf(i+1);
@@ -298,7 +298,7 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                 loading =false;
                 swipeRefreshLayout.setRefreshing(false);
                 if(objects.size()<10){
-                    postson =true;
+                    postson = true;
                 }
                 else{
                     postson=false;
@@ -306,7 +306,13 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                     load.setType("load");
                     list.add(load);
                 }
-                adapter.notifyDataSetChanged();
+                if(isrefresh){
+                    adapter.notifyDataSetChanged();
+                }
+                else{
+                    adapter.notifyItemRangeInserted(an, list.size()-an);
+                }
+                //adapter.notifyDataSetChanged();
                 Log.e("done","adapterNotified");
 
             }
@@ -349,7 +355,7 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                     //refreshSetting();
                     list.clear();
                 }
-                initList(objects,new ArrayList<>());
+                initList(objects,new ArrayList<>(),isRefresh);
             }
             else{
                 int finalC = c;
@@ -381,7 +387,7 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,tempList);
+                                        initList(objects,tempList,isRefresh);
                                     }
 
                                 }
@@ -390,24 +396,26 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                         .withAdListener(new AdListener() {
                             @Override
                             public void onAdFailedToLoad(LoadAdError adError) {
-                                loadCheck++;
-                                Log.e("adError: ",""+adError.getCode());
-                                Log.e("adError: ",""+adError.getCause());
+                                if(GenelUtil.isAlive(SavedPostsActivity.this)){
+                                    loadCheck++;
+                                    Log.e("adError: ",""+adError.getCode());
+                                    Log.e("adError: ",""+adError.getCause());
 
 
-                                if(loadCheck==finalC){
-                                    if(!isfinish[0]){
-                                        isfinish[0] = true;
-                                        Log.e("adError !isLoading: ",""+adError.getCode());
-                                        if(isRefresh){
-                                            //refreshSetting();
-                                            list.clear();
+                                    if(loadCheck==finalC){
+                                        if(!isfinish[0]){
+                                            isfinish[0] = true;
+                                            Log.e("adError !isLoading: ",""+adError.getCode());
+                                            if(isRefresh){
+                                                //refreshSetting();
+                                                list.clear();
 
+                                            }
+                                            loadCheck=0;
+                                            initList(objects,tempList,isRefresh);
                                         }
-                                        loadCheck=0;
-                                        initList(objects,tempList);
-                                    }
 
+                                    }
                                 }
                             }
                         }).build();
@@ -427,7 +435,7 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
 
                                 }
                                 loadCheck=0;
-                                initList(objects,new ArrayList<>());
+                                initList(objects,new ArrayList<>(),isRefresh);
                             }
 
 

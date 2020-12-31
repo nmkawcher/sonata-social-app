@@ -159,10 +159,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             }
         });
-        JSONArray arr = GenelUtil.getSavedUsers(this);
 
-        Log.e("array",arr+"");
-        Log.e("arrayLength",arr.length()+"");
 
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {

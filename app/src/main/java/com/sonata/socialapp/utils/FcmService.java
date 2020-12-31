@@ -443,8 +443,8 @@ public class FcmService extends FirebaseMessagingService {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupChannels(){
-        CharSequence adminChannelName = getString(R.string.notifications_admin_channel_name);
-        String adminChannelDescription = getString(R.string.notifications_admin_channel_description);
+        CharSequence adminChannelName = getString(R.string.notifchannelname);
+        String adminChannelDescription = getString(R.string.notifchannelname);
 
         NotificationChannel adminChannel;
         adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_DEFAULT);

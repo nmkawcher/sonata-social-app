@@ -184,7 +184,6 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                 if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
                                     GenelUtil.removeUserFromCache(to, GuestProfileActivity.this);
                                 }
-                                progressDialog.dismiss();
                                 GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.invalidsessiontoken));
                                 startActivity(new Intent(GuestProfileActivity.this, StartActivity.class));
                                 finish();
@@ -1043,7 +1042,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                             if(isRefresh){
                                 list.clear();
                             }
-                            initList(objects);
+                            initList(objects,isRefresh);
 
                         }
 
@@ -1061,7 +1060,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
 
 
-    private void initList(List<Post> objects) {
+
+
+    private void initList(List<Post> objects,boolean isrefresh) {
         if(GenelUtil.isAlive(GuestProfileActivity.this)){
 
             if(objects.size()==0){
@@ -1072,93 +1073,78 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         ListObject post = new ListObject();
                         post.setType("boş");
                         list.add(post);
+                        adapter.notifyItemInserted(0);
+                        if(postAdapter!=null){
+                            postAdapter.notifyItemInserted(0);
+                        }
                     }
                     else{
                         if(list.get(list.size()-1).getType().equals("load")){
-                            list.remove(list.get(list.size()-1));
-                        }
-                        if(list.size()==0){
-                            ListObject post = new ListObject();
-                            post.setType("boş");
-                            list.add(post);
+                            int in = list.size()-1;
+                            list.remove(in);
+                            adapter.notifyItemRemoved(in);
+                            if(postAdapter!=null){
+                                postAdapter.notifyItemRemoved(in);
+                            }
                         }
 
                     }
                 }
-
                 swipeRefreshLayout.setRefreshing(false);
-                adapter.notifyDataSetChanged();
-                if(postAdapter!=null){
-                    postAdapter.notifyDataSetChanged();
-                }
+                Log.e("done","adapterNotified");
 
 
             }
+
             else{
                 if(list.size()>0){
                     if(list.get(list.size()-1).getType().equals("load")){
-                        list.remove(list.get(list.size()-1));
+                        int in = list.size()-1;
+                        list.remove(in);
+                        adapter.notifyItemRemoved(in);
+                        if(postAdapter!=null){
+                            postAdapter.notifyItemRemoved(in);
+                        }
                     }
                 }
-
+                int an = list.size();
                 date=objects.get(objects.size()-1).getCreatedAt();
+                for(int i=0;i<objects.size();i++){
+                    ListObject post = new ListObject();
+                    post.setType(objects.get(i).getType());
+                    Post p2 = objects.get(i);
+                    p2.setLikenumber(p2.getLikenumber2());
+                    p2.setCommentnumber(p2.getCommentnumber2());
+                    p2.setSaved(p2.getSaved2());
+                    p2.setCommentable(p2.getCommentable2());
+                    p2.setLiked(p2.getLiked2());
+                    post.setPost(p2);
+                    list.add(post);
+                }
+                loading =false;
                 if(objects.size()<39){
-                    postson =true;
-                    for(int i=0;i<objects.size();i++){
-                        if(objects.get(i).getType().equals("image")||objects.get(i).getType().equals("video")){
-                            ListObject post = new ListObject();
-                            post.setType(objects.get(i).getType());
-                            Post p2 = objects.get(i);
-                            p2.setLikenumber(p2.getLikenumber2());
-                            p2.setCommentnumber(p2.getCommentnumber2());
-                            p2.setSaved(p2.getSaved2());
-                            p2.setCommentable(p2.getCommentable2());
-                            p2.setLiked(p2.getLiked2());
-                            post.setPost(p2);
-                            list.add(post);
-                        }
-
-                    }
-
-                    adapter.notifyDataSetChanged();
-                    if(postAdapter!=null){
-                        postAdapter.notifyDataSetChanged();
-                    }
-                    loading =false;
-                    swipeRefreshLayout.setRefreshing(false);
-
-
+                    postson = true;
                 }
                 else{
-                    for(int i=0;i<objects.size();i++){
-                        ListObject post = new ListObject();
-                        if(objects.get(i).getType().equals("image")||objects.get(i).getType().equals("video")){
-                            post.setType(objects.get(i).getType());
-                            Post p2 = objects.get(i);
-                            p2.setLikenumber(p2.getLikenumber2());
-                            p2.setCommentnumber(p2.getCommentnumber2());
-                            p2.setSaved(p2.getSaved2());
-                            p2.setCommentable(p2.getCommentable2());
-                            p2.setLiked(p2.getLiked2());
-                            post.setPost(p2);
-                            list.add(post);
-                        }
-
-                    }
-
-
-
+                    postson=false;
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
-
+                }
+                if(isrefresh){
                     adapter.notifyDataSetChanged();
                     if(postAdapter!=null){
                         postAdapter.notifyDataSetChanged();
                     }
-                    loading =false;
-                    swipeRefreshLayout.setRefreshing(false);
                 }
+                else{
+                    adapter.notifyItemRangeInserted(an, list.size()-an);
+                    if(postAdapter!=null){
+                        postAdapter.notifyItemRangeInserted(an, list.size()-an);
+                    }
+                }
+
+
 
             }
         }

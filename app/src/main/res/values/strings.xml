@@ -375,6 +375,7 @@
     <string name="notifications_admin_channel_name">notifications_admin_channel_name</string>
     <string name="notifications_admin_channel_description">notifications_admin_channel_description</string>
 
+    <string name="notifchannelname">Sonata</string>
 
     <string name="blockedaccounts">Blocked accounts</string>
 
