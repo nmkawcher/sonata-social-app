@@ -55,15 +55,12 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
 
 
 
-    List<ParseObject> list;
-    RequestManager glide;
+    private List<ParseObject> list;
+    private RequestManager glide;
 
-    boolean finish = false;
-    public void setFinish(boolean finish){
-        this.finish=finish;
-    }
 
-    CommentAdapterClick recyclerViewClick;
+
+    private CommentAdapterClick recyclerViewClick;
     public void setContext(List<ParseObject> list
             ,RequestManager glide,CommentAdapterClick recyclerViewClick){
         this.recyclerViewClick=recyclerViewClick;
@@ -82,6 +79,7 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
     private static final int COMMENT_TYPE_IMAGE = 7;
     private static final int POST_TYPE_LINK = 4;
     private static final int POST_TYPE_EMPTY = 5;
+    private static final int POST_TYPE_SEE_SIMILAR = 3131;
     private static final int POST_TYPE_LOAD = 6;
     private static final int REPLY_TYPE_TEXT = 8;
     private static final int REPLY_TYPE_IMAGE = 9;
@@ -94,8 +92,9 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
 
     @Override
     public int getItemViewType(int i) {
-        if(i==0){
-            switch (Objects.requireNonNull(list.get(i).getString("type"))) {
+        ParseObject object = list.get(i);
+        if(object.getClassName().equals("Post")){
+            switch (Objects.requireNonNull(object.getString("type"))) {
                 case "text":
                     return POST_TYPE_TEXT;
                 case "image":
@@ -125,9 +124,9 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
             }
         }
         else{
-            if(list.get(i).getString("isreply")!=null){
-                if(list.get(i).getString("isreply").equals("false")){
-                    switch (Objects.requireNonNull(list.get(i).getString("type"))) {
+            if(object.getString("isreply")!=null){
+                if(object.getString("isreply").equals("false")){
+                    switch (Objects.requireNonNull(object.getString("type"))) {
                         case "text":
                             return COMMENT_TYPE_TEXT;
                         case "image":
@@ -139,7 +138,7 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
                     }
                 }
                 else{
-                    switch (Objects.requireNonNull(list.get(i).getString("type"))) {
+                    switch (Objects.requireNonNull(object.getString("type"))) {
                         case "text":
                             return REPLY_TYPE_TEXT;
                         case "boş":
@@ -152,15 +151,15 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
                 }
             }
             else{
-                if ("boş".equals(Objects.requireNonNull(list.get(i).getString("type")))) {
+                if (object.getString("type").equals("boş")) {
                     return POST_TYPE_EMPTY;
+                }
+                else if(object.getString("type").equals("seesimilar")){
+                    return POST_TYPE_SEE_SIMILAR;
                 }
                 return POST_TYPE_LOAD;
             }
-
-
         }
-
     }
 
     @Override
@@ -282,6 +281,10 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_load,viewGroup,false);
             return new ViewHolder(view);
         }
+        else if(i==POST_TYPE_SEE_SIMILAR){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.see_more_like_this_layout,viewGroup,false);
+            return new ViewHolder(view);
+        }
         else if(i==COMMENT_TYPE_IMAGE){
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_layout_image,viewGroup,false);
             return new ViewHolder(view);
@@ -299,6 +302,7 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_layout_reply_first_notif,viewGroup,false);
             return new ViewHolder(view);
         }
+
         else{
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty_view,viewGroup,false);
             return new ViewHolder(view);
@@ -309,7 +313,7 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ComAdapter.ViewHolder holder, int positiona) {
-        if(getItemViewType(holder.getAdapterPosition())!=POST_TYPE_LOAD&&getItemViewType(holder.getAdapterPosition())!=POST_TYPE_EMPTY){
+        if(getItemViewType(holder.getAdapterPosition())!=POST_TYPE_SEE_SIMILAR&&getItemViewType(holder.getAdapterPosition())!=POST_TYPE_LOAD&&getItemViewType(holder.getAdapterPosition())!=POST_TYPE_EMPTY){
 
             if(holder.getAdapterPosition()==0){
                 Post post = (Post)list.get(holder.getAdapterPosition());
@@ -834,6 +838,8 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
         RelativeLayout postlinkripple;
         VideoPlayer videoPlayer;
 
+        RelativeLayout seeSimilar;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -860,6 +866,7 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
 
 
             nsfwIcon = itemView.findViewById(R.id.postImageNsfwIcon);
+            seeSimilar = itemView.findViewById(R.id.buttonSeeSimilar);
 
 
             commentreplytext=itemView.findViewById(R.id.commentshowreplytext);
@@ -890,6 +897,14 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
             readMore = itemView.findViewById(R.id.readMoreText);
             textLayout = itemView.findViewById(R.id.textLayout);
 
+            if(seeSimilar!=null){
+                seeSimilar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onSeeSimilarPosts();
+                    }
+                });
+            }
 
             if(readMore!=null){
                 readMore.setOnClickListener(new View.OnClickListener() {

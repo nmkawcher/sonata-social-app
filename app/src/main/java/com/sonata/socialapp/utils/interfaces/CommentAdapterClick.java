@@ -15,6 +15,7 @@ public interface CommentAdapterClick {
     void onPostOpenComments(int position);
     void onGoToProfileClick(int position);
     void onPostSocialClick(int position, int clickType, String text);
+    void onSeeSimilarPosts();
 
     void onCommentOptionsClick(int position);
     void onCommentUpvoteClick(int position, ImageView upvoteimage,ImageView downvoteimage, TextView votecount);

@@ -936,6 +936,12 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     list.add(load);
                 }
 
+                if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                    Comment load = new Comment();
+                    load.setType("seesimilar");
+                    list.add(load);
+                }
+
 
                 adapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(list.size()-1);
@@ -965,6 +971,14 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             list.add(comment);
                         }
                     }
+
+                    if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                        Comment load = new Comment();
+                        load.setType("seesimilar");
+                        list.add(load);
+                    }
+
+
 
                     adapter.notifyDataSetChanged();
 
@@ -1055,12 +1069,20 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                                 if(!CommentActivity.this.isFinishing()&&!CommentActivity.this.isDestroyed()){
                                                                     alertDialog.dismiss();
                                                                     if(e==null){
-                                                                        if(list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
+
+                                                                        if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
                                                                             list.remove(list.size()-1);
                                                                         }
-
+                                                                        if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
+                                                                            list.remove(list.size()-1);
+                                                                        }
                                                                         imageCancel.performClick();
                                                                         list.add(postID);
+                                                                        if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                                                                            Comment load = new Comment();
+                                                                            load.setType("seesimilar");
+                                                                            list.add(load);
+                                                                        }
                                                                         post.increment("commentnumber");
                                                                         adapter.notifyDataSetChanged();
                                                                         recyclerView.scrollToPosition(list.size()-1);
@@ -1132,11 +1154,19 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                     if(!CommentActivity.this.isFinishing()&&!CommentActivity.this.isDestroyed()){
                                         alertDialog.dismiss();
                                         if(e==null){
-                                            if(list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
+                                            if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
+                                                list.remove(list.size()-1);
+                                            }
+                                            if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
                                                 list.remove(list.size()-1);
                                             }
                                             imageCancel.performClick();
                                             list.add(postID);
+                                            if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                                                Comment load = new Comment();
+                                                load.setType("seesimilar");
+                                                list.add(load);
+                                            }
                                             post.increment("commentnumber");
                                             adapter.notifyDataSetChanged();
                                             recyclerView.scrollToPosition(list.size()-1);
@@ -1470,6 +1500,11 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
             CustomTabsIntent customTabsIntent = builder.build();
             customTabsIntent.launchUrl(CommentActivity.this, Uri.parse(url));
         }
+    }
+
+    @Override
+    public void onSeeSimilarPosts() {
+        startActivity(new Intent(this, GetRestDiscoverActivity.class).putExtra("post",post));
     }
 
     @Override

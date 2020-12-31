@@ -217,4 +217,5 @@
     <string name="upload_hint">%1$s olarak paylaşım yap</string>
     <string name="comment_hint">%1$s olarak yorum yap</string>
     <string name="accsw">%1$s hesabına geçiş yapıldı</string>
+    <string name="seesimilarposts">Benzer gönderilere bak</string>
 </resources>
