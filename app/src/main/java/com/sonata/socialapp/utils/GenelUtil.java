@@ -25,13 +25,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
@@ -53,6 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -630,7 +635,9 @@ public class GenelUtil {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public static void showImage(ArrayList<String> images,ArrayList<String> thumbs, ImageView imageView,int pos,RecyclerView.Adapter adapter){
+
+
+    public static void showImage(List<String> images, List<HashMap> items, ImageView imageView, int pos, RecyclerView.Adapter adapter){
 
         /*CircularProgressDrawable progressDrawable = new CircularProgressDrawable(imageView.getContext());
         progressDrawable.setCenterRadius(30f);
@@ -638,15 +645,55 @@ public class GenelUtil {
         progressDrawable.setColorSchemeColors(imageView.getResources().getColor(R.color.colorRed));
         progressDrawable.start();*/
 
+
         StfalconImageViewer.Builder<String> view = new StfalconImageViewer.Builder<String>(imageView.getContext(), images, new com.stfalcon.imageviewer.loader.ImageLoader<String>() {
             @Override
             public void loadImage(ImageView imageView, String image) {
-                Glide.with(imageView).load(image)
-                        .thumbnail(Glide.with(imageView).load(thumbs.get(images.indexOf(image))))
-                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).dontTransform().into(imageView);
+                int i = Integer.parseInt(image);
+                HashMap media = items.get(i);
+
+
+                int width = (int) media.get("width");
+                int height = (int) media.get("height");
+                ParseFile mainMedia = (ParseFile) media.get("media");
+                ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+                Log.e("width",width+"");
+                Log.e("height",height+"");
+                Log.e("mainMedia",mainMedia+"");
+                Log.e("thumbnail",thumbnail+"");
+                if(height>1280||width>1280){
+                    int ih = 1280;
+                    int iw = 1280;
+                    if(height>width){
+                        //ih = 1280;
+                        iw = 1280 * (int) (width/height);
+                    }
+                    else{
+                        //iw = 1280;
+                        ih = 1280 * (int) (height/width);
+                    }
+                    Glide.with(imageView)
+                            .load(mainMedia.getUrl())
+                            .fitCenter()
+                            .override(iw, ih)
+                            .thumbnail(Glide.with(imageView).load(thumbnail.getUrl()))
+                            .into(imageView);
+                }
+                else{
+                    //holder.nsfwIcon.setVisibility(View.INVISIBLE);
+                    Glide.with(imageView)
+                            .load(mainMedia.getUrl())
+                            .fitCenter()
+                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                            .thumbnail(Glide.with(imageView).load(thumbnail.getUrl()))
+                            .into(imageView);
+                }
+
+
             }
         }).withHiddenStatusBar(false)
                 .withBackgroundColor(Color.parseColor("#000000"));
+
 
         view.withStartPosition(pos);
         view.withDismissListener(new OnDismissListener() {

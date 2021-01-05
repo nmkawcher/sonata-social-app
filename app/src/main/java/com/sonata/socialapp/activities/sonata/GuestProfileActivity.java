@@ -51,6 +51,9 @@ import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -275,12 +278,23 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             @Override
             public void onClick(View view) {
                 if(user.getHasPp()){
-                    ArrayList<String> ulist = new ArrayList<>();
-                    ulist.add(user.getPPbig());
-                    ArrayList<String> ulist2 = new ArrayList<>();
-                    ulist2.add(user.getPPAdapter());
-                    GenelUtil.showImage(ulist,ulist2
-                            ,profilephoto,0,null);
+                    List<String> ulist = new ArrayList<>();
+                    ulist.add("0");
+
+                    List<HashMap> ulist2 = new ArrayList<>();
+                    HashMap json = new HashMap();
+                    try {
+                        json.put("media",user.getBigPp());
+                        json.put("thumbnail",user.getAdapterPp());
+                        json.put("width",2000);
+                        json.put("height",2000);
+                        ulist2.add(json);
+
+                        GenelUtil.showImage(ulist,ulist2
+                                ,profilephoto,0,null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
 
                 }
@@ -1689,119 +1703,14 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
     }
 
     @Override
-    public void onLinkClick(int position) {
-        Post post = list.get(position).getPost();
-        String url = post.getUrl();
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        if(ParseUser.getCurrentUser().getBoolean("nightmode")){
-            builder.setToolbarColor(Color.parseColor("#303030"));
-        }
-        else{
-            builder.setToolbarColor(Color.parseColor("#ffffff"));
-        }
-        CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.launchUrl(GuestProfileActivity.this, Uri.parse(url));
-    }
-
-    @Override
     public void onImageClick(int position,ImageView imageView,int pos) {
         Post post = list.get(position).getPost();
-        ArrayList<String> ulist = new ArrayList<>();
-        ArrayList<String> uList2 = new ArrayList<>();
+        List<String> ulist = new ArrayList<>();
 
-        ulist.add(post.getMainMedia().getUrl());
-        uList2.add(post.getThumbMedia().getUrl());
-        if(post.getImageCount()>1){
-            ulist.add(post.getMainMedia1().getUrl());
-            uList2.add(post.getThumbMedia1().getUrl());
+        for(int i = 0; i < post.getImageCount(); i++){
+            ulist.add(String.valueOf(i));
         }
-        if(post.getImageCount()>2){
-            ulist.add(post.getMainMedia2().getUrl());
-            uList2.add(post.getThumbMedia2().getUrl());
-        }
-        if(post.getImageCount()>3){
-            ulist.add(post.getMainMedia3().getUrl());
-            uList2.add(post.getThumbMedia3().getUrl());
-        }
-        GenelUtil.showImage(ulist,uList2,imageView,pos,postAdapter);
+        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
-
-    @Override
-    public void onReloadImageClick(int position, RoundKornerRelativeLayout reloadLayout, ProgressBar progressBar, ImageView imageView) {
-        Post post = list.get(position).getPost();
-
-        reloadLayout.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        if(post.getNsfw()){
-            Glide.with(GuestProfileActivity.this).load(post.getMainMedia().getUrl()).apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3))).addListener(new RequestListener<Drawable>() {
-                @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    reloadLayout.setVisibility(View.VISIBLE);
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    return false;
-                }
-            }).into(imageView);
-        }
-        else{
-            if(post.getRatioH()>1280||post.getRatioW()>1280){
-                int ih = 1280;
-                int iw = 1280;
-                if(post.getRatioH()>post.getRatioW()){
-                    ih = 1280;
-                    iw = 1280 * (post.getRatioW()/post.getRatioH());
-                }
-                else{
-                    iw = 1280;
-                    ih = 1280 * (post.getRatioH()/post.getRatioW());
-                }
-                Glide.with(GuestProfileActivity.this).load(post.getMainMedia().getUrl()).override(iw,ih).thumbnail(Glide.with(GuestProfileActivity.this).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        reloadLayout.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-                }).into(imageView);
-
-            }
-            else{
-                Glide.with(GuestProfileActivity.this).load(post.getMainMedia().getUrl()).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).thumbnail(Glide.with(GuestProfileActivity.this).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        reloadLayout.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-                }).into(imageView);
-
-            }
-        }
-
-
-
-    }
-
-
-
-
-
 
 }

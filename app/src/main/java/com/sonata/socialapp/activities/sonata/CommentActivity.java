@@ -76,6 +76,9 @@ import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -936,11 +939,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     list.add(load);
                 }
 
-                if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-                    Comment load = new Comment();
-                    load.setType("seesimilar");
-                    list.add(load);
-                }
+
 
 
                 adapter.notifyDataSetChanged();
@@ -972,11 +971,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                         }
                     }
 
-                    if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-                        Comment load = new Comment();
-                        load.setType("seesimilar");
-                        list.add(load);
-                    }
+
 
 
 
@@ -1871,198 +1866,45 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
     @Override
     public void onPostLinkClick(int position) {
-        if(position!=0){
-            return;
-        }
-        Post post = (Post)list.get(position);
-        String url = post.getUrl();
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        if(ParseUser.getCurrentUser().getBoolean("nightmode")){
-            builder.setToolbarColor(Color.parseColor("#303030"));
-        }
-        else{
-            builder.setToolbarColor(Color.parseColor("#ffffff"));
-        }
-        CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.launchUrl(CommentActivity.this, Uri.parse(url));
+
     }
 
     @Override
     public void onImageClick(int position,ImageView imageView,int pos) {
         if(position==0){
-            Post post = (Post)list.get(position);
-            ArrayList<String> ulist = new ArrayList<>();
-            ArrayList<String> uList2 = new ArrayList<>();
+            Post post = (Post) list.get(position);
+            List<String> ulist = new ArrayList<>();
 
-            ulist.add(post.getMainMedia().getUrl());
-            uList2.add(post.getThumbMedia().getUrl());
-            if(post.getImageCount()>1){
-                ulist.add(post.getMainMedia1().getUrl());
-                uList2.add(post.getThumbMedia1().getUrl());
+            for(int i = 0; i < post.getImageCount(); i++){
+                ulist.add(String.valueOf(i));
             }
-            if(post.getImageCount()>2){
-                ulist.add(post.getMainMedia2().getUrl());
-                uList2.add(post.getThumbMedia2().getUrl());
-            }
-            if(post.getImageCount()>3){
-                ulist.add(post.getMainMedia3().getUrl());
-                uList2.add(post.getThumbMedia3().getUrl());
-            }
-            GenelUtil.showImage(ulist,uList2,imageView,pos,adapter);
+            GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
         }
         else{
             Comment post = (Comment)list.get(position);
-            ArrayList<String> ulist = new ArrayList<>();
-            ArrayList<String> uList2 = new ArrayList<>();
+            List<String> ulist = new ArrayList<>();
+            ulist.add("0");
 
-            ulist.add(post.getMainMedia().getUrl());
-            uList2.add(post.getThumbMedia().getUrl());
+            List<HashMap> ulist2 = new ArrayList<>();
+            HashMap json = new HashMap();
+            try {
+                json.put("media",post.getMainMedia());
+                json.put("thumbnail",post.getThumbMedia());
+                json.put("width",post.getRatioW());
+                json.put("height",post.getRatioH());
+                ulist2.add(json);
 
-            GenelUtil.showImage(ulist,uList2,imageView,pos,adapter);
+                GenelUtil.showImage(ulist,ulist2
+                        ,imageView,0,null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
 
     @Override
     public void onReloadImageClick(int position, RoundKornerRelativeLayout reloadLayout, ProgressBar progressBar, ImageView imageView) {
-        if(position==0){
-            Post post = (Post) list.get(position);
-
-            reloadLayout.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
-
-            if(post.getNsfw()){
-                Glide.with(CommentActivity.this).load(post.getMainMedia().getUrl()).thumbnail(Glide.with(CommentActivity.this).load(post.getThumbMedia().getUrl())).apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3))).addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        reloadLayout.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-                }).into(imageView);
-            }
-            else{
-                if(post.getRatioH()>1280||post.getRatioW()>1280){
-                    int ih = 1280;
-                    int iw = 1280;
-                    if(post.getRatioH()>post.getRatioW()){
-                        ih = 1280;
-                        iw = 1280 * (post.getRatioW()/post.getRatioH());
-                    }
-                    else{
-                        iw = 1280;
-                        ih = 1280 * (post.getRatioH()/post.getRatioW());
-                    }
-                    Glide.with(CommentActivity.this).load(post.getMainMedia().getUrl()).override(iw,ih).thumbnail(Glide.with(CommentActivity.this).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            reloadLayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-                    }).into(imageView);
-
-                }
-                else{
-                    Glide.with(CommentActivity.this).load(post.getMainMedia().getUrl()).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).thumbnail(Glide.with(CommentActivity.this).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            reloadLayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-                    }).into(imageView);
-
-                }
-            }
-        }
-        else{
-            Comment post = (Comment) list.get(position);
-
-            reloadLayout.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
-
-            if(post.getNsfw()){
-                Glide.with(CommentActivity.this).load(post.getMainMedia().getUrl()).apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3))).addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        reloadLayout.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-                }).into(imageView);
-            }
-            else{
-                if(post.getRatioH()>1280||post.getRatioW()>1280){
-                    int ih = 1280;
-                    int iw = 1280;
-                    if(post.getRatioH()>post.getRatioW()){
-                        ih = 1280;
-                        iw = 1280 * (post.getRatioW()/post.getRatioH());
-                    }
-                    else{
-                        iw = 1280;
-                        ih = 1280 * (post.getRatioH()/post.getRatioW());
-                    }
-                    Glide.with(CommentActivity.this).load(post.getMainMedia().getUrl()).override(iw,ih).thumbnail(Glide.with(CommentActivity.this).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            reloadLayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-                    }).into(imageView);
-
-                }
-                else{
-                    Glide.with(CommentActivity.this).load(post.getMainMedia().getUrl()).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).thumbnail(Glide.with(CommentActivity.this).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            reloadLayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-                    }).into(imageView);
-
-                }
-            }
-        }
 
     }
 

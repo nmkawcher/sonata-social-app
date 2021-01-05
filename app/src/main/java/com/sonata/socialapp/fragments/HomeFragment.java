@@ -861,116 +861,17 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
         }
     }
 
-    @Override
-    public void onLinkClick(int position) {
-        Post post = list.get(position).getPost();
-        String url = post.getUrl();
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        if(ParseUser.getCurrentUser().getBoolean("nightmode")){
-            builder.setToolbarColor(Color.parseColor("#303030"));
-        }
-        else{
-            builder.setToolbarColor(Color.parseColor("#ffffff"));
-        }
-        CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.launchUrl(getContext(), Uri.parse(url));
-    }
+
 
     @Override
     public void onImageClick(int position,ImageView imageView,int pos) {
         Post post = list.get(position).getPost();
+        List<String> ulist = new ArrayList<>();
 
-        ArrayList<String> ulist = new ArrayList<>();
-        ArrayList<String> uList2 = new ArrayList<>();
-
-        ulist.add(post.getMainMedia().getUrl());
-        uList2.add(post.getThumbMedia().getUrl());
-        if(post.getImageCount()>1){
-            ulist.add(post.getMainMedia1().getUrl());
-            uList2.add(post.getThumbMedia1().getUrl());
+        for(int i = 0; i < post.getImageCount(); i++){
+            ulist.add(String.valueOf(i));
         }
-        if(post.getImageCount()>2){
-            ulist.add(post.getMainMedia2().getUrl());
-            uList2.add(post.getThumbMedia2().getUrl());
-        }
-        if(post.getImageCount()>3){
-            ulist.add(post.getMainMedia3().getUrl());
-            uList2.add(post.getThumbMedia3().getUrl());
-        }
-        GenelUtil.showImage(ulist,uList2,imageView,pos,adapter);
-    }
-
-    @Override
-    public void onReloadImageClick(int position, RoundKornerRelativeLayout reloadLayout, ProgressBar progressBar, ImageView imageView) {
-        Post post = list.get(position).getPost();
-
-        reloadLayout.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        if(post.getNsfw()){
-            Glide.with(getActivity()).load(post.getMainMedia().getUrl()).apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3))).addListener(new RequestListener<Drawable>() {
-                @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    reloadLayout.setVisibility(View.VISIBLE);
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    return false;
-                }
-            }).into(imageView);
-        }
-        else{
-            if(post.getRatioH()>1280||post.getRatioW()>1280){
-                int ih = 1280;
-                int iw = 1280;
-                if(post.getRatioH()>post.getRatioW()){
-                    ih = 1280;
-                    iw = 1280 * (post.getRatioW()/post.getRatioH());
-                }
-                else{
-                    iw = 1280;
-                    ih = 1280 * (post.getRatioH()/post.getRatioW());
-                }
-                Glide.with(getActivity()).load(post.getMainMedia().getUrl()).override(iw,ih).thumbnail(Glide.with(getActivity()).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        reloadLayout.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-                }).into(imageView);
-
-            }
-            else{
-                Glide.with(getActivity()).load(post.getMainMedia().getUrl()).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).thumbnail(Glide.with(getActivity()).load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        reloadLayout.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-                }).into(imageView);
-
-            }
-        }
-
-
-
+        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
 

@@ -1348,7 +1348,7 @@ public class GroupActivity extends AppCompatActivity implements GroupRecyclerVie
             ulist.add(post.getMainMedia3().getUrl());
             uList2.add(post.getThumbMedia3().getUrl());
         }
-        GenelUtil.showImage(ulist,uList2,imageView,pos,adapter);
+        //GenelUtil.showImage(ulist,uList2,imageView,pos,adapter);
     }
 
     @Override

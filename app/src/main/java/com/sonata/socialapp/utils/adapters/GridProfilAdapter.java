@@ -19,12 +19,17 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
+import com.parse.ParseFile;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -164,47 +169,45 @@ public class GridProfilAdapter extends RecyclerView.Adapter<GridProfilAdapter.Vi
                 else{
                     holder.multiImageNumberLayout.setVisibility(View.INVISIBLE);
                 }
-                if(post.getNsfw()){
-                    holder.nsfwIcon.setVisibility(View.VISIBLE);
-                    glide.load(post.getMainMedia().getUrl())
-                            .apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3)))
-                            .into(holder.image);
-                }
-                else{
-                    holder.nsfwIcon.setVisibility(View.INVISIBLE);
-                    glide.load(post.getMainMedia().getUrl())
-                            .thumbnail(glide.load(post.getThumbMedia().getUrl()))
-                            .addListener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
 
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
+                holder.nsfwIcon.setVisibility(View.INVISIBLE);
+                try {
+                    List<HashMap> mediaList = post.getMediaList();
+                    HashMap media = mediaList.get(0);
+                    ParseFile mainMedia = (ParseFile) media.get("media");
+                    ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                    String url = mainMedia.getUrl();
+                    String thumburl = thumbnail.getUrl();
+
+                    glide.load(url)
+                            .thumbnail(glide.load(thumburl))
                             .into(holder.image);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
 
             }
             else if(type==POST_TYPE_VIDEO||type==POST_TYPE_VIDEO_START||type==POST_TYPE_VIDEO_END){
-                glide.load(post.getThumbMedia().getUrl())
-                        .thumbnail(glide.load(post.getThumbMedia2().getUrl()))
-                        .addListener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+                try {
+                    List<HashMap> mediaList = post.getMediaList();
+                    HashMap media = mediaList.get(0);
+                    ParseFile mainMedia = (ParseFile) media.get("media");
+                    ParseFile thumbnail = (ParseFile) media.get("thumbnail");
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .into(holder.image);
+                    String url = mainMedia.getUrl();
+                    String thumburl = thumbnail.getUrl();
+
+                    glide.load(url)
+                            .thumbnail(glide.load(thumburl))
+                            .into(holder.image);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 holder.nsfwIcon.setVisibility(View.INVISIBLE);
                 holder.videoIcon.setVisibility(View.VISIBLE);
                 holder.multiImageNumberLayout.setVisibility(View.INVISIBLE);

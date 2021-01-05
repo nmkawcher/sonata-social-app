@@ -1,5 +1,6 @@
 package com.sonata.socialapp.utils.classes;
 
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -105,6 +106,14 @@ public class SonataUser extends ParseUser {
             return "";
         }
 
+    }
+
+    public ParseFile getAdapterPp(){
+        return getParseFile("profilephotoadapter");
+    }
+
+    public ParseFile getBigPp(){
+        return getParseFile("profilephotoprofile");
     }
 
     public String getPPAdapter(){

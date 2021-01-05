@@ -55,6 +55,10 @@ import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.CommentReplyAdapterClick;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -759,13 +763,23 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
     @Override
     public void onImageClick(int position, ImageView imageView,int pos) {
         Comment post = (Comment)list.get(position);
-        ArrayList<String> ulist = new ArrayList<>();
-        ArrayList<String> uList2 = new ArrayList<>();
+        List<String> ulist = new ArrayList<>();
+        ulist.add("0");
 
-        ulist.add(post.getMainMedia().getUrl());
-        uList2.add(post.getThumbMedia().getUrl());
+        List<HashMap> ulist2 = new ArrayList<>();
+        HashMap json = new HashMap();
+        try {
+            json.put("media",post.getMainMedia());
+            json.put("thumbnail",post.getThumbMedia());
+            json.put("width",post.getRatioW());
+            json.put("height",post.getRatioH());
+            ulist2.add(json);
 
-        GenelUtil.showImage(ulist,uList2,imageView,pos,adapter);
+            GenelUtil.showImage(ulist,ulist2
+                    ,imageView,0,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

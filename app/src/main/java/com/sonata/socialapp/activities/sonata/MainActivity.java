@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -173,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         String token = task.getResult();
                         HashMap<String,String> hash = new HashMap<>();
                         hash.put("token",token);
+                        hash.put("lang", Locale.getDefault().getLanguage());
                         ParseCloud.callFunctionInBackground("saveUserDeviceToken",hash);
 
                     }

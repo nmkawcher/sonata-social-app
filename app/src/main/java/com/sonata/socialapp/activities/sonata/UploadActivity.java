@@ -491,6 +491,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
         progressDialog.setMessage(getString(R.string.finishingup));
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("text", postdesc.getText().toString().trim());
+        params.put("medialist",parseFileList);
         if(parseFileList.size()>0){
             params.put("media",parseFileList.get(0));
         }

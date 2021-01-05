@@ -34,6 +34,7 @@ import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
+import com.parse.ParseFile;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.MyApp;
@@ -46,6 +47,10 @@ import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.tylersuehr.socialtextview.SocialTextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
 
 import cn.jzvd.JZDataSource;
@@ -372,104 +377,52 @@ public class GuestProfilAdapter extends RecyclerView.Adapter<GuestProfilAdapter.
                     holder.textLayout.setVisibility(View.VISIBLE);
                 }
 
+                int viewType = getItemViewType(holder.getAdapterPosition());
+                if(viewType==POST_TYPE_IMAGE){
 
-                if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_LINK){
-                    holder.linkdesc.setText("");
-                    holder.linkurl.setText("");
-                    holder.linktitle.setText("");
-                    String url=post.getUrl();
-                    String linkimageurl=post.getLinkimageurl().trim();
-                    glide.load(linkimageurl).fitCenter().apply(new RequestOptions().override(180,150)).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            holder.linkimagelayout.setVisibility(View.GONE);
-                            return false;
-                        }
+                    List<HashMap> mediaList = post.getMediaList();
+                    HashMap media = mediaList.get(0);
+                    try {
 
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    }).into(holder.linkimage);
+                        int width = (int) media.get("width");
+                        int height = (int) media.get("height");
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
 
-
-                    String linktitle=post.getLinktitle().trim();
-                    holder.linktitle.setText(linktitle);
-                    String linkdesc = post.getLinkdesc();
-                    if(linkdesc.trim().length()<1){
-                        holder.linkdesc.setVisibility(View.GONE);
-                        holder.linktitle.setMaxLines(4);
-                    }
-                    else{
-                        holder.linkdesc.setText(linkdesc);
-                    }
-
-                    holder.linkurl.setText(url);
-
-
-
-
-                }
-                else if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_IMAGE){
-
-                    //holder.imageprogress.setVisibility(View.VISIBLE);
-                    //holder.reloadlayout.setVisibility(View.INVISIBLE);
-
-
-                    if(((float)post.getRatioH()/(float)post.getRatioW())>1.4f){
-                        holder.ratiolayout.setAspectRatio(10,14);
-                    }
-                    else{
-                        if(((float)post.getRatioH()/(float)post.getRatioW())<0.4f){
-                            holder.ratiolayout.setAspectRatio(10,4);
+                        if(((float)height/(float)width)>1.4f){
+                            holder.ratiolayout.setAspectRatio(10,14);
                         }
                         else{
-                            holder.ratiolayout.setAspectRatio(post.getRatioW(),post.getRatioH());
-                        }
-                    }
-
-
-                    String url=post.getMainMedia().getUrl();
-
-                    String thumburl=post.getThumbMedia().getUrl();
-                    if(post.getNsfw()){
-                        holder.nsfwIcon.setVisibility(View.VISIBLE);
-                        glide.load(url).fitCenter().thumbnail(glide.load(thumburl)).apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3))).addListener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                //holder.imageprogress.setVisibility(View.INVISIBLE);
-                                //holder.reloadlayout.setVisibility(View.VISIBLE);
-                                Log.e("glideError",e.getMessage());
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                //holder.imageprogress.setVisibility(View.INVISIBLE);
-                                return false;
-                            }
-                        }).into(holder.postimage);
-
-                    }
-                    else{
-                        holder.nsfwIcon.setVisibility(View.INVISIBLE);
-                        if(post.getRatioH()>1280||post.getRatioW()>1280){
-                            int ih = 1280;
-                            int iw = 1280;
-                            if(post.getRatioH()>post.getRatioW()){
-                                ih = 1280;
-                                iw = 1280 * (post.getRatioW()/post.getRatioH());
+                            if(((float)height/(float)width)<0.4f){
+                                holder.ratiolayout.setAspectRatio(10,4);
                             }
                             else{
-                                iw = 1280;
-                                ih = 1280 * (post.getRatioH()/post.getRatioW());
+                                holder.ratiolayout.setAspectRatio(width,height);
+                            }
+                        }
+
+                        String url=mainMedia.getUrl();
+
+                        String thumburl=thumbnail.getUrl();
+
+                        holder.nsfwIcon.setVisibility(View.INVISIBLE);
+                        if(height>1280||width>1280){
+                            int ih = 1280;
+                            int iw = 1280;
+                            if(height>width){
+                                //ih = 1280;
+                                iw = 1280 * (int) (width/height);
+                            }
+                            else{
+                                //iw = 1280;
+                                ih = 1280 * (int) (height/width);
                             }
                             glide.load(url).fitCenter().override(iw,ih).thumbnail(glide.load(thumburl)).addListener(new RequestListener<Drawable>() {
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                     //holder.imageprogress.setVisibility(View.INVISIBLE);
                                     //holder.reloadlayout.setVisibility(View.VISIBLE);
-                                    Log.e("glideError",e.getMessage());
+                                    //Log.e("glideError",e.getMessage());
                                     return false;
                                 }
 
@@ -487,7 +440,7 @@ public class GuestProfilAdapter extends RecyclerView.Adapter<GuestProfilAdapter.
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                     //holder.imageprogress.setVisibility(View.INVISIBLE);
                                     //holder.reloadlayout.setVisibility(View.VISIBLE);
-                                    Log.e("glideError",e.getMessage());
+                                    //Log.e("glideError",e.getMessage());
                                     return false;
                                 }
 
@@ -498,101 +451,325 @@ public class GuestProfilAdapter extends RecyclerView.Adapter<GuestProfilAdapter.
                                 }
                             }).into(holder.postimage);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else if(viewType==POST_TYPE_IMAGE1){
+
+                    List<HashMap> mediaList = post.getMediaList();
+
+
+                    try {
+                        HashMap media = mediaList.get(0);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
 
 
-                }
 
-                else if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_IMAGE1){
+                    try {
+                        HashMap media = mediaList.get(1);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
 
-                    String url1=post.getMainMedia1().getUrl();
-                    String url=post.getMainMedia().getUrl();
-                    String thumburl=post.getThumbMedia().getUrl();
-                    String thumburl1=post.getThumbMedia1().getUrl();
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
 
-                    glide.load(url).fitCenter()
-                            .thumbnail(glide.load(thumburl))
-                            .into(holder.postimage);
-                    glide.load(url1).fitCenter()
-                            .thumbnail(glide.load(thumburl1))
-                            .into(holder.postimage1);
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
 
-                }
-                else if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_IMAGE2){
-                    String url=post.getMainMedia().getUrl();
-                    String url1=post.getMainMedia1().getUrl();
-                    String url2=post.getMainMedia2().getUrl();
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage1);
 
-                    String thumburl=post.getThumbMedia().getUrl();
-                    String thumburl1=post.getThumbMedia1().getUrl();
-                    String thumburl2=post.getThumbMedia2().getUrl();
-
-                    glide.load(url).fitCenter()
-                            .thumbnail(glide.load(thumburl))
-                            .into(holder.postimage);
-                    glide.load(url1).fitCenter()
-                            .thumbnail(glide.load(thumburl1))
-                            .into(holder.postimage1);
-                    glide.load(url2).fitCenter()
-                            .thumbnail(glide.load(thumburl2))
-                            .into(holder.postimage2);
-
-                }
-                else if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_IMAGE3){
-                    String url=post.getMainMedia().getUrl();
-                    String url1=post.getMainMedia1().getUrl();
-                    String url2=post.getMainMedia2().getUrl();
-                    String url3=post.getMainMedia3().getUrl();
-
-                    String thumburl=post.getThumbMedia().getUrl();
-                    String thumburl1=post.getThumbMedia1().getUrl();
-                    String thumburl2=post.getThumbMedia2().getUrl();
-                    String thumburl3=post.getThumbMedia3().getUrl();
-
-                    glide.load(url).fitCenter()
-                            .thumbnail(glide.load(thumburl))
-                            .into(holder.postimage);
-                    glide.load(url1).fitCenter()
-                            .thumbnail(glide.load(thumburl1))
-                            .into(holder.postimage1);
-                    glide.load(url2).fitCenter()
-                            .thumbnail(glide.load(thumburl2))
-                            .into(holder.postimage2);
-
-                    glide.load(url3).fitCenter()
-                            .thumbnail(glide.load(thumburl3))
-                            .into(holder.postimage3);
-
-                }
-                else if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_VIDEO){
-
-
-
-
-                    if(((float)post.getRatioH()/(float)post.getRatioW())>(float)4f/3f){
-                        holder.ratiolayout.setAspectRatio(3,4);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    else{
-                        if(((float)post.getRatioH()/(float)post.getRatioW())<0.4f){
-                            holder.ratiolayout.setAspectRatio(10,4);
+
+                }
+                else if(viewType==POST_TYPE_IMAGE2){
+
+                    List<HashMap> mediaList = post.getMediaList();
+
+                    try {
+                        HashMap media = mediaList.get(0);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        HashMap media = mediaList.get(1);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage1);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        HashMap media = mediaList.get(2);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage2);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(viewType==POST_TYPE_IMAGE3){
+                    List<HashMap> mediaList = post.getMediaList();
+
+                    try {
+                        HashMap media = mediaList.get(0);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        HashMap media = mediaList.get(1);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage1);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        HashMap media = mediaList.get(2);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage2);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        HashMap media = mediaList.get(3);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        glide.load(url).fitCenter()
+                                .thumbnail(glide.load(thumburl))
+                                .addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(holder.postimage3);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(viewType==POST_TYPE_VIDEO){
+
+                    List<HashMap> mediaList = post.getMediaList();
+                    HashMap media = mediaList.get(0);
+
+                    try {
+                        int width = (int) media.get("width");
+                        int height = (int) media.get("height");
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+                        ParseFile thumbnailsmall = (ParseFile) media.get("thumbnail2");
+
+                        if(((float)height/(float)width)>(float)4f/3f){
+                            holder.ratiolayout.setAspectRatio(3,4);
                         }
                         else{
-                            holder.ratiolayout.setAspectRatio(post.getRatioW(),post.getRatioH());
+                            if(((float)height/(float)width)<0.4f){
+                                holder.ratiolayout.setAspectRatio(10,4);
+                            }
+                            else{
+                                holder.ratiolayout.setAspectRatio(width,height);
+                            }
                         }
+
+                        String url=mainMedia.getUrl();
+                        String thumburl=thumbnail.getUrl();
+                        String thumburl2=thumbnailsmall.getUrl();
+
+
+
+                        JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
+                        jzDataSource.looping=true;
+
+                        glide.load(thumburl).thumbnail(glide.load(thumburl2)).addListener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                return false;
+                            }
+                        }).into(holder.videoPlayer.posterImageView);
+                        holder.videoPlayer.setUp(jzDataSource,Jzvd.SCREEN_NORMAL, JZMediaExo.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
 
-                    String url=post.getMainMedia().getUrl();
-                    String thumburl=post.getThumbMedia().getUrl();
 
 
 
-                    JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
-                    jzDataSource.looping=true;
 
-                    glide.load(thumburl).fitCenter().into(holder.videoPlayer.posterImageView);
-                    holder.videoPlayer.setUp(jzDataSource,Jzvd.SCREEN_NORMAL, JZMediaExo.class);
+
 
 
 
@@ -904,7 +1081,7 @@ public class GuestProfilAdapter extends RecyclerView.Adapter<GuestProfilAdapter.
                             return;
                         }
                         mLastClickTime = SystemClock.elapsedRealtime();
-                        recyclerViewClick.onLinkClick(getAdapterPosition());
+                        //recyclerViewClick.onLinkClick(getAdapterPosition());
                     }
                 });
 
@@ -947,8 +1124,7 @@ public class GuestProfilAdapter extends RecyclerView.Adapter<GuestProfilAdapter.
                 reloadripple.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        recyclerViewClick.onReloadImageClick(getAdapterPosition()
-                        ,reloadlayout,imageprogress,postimage);
+                        //recyclerViewClick.onReloadImageClick(getAdapterPosition(),reloadlayout,imageprogress,postimage);
                     }
                 });
             }

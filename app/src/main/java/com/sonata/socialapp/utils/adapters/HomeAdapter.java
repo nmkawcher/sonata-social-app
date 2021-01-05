@@ -265,152 +265,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
 
 
-                if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_TEXT){
-                    if(!post.getDescription().trim().equals("")){
-                        holder.postdesc.setLinkText(post.getDescription().trim());
-                        holder.postdesc.setVisibility(View.VISIBLE);
-                    }
 
-                }
-                else if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_LINK){
-                    holder.linkdesc.setText("");
-                    holder.linkurl.setText("");
-                    holder.linktitle.setText("");
-                    holder.linkdesc.setVisibility(View.VISIBLE);
-                    String url=post.getUrl();
-                    String linkimageurl=post.getLinkimageurl().trim();
-                    glide.load(linkimageurl).apply(new RequestOptions().override(180,150)).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            holder.linkimagelayout.setVisibility(View.GONE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    }).into(holder.linkimage);
-
-
-                    String linktitle=post.getLinktitle().trim();
-                    holder.linktitle.setText(linktitle);
-                    String linkdesc = post.getLinkdesc();
-                    if(linkdesc.trim().length()<1){
-                        holder.linkdesc.setVisibility(View.GONE);
-                        holder.linktitle.setMaxLines(4);
-                    }
-                    else{
-                        holder.linkdesc.setText(linkdesc);
-                    }
-
-                    holder.linkurl.setText(url);
-
-                    String description = post.getDescription().trim();
-                    if(!description.equals("")){
-                        holder.postdesc.setLinkText(description.trim());
-                        holder.postdesc.setVisibility(View.VISIBLE);
-                    }
-
-
-                }
-                else if(getItemViewType(holder.getAdapterPosition())==POST_TYPE_IMAGE){
-
-                    holder.imageprogress.setVisibility(View.VISIBLE);
-                    holder.reloadlayout.setVisibility(View.INVISIBLE);
-
-
-                    if(((float)post.getRatioH()/(float)post.getRatioW())>2f){
-                        holder.ratiolayout.setAspectRatio(1,2);
-                    }
-                    else{
-                        if(((float)post.getRatioH()/(float)post.getRatioW())<0.4f){
-                            holder.ratiolayout.setAspectRatio(10,4);
-                        }
-                        else{
-                            holder.ratiolayout.setAspectRatio(post.getRatioW(),post.getRatioH());
-                        }
-                    }
-
-
-                    String url=post.getMainMedia().getUrl();
-
-                    String thumburl=post.getThumbMedia().getUrl();
-                    if(post.getNsfw()){
-                        holder.nsfwIcon.setVisibility(View.VISIBLE);
-                        glide.load(url).thumbnail(glide.load(thumburl)).apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 3))).addListener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                holder.imageprogress.setVisibility(View.INVISIBLE);
-                                holder.reloadlayout.setVisibility(View.VISIBLE);
-                                Log.e("glideError",e.getMessage());
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                holder.imageprogress.setVisibility(View.INVISIBLE);
-                                return false;
-                            }
-                        }).into(holder.postimage);
-
-                    }
-                    else{
-                        holder.nsfwIcon.setVisibility(View.INVISIBLE);
-                        if(post.getRatioH()>1280||post.getRatioW()>1280){
-                            int ih = 1280;
-                            int iw = 1280;
-                            if(post.getRatioH()>post.getRatioW()){
-                                ih = 1280;
-                                iw = 1280 * (post.getRatioW()/post.getRatioH());
-                            }
-                            else{
-                                iw = 1280;
-                                ih = 1280 * (post.getRatioH()/post.getRatioW());
-                            }
-                            glide.load(url).override(iw,ih).thumbnail(glide.load(thumburl)).addListener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    holder.imageprogress.setVisibility(View.INVISIBLE);
-                                    holder.reloadlayout.setVisibility(View.VISIBLE);
-                                    Log.e("glideError",e.getMessage());
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    holder.imageprogress.setVisibility(View.INVISIBLE);
-                                    return false;
-                                }
-                            }).into(holder.postimage);
-                        }
-                        else{
-                            //holder.nsfwIcon.setVisibility(View.INVISIBLE);
-                            glide.load(url).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).thumbnail(glide.load(thumburl)).addListener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    holder.imageprogress.setVisibility(View.INVISIBLE);
-                                    holder.reloadlayout.setVisibility(View.VISIBLE);
-                                    Log.e("glideError",e.getMessage());
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    holder.imageprogress.setVisibility(View.INVISIBLE);
-                                    return false;
-                                }
-                            }).into(holder.postimage);
-                        }
-                    }
-
-
-                    String description = post.getDescription().trim();
-                    if(!description.equals("")){
-                        holder.postdesc.setLinkText(description.trim());
-                        holder.postdesc.setVisibility(View.VISIBLE);
-                    }
-                }
 
 
 
@@ -626,7 +481,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                             return;
                         }
                         mLastClickTime = SystemClock.elapsedRealtime();
-                        recyclerViewClick.onLinkClick(getAdapterPosition());
+                        //recyclerViewClick.onLinkClick(getAdapterPosition());
                     }
                 });
 
@@ -645,8 +500,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 reloadripple.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        recyclerViewClick.onReloadImageClick(getAdapterPosition()
-                        ,reloadlayout,imageprogress,postimage);
+                        //recyclerViewClick.onReloadImageClick(getAdapterPosition(),reloadlayout,imageprogress,postimage);
                     }
                 });
             }
