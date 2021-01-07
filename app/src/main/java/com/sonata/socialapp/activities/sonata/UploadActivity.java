@@ -492,18 +492,6 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("text", postdesc.getText().toString().trim());
         params.put("medialist",parseFileList);
-        if(parseFileList.size()>0){
-            params.put("media",parseFileList.get(0));
-        }
-        if(parseFileList.size()>1){
-            params.put("media1",parseFileList.get(1));
-        }
-        if(parseFileList.size()>2){
-            params.put("media2",parseFileList.get(2));
-        }
-        if(parseFileList.size()>3){
-            params.put("media3",parseFileList.get(3));
-        }
 
         ParseCloud.callFunctionInBackground("shareImage", params, new FunctionCallback<Boolean>() {
             @Override
@@ -612,8 +600,12 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                                                    progressDialog.setMessage(getString(R.string.finishingup));
                                                                                                                    HashMap<String, Object> params = new HashMap<>();
                                                                                                                    params.put("text", postdesc.getText().toString().trim());
-                                                                                                                   params.put("mainmedia",video);
-                                                                                                                   params.put("thumbnail",thumbnail);
+                                                                                                                   List<HashMap> lista = new ArrayList<>();
+                                                                                                                   HashMap videoHash = new HashMap();
+                                                                                                                   videoHash.put("mainmedia",video);
+                                                                                                                   videoHash.put("thumbnail",thumbnail);
+                                                                                                                   lista.add(videoHash);
+                                                                                                                   params.put("medialist",lista);
 
                                                                                                                    ParseCloud.callFunctionInBackground("shareVideo", params, new FunctionCallback<Boolean>() {
                                                                                                                        @Override
@@ -743,9 +735,13 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                        progressDialog.setMessage(getString(R.string.finishingup));
                                                                                        HashMap<String, Object> params = new HashMap<>();
                                                                                        params.put("text", postdesc.getText().toString().trim());
-                                                                                       params.put("mainmedia",video);
-                                                                                       params.put("thumbnail",thumbnail);
 
+                                                                                       List<HashMap> lista = new ArrayList<>();
+                                                                                       HashMap videoHash = new HashMap();
+                                                                                       videoHash.put("mainmedia",video);
+                                                                                       videoHash.put("thumbnail",thumbnail);
+                                                                                       lista.add(videoHash);
+                                                                                       params.put("medialist",lista);
                                                                                        ParseCloud.callFunctionInBackground("shareVideo", params, new FunctionCallback<Boolean>() {
                                                                                            @Override
                                                                                            public void done(Boolean postID, ParseException e) {

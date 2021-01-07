@@ -311,7 +311,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
 
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam,boolean isrefresh) {
+    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(getActive()){
@@ -388,12 +388,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                     load.setType("load");
                     list.add(load);
                 }
-                if(isrefresh){
-                    adapter.notifyDataSetChanged();
-                }
-                else{
-                    adapter.notifyItemRangeInserted(an, list.size()-an);
-                }
+
+                adapter.notifyItemRangeInserted(an, list.size()-an);
+
                 //adapter.notifyDataSetChanged();
                 Log.e("done","adapterNotified");
 
@@ -436,8 +433,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                     if(isRefresh){
                         //refreshSetting();
                         list.clear();
+                        adapter.notifyDataSetChanged();
                     }
-                    initList(objects,new ArrayList<>(),isRefresh);
+                    initList(objects,new ArrayList<>());
                 }
                 else{
                     int finalC = c;
@@ -466,10 +464,11 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                                             if(isRefresh){
                                                 //refreshSetting();
                                                 list.clear();
+                                                adapter.notifyDataSetChanged();
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList,isRefresh);
+                                            initList(objects,tempList);
                                         }
 
                                     }
@@ -490,10 +489,11 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                                             if(isRefresh){
                                                 //refreshSetting();
                                                 list.clear();
+                                                adapter.notifyDataSetChanged();
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList,isRefresh);
+                                            initList(objects,tempList);
                                         }
 
                                     }
@@ -512,10 +512,11 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                                         if(isRefresh){
                                             //refreshSetting();
                                             list.clear();
+                                            adapter.notifyDataSetChanged();
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,new ArrayList<>(),isRefresh);
+                                        initList(objects,new ArrayList<>());
                                     }
                                 }
 

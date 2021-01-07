@@ -344,13 +344,6 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     }
 
 
-    private void refreshSetting(){
-        list.clear();
-
-
-    }
-
-
     public void setProfile(SonataUser user){
         username.setText(user.getUsername() != null ? user.getUsername():"");
         if(getContext()!=null){
@@ -412,7 +405,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         ((MainActivity) Objects.requireNonNull(getActivity())).profileFragmentComment(post);
     }
 
-    private void initList(List<Post> objects,boolean isrefresh) {
+    private void initList(List<Post> objects) {
         Log.e("done","InitList");
 
         if(getActive()){
@@ -438,6 +431,15 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                             adapter.notifyItemRemoved(in);
                             if(postAdapter!=null){
                                 postAdapter.notifyItemRemoved(in);
+                            }
+                        }
+                        if(list.size()==0){
+                            ListObject post = new ListObject();
+                            post.setType("boş");
+                            list.add(post);
+                            adapter.notifyItemInserted(0);
+                            if(postAdapter!=null){
+                                postAdapter.notifyItemInserted(0);
                             }
                         }
 
@@ -487,18 +489,12 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                     load.setType("load");
                     list.add(load);
                 }
-                if(isrefresh){
-                    adapter.notifyDataSetChanged();
-                    if(postAdapter!=null){
-                        postAdapter.notifyDataSetChanged();
-                    }
+
+                adapter.notifyItemRangeInserted(an, list.size()-an);
+                if(postAdapter!=null){
+                    postAdapter.notifyItemRangeInserted(an, list.size()-an);
                 }
-                else{
-                    adapter.notifyItemRangeInserted(an, list.size()-an);
-                    if(postAdapter!=null){
-                        postAdapter.notifyItemRangeInserted(an, list.size()-an);
-                    }
-                }
+
                 //adapter.notifyDataSetChanged();
                 Log.e("done","adapterNotified");
 
@@ -532,8 +528,12 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                     if(objects!= null){
                         if(isRefresh){
                             list.clear();
+                            adapter.notifyDataSetChanged();
+                            if(postAdapter!=null){
+                                postAdapter.notifyDataSetChanged();
+                            }
                         }
-                        initList(objects,isRefresh);
+                        initList(objects);
                     }
 
 

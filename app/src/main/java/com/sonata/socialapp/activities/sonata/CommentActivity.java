@@ -825,6 +825,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     private void refreshSetting(){
         list.clear();
         list.add(post);
+        adapter.notifyDataSetChanged();
         setSendButtonClickListener();
 
 
@@ -1057,7 +1058,10 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                         HashMap<String, Object> params = new HashMap<String, Object>();
                                                         params.put("text", commenttext.getText().toString().trim());
                                                         params.put("post",post.getObjectId());
-                                                        params.put("media",media);
+                                                        List<ParseFile> luna = new ArrayList<>();
+                                                        luna.add(media);
+                                                        params.put("medialist",luna);
+                                                        //params.put("media",media);
                                                         ParseCloud.callFunctionInBackground("commentImage", params, new FunctionCallback<Comment>() {
                                                             @Override
                                                             public void done(Comment postID, ParseException e) {

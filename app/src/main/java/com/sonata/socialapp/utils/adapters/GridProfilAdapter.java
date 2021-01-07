@@ -196,12 +196,14 @@ public class GridProfilAdapter extends RecyclerView.Adapter<GridProfilAdapter.Vi
                     HashMap media = mediaList.get(0);
                     ParseFile mainMedia = (ParseFile) media.get("media");
                     ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+                    ParseFile thumbnail2 = (ParseFile) media.get("thumbnail2");
 
                     String url = mainMedia.getUrl();
                     String thumburl = thumbnail.getUrl();
+                    String thumburl2 = thumbnail2.getUrl();
 
                     glide.load(url)
-                            .thumbnail(glide.load(thumburl))
+                            .thumbnail(glide.load(thumburl).thumbnail(glide.load(thumburl2)))
                             .into(holder.image);
 
                 } catch (Exception e) {

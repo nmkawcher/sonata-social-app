@@ -198,9 +198,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
     }
 
 
-    private void refreshSetting(){
-        list.clear();
-    }
+
 
 
     private void getReqs(Date date,boolean isRefresh){
@@ -237,7 +235,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
         }
     }
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam,boolean isrefresh) {
+    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(GenelUtil.isAlive(this)){
@@ -258,6 +256,12 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                             int in = list.size()-1;
                             list.remove(in);
                             adapter.notifyItemRemoved(in);
+                        }
+                        if(list.size()==0){
+                            ListObject post = new ListObject();
+                            post.setType("boş");
+                            list.add(post);
+                            adapter.notifyItemInserted(0);
                         }
 
                     }
@@ -312,12 +316,9 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                     load.setType("load");
                     list.add(load);
                 }
-                if(isrefresh){
-                    adapter.notifyDataSetChanged();
-                }
-                else{
-                    adapter.notifyItemRangeInserted(an, list.size()-an);
-                }
+
+                adapter.notifyItemRangeInserted(an, list.size()-an);
+
                 //adapter.notifyDataSetChanged();
                 Log.e("done","adapterNotified");
 
@@ -360,8 +361,9 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                 if(isRefresh){
                     //refreshSetting();
                     list.clear();
+                    adapter.notifyDataSetChanged();
                 }
-                initList(objects,new ArrayList<>(),isRefresh);
+                initList(objects,new ArrayList<>());
             }
             else{
                 int finalC = c;
@@ -390,10 +392,11 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                                         if(isRefresh){
                                             //refreshSetting();
                                             list.clear();
+                                            adapter.notifyDataSetChanged();
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,tempList,isRefresh);
+                                        initList(objects,tempList);
                                     }
 
                                 }
@@ -415,10 +418,11 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                                             if(isRefresh){
                                                 //refreshSetting();
                                                 list.clear();
+                                                adapter.notifyDataSetChanged();
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList,isRefresh);
+                                            initList(objects,tempList);
                                         }
 
                                     }
@@ -440,10 +444,11 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                                 if(isRefresh){
                                     //refreshSetting();
                                     list.clear();
+                                    adapter.notifyDataSetChanged();
 
                                 }
                                 loadCheck=0;
-                                initList(objects,new ArrayList<>(),isRefresh);
+                                initList(objects,new ArrayList<>());
                             }
 
 

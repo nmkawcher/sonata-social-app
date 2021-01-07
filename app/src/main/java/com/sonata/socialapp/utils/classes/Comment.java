@@ -6,6 +6,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @ParseClassName("Comment")
@@ -47,6 +48,10 @@ public class Comment extends ParseObject {
 
     public long getVote(){
         return getLong("vote");
+    }
+
+    public List<HashMap> getMediaList(){
+        return getList("media");
     }
 
 

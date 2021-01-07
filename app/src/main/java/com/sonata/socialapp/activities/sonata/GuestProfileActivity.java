@@ -67,6 +67,10 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
     private void refreshSetting(){
         list.clear();
+        adapter.notifyDataSetChanged();
+        if(postAdapter!=null){
+            postAdapter.notifyDataSetChanged();
+        }
     }
 
     RoundKornerRelativeLayout rr;
@@ -1055,8 +1059,12 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         if(objects!= null){
                             if(isRefresh){
                                 list.clear();
+                                adapter.notifyDataSetChanged();
+                                if(postAdapter!=null){
+                                    postAdapter.notifyDataSetChanged();
+                                }
                             }
-                            initList(objects,isRefresh);
+                            initList(objects);
 
                         }
 
@@ -1076,7 +1084,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
 
 
-    private void initList(List<Post> objects,boolean isrefresh) {
+    private void initList(List<Post> objects) {
         if(GenelUtil.isAlive(GuestProfileActivity.this)){
 
             if(objects.size()==0){
@@ -1101,6 +1109,16 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                 postAdapter.notifyItemRemoved(in);
                             }
                         }
+                        if(list.size()==0){
+                            ListObject post = new ListObject();
+                            post.setType("boş");
+                            list.add(post);
+                            adapter.notifyItemInserted(0);
+                            if(postAdapter!=null){
+                                postAdapter.notifyItemInserted(0);
+                            }
+                        }
+
 
                     }
                 }
@@ -1145,18 +1163,12 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     load.setType("load");
                     list.add(load);
                 }
-                if(isrefresh){
-                    adapter.notifyDataSetChanged();
-                    if(postAdapter!=null){
-                        postAdapter.notifyDataSetChanged();
-                    }
+
+                adapter.notifyItemRangeInserted(an, list.size()-an);
+                if(postAdapter!=null){
+                    postAdapter.notifyItemRangeInserted(an, list.size()-an);
                 }
-                else{
-                    adapter.notifyItemRangeInserted(an, list.size()-an);
-                    if(postAdapter!=null){
-                        postAdapter.notifyItemRangeInserted(an, list.size()-an);
-                    }
-                }
+
 
 
 
