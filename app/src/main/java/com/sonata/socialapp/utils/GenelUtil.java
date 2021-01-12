@@ -72,6 +72,10 @@ public class GenelUtil {
     private static long a;
     public static final int ACCOUNT_LIMIT = 5;
 
+    public static void editSavedUser(String id, Context context){
+
+    }
+
     public static void saveNewUser(JSONObject user,Context context){
         SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
         String userArrayStr = pref.getString("accounts","");

@@ -300,7 +300,8 @@ public class ProfilAdapter extends RecyclerView.Adapter<ProfilAdapter.ViewHolder
 
                 }
                 list.remove(holder.getAdapterPosition());
-                notifyDataSetChanged();
+
+                //notifyItemRemoved(holder.getAdapterPosition());
 
             }
             else{

@@ -48,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/notif"
+                android:scaleType="centerCrop"
                 android:id="@+id/followreqlayoutpp"/>
         </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
@@ -128,6 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/notif"
+                android:scaleType="centerCrop"
                 android:id="@+id/followreqlayoutpp2"/>
         </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
@@ -208,6 +210,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/notif"
+                android:scaleType="centerCrop"
                 android:id="@+id/followreqlayoutpp3"/>
         </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
@@ -288,6 +291,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/notif"
+                android:scaleType="centerCrop"
                 android:id="@+id/followreqlayoutpp4"/>
         </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
@@ -368,6 +372,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/notif"
+                android:scaleType="centerCrop"
                 android:id="@+id/followreqlayoutpp5"/>
         </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 

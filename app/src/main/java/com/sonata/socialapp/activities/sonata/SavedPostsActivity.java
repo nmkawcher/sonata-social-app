@@ -264,7 +264,6 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                 swipeRefreshLayout.setRefreshing(false);
                 Log.e("done","adapterNotified");
 
-
             }
             else{
                 if(list.size()>0){

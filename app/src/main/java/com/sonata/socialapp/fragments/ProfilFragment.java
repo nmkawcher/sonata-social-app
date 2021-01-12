@@ -39,6 +39,7 @@ import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.EditProfileActivity;
@@ -401,7 +402,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     }
 
 
-    public void openComments(Post post){
+    private void openComments(Post post){
         ((MainActivity) Objects.requireNonNull(getActivity())).profileFragmentComment(post);
     }
 
@@ -588,6 +589,11 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         }
     }
     public void notifyAdapter(){
+        if(lastCommentPosition > -1 && list != null){
+            if(list.get(lastCommentPosition).getPost().getIsDeleted()){
+                list.remove(lastCommentPosition);
+            }
+        }
         if(adapter!=null){
             adapter.notifyDataSetChanged();
         }
@@ -883,8 +889,10 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         }
     }
 
+    int lastCommentPosition = -1;
     @Override
     public void onOpenComments(int position) {
+        lastCommentPosition = position;
         if(listPostLayout.getVisibility()==View.VISIBLE){
             Post post = list.get(position).getPost();
             if(post.getCommentable()){
