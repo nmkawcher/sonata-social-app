@@ -762,24 +762,13 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
     @Override
     public void onImageClick(int position, ImageView imageView,int pos) {
-        Comment post = (Comment)list.get(position);
+        Comment post = (Comment) list.get(position);
         List<String> ulist = new ArrayList<>();
-        ulist.add("0");
 
-        List<HashMap> ulist2 = new ArrayList<>();
-        HashMap json = new HashMap();
-        try {
-            json.put("media",post.getMainMedia());
-            json.put("thumbnail",post.getThumbMedia());
-            json.put("width",post.getRatioW());
-            json.put("height",post.getRatioH());
-            ulist2.add(json);
 
-            GenelUtil.showImage(ulist,ulist2
-                    ,imageView,0,null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ulist.add(String.valueOf(0));
+
+        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
     @Override

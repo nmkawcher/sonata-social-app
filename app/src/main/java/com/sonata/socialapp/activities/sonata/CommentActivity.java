@@ -1885,7 +1885,14 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
             GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
         }
         else{
-            Comment post = (Comment)list.get(position);
+            Comment post = (Comment) list.get(position);
+            List<String> ulist = new ArrayList<>();
+
+
+            ulist.add(String.valueOf(0));
+
+            GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+            /*Comment post = (Comment)list.get(position);
             List<String> ulist = new ArrayList<>();
             ulist.add("0");
 
@@ -1902,7 +1909,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                         ,imageView,0,null);
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
     }
