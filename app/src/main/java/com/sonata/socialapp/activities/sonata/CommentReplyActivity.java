@@ -73,7 +73,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
     List<Comment> list;
 
-    Comment parentComment;
+    Comment parentComment, childComment;
 
 
     List<String> saveList;
@@ -368,6 +368,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
 
 
+         childComment = getIntent().getParcelableExtra("childcomment");
 
 
 
@@ -375,7 +376,10 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
         if(!CommentReplyActivity.this.isFinishing()||!CommentReplyActivity.this.isDestroyed()){
             list.add(parentComment);
-
+            if(childComment!=null){
+                list.add(childComment);
+                reply(childComment.getUser().getUsername());
+            }
             Comment load = new Comment();
             load.setType("load");
             list.add(load);

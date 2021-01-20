@@ -876,6 +876,14 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
         }
     }
 
+    public void replyWithChild(Comment comment,Comment reply){
+        if(comment!=null && reply!=null){
+            startActivity(new Intent(this,CommentReplyActivity.class).putExtra("reply",true).putExtra("post",post)
+                    .putExtra("parentcomment",comment)
+                    .putExtra("childcomment",reply));
+        }
+    }
+
 
 
     public void comment(){
@@ -1772,6 +1780,9 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
         Comment post = (Comment) list.get(position);
         if(post.getString("isreply").equals("false")){
             reply(post);
+        }
+        else{
+            replyWithChild((Comment) list.get(position-1), post);
         }
     }
 
