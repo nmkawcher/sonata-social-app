@@ -1,9 +1,11 @@
 package com.sonata.socialapp.fragments;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.os.ConfigurationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +26,7 @@ import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.GetRestDiscoverActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
@@ -108,7 +111,7 @@ public class DiscoverFragment extends Fragment implements GridClick {
 
     private void getReqs(Date date,boolean isRefresh){
         HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("lang", ParseInstallation.getCurrentInstallation() != null ? ParseInstallation.getCurrentInstallation().getString("localeIdentifier") : "en");
+        params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
         ParseCloud.callFunctionInBackground("getDiscoverObjects", params, new FunctionCallback<List<Post>>() {
             @Override
             public void done(List<Post>  objects, ParseException e) {

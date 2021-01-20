@@ -174,8 +174,8 @@ public class GridProfilAdapter extends RecyclerView.Adapter<GridProfilAdapter.Vi
                 try {
                     List<HashMap> mediaList = post.getMediaList();
                     HashMap media = mediaList.get(0);
-                    ParseFile mainMedia = (ParseFile) media.get("media");
-                    ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+                    ParseFile mainMedia = (ParseFile) media.get("thumbnail");
+                    ParseFile thumbnail = (ParseFile) media.get("thumbnail2");
 
                     String url = mainMedia.getUrl();
                     String thumburl = thumbnail.getUrl();

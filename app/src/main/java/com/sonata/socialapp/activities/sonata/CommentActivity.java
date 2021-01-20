@@ -1077,11 +1077,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                                         }
                                                                         imageCancel.performClick();
                                                                         list.add(postID);
-                                                                        if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-                                                                            Comment load = new Comment();
-                                                                            load.setType("seesimilar");
-                                                                            list.add(load);
-                                                                        }
+
                                                                         post.increment("commentnumber");
                                                                         adapter.notifyDataSetChanged();
                                                                         recyclerView.scrollToPosition(list.size()-1);
@@ -1161,11 +1157,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                             }
                                             imageCancel.performClick();
                                             list.add(postID);
-                                            if(post.getUser().getContent()!=null&&post.getUser().getAccountType()==SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR&&!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-                                                Comment load = new Comment();
-                                                load.setType("seesimilar");
-                                                list.add(load);
-                                            }
+
                                             post.increment("commentnumber");
                                             adapter.notifyDataSetChanged();
                                             recyclerView.scrollToPosition(list.size()-1);

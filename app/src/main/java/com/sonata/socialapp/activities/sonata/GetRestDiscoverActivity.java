@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.os.ConfigurationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -12,6 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -183,7 +185,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
             if(date!=null){
                 params.put("date",date);
             }
-            params.put("lang", ParseInstallation.getCurrentInstallation() != null ? ParseInstallation.getCurrentInstallation().getString("localeIdentifier") : "en");
+            params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
             params.put("text",hashtag);
             ParseCloud.callFunctionInBackground("getRestOfTheDiscoverPost", params, (FunctionCallback<List<Post>>) (objects, e) -> {
                 Log.e("done","done");
