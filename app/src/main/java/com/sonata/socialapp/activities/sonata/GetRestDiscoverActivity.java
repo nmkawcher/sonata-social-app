@@ -65,6 +65,8 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
 
     List<ListObject> list;
+    List<String> seenList;
+
     RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
@@ -97,6 +99,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         back = findViewById(R.id.backbuttonbutton);
         back.setOnClickListener(view -> onBackPressed());
 
+        seenList = new ArrayList<>();
         recyclerView = findViewById(R.id.folreqrecyclerview);
         swipeRefreshLayout = findViewById(R.id.folreqSwipeRefreshLayout);
         onScrollListener = new RecyclerView.OnScrollListener() {
@@ -185,6 +188,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
             if(date!=null){
                 params.put("date",date);
             }
+            params.put("seenList",seenList);
             params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
             params.put("text",hashtag);
             ParseCloud.callFunctionInBackground("getRestOfTheDiscoverPost", params, (FunctionCallback<List<Post>>) (objects, e) -> {
@@ -193,6 +197,13 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                     if(e==null){
 
                         if(objects!= null){
+                            for(int ii = 0; ii < objects.size(); ii++){
+                                String id = objects.get(ii).getObjectId();
+                                if(!seenList.contains(id) && id != null){
+                                    seenList.add(id);
+                                }
+                            }
+
                             if(isRefresh){
                                 listreklam.clear();
                                 listreklam = null;
