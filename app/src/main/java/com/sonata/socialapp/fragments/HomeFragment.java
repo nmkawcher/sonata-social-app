@@ -42,10 +42,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
@@ -81,15 +83,14 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
     private LinearLayoutManager linearLayoutManager;
     private SafPostAdapter adapter;
     private boolean loading=true;
-    private AdLoader adLoader;
     private Date date;
-    private FloatingActionButton fab;
     private OnScrollListener onScrollListener;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener;
     private ProgressBar progressBar;
-    RelativeLayout search;
-    int loadCheck = 0;
+    private RelativeLayout search,upload;
+    private int loadCheck = 0;
+    private TabLayout tabLayout;
 
 
 
@@ -108,10 +109,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
         recyclerView=null;
         linearLayoutManager=null;
         adapter=null;
-        adLoader = null;
         date=null;
-        fab.setOnClickListener(null);
-        fab=null;
         swipeRefreshLayout.setOnRefreshListener(null);
         swipeRefreshLayout=null;
         onRefreshListener=null;
@@ -150,59 +148,72 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
 
 
+        tabLayout = view.findViewById(R.id.tabLayoutHome);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition() == 0){
+                    GenelUtil.ToastLong(getContext(),"keşfet");
+                }
+                else if(tab.getPosition() == 1){
+                    GenelUtil.ToastLong(getContext(),"takip edilenler");
+                }
+            }
 
-        fab = view.findViewById(R.id.uploadbutton);
-        fab.setOnClickListener(view1 -> {
-            ((MainActivity) Objects.requireNonNull(getActivity())).startActivityResult();
-            //startActivity(new Intent(getContext(), UploadActivity.class));
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
         });
+
+
 
         swipeRefreshLayout = view.findViewById(R.id.homeFragmentSwipeRefreshLayout);
         onRefreshListener = this::subRefresh;
         swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
 
-
+        //DownloadManager.getInstance(getContext()).enqueue(new DownloadManager.Request(""));
 
         onScrollListener = new OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(recyclerView!=null&&linearLayoutManager!=null){
+                    if(linearLayoutManager != null){
                         AutoPlayUtils.onScrollPlayVideo(recyclerView, R.id.masterExoPlayer, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition());
                         if(!recyclerView.canScrollVertically(-1)){
                             Jzvd.releaseAllVideos();
                         }
                     }
                 }
-
-
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if(dy>0){
-                    if(dy>5){
-                        fab.hide();
-                    }
+
                     if(linearLayoutManager.findLastVisibleItemPosition()>(list.size()-4)&&!loading&&!postson){
                         loading=true;
                         get(date,false);
                     }
 
-                }
-
-                if(dy<-5){
-                    fab.show();
 
                 }
+
+
             }
         };
         recyclerView.addOnScrollListener(onScrollListener);
 
         search = view.findViewById(R.id.homesearchripple);
+        upload = view.findViewById(R.id.homeaddripple);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,6 +221,12 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
             }
         });
 
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) Objects.requireNonNull(getActivity())).startActivityResult();
+            }
+        });
 
 
 
@@ -287,7 +304,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
             }
             else{
                 recyclerView.scrollToPosition(0);
-                fab.show();
             }
         }
     }
@@ -551,7 +567,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                 else{
                     Log.e("back5","true");
                     recyclerView.scrollToPosition(0);
-                    fab.show();
                 }
             }
             else{

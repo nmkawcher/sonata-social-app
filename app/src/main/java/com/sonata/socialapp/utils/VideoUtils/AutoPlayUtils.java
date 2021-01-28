@@ -33,7 +33,7 @@ public class AutoPlayUtils {
                         Jzvd player = (Jzvd) view;
                         if (getViewVisiblePercent(player) >= 0.65f) {
                             if (positionInList != i + firstVisiblePosition) {
-                                if(player.state!=Jzvd.STATE_PLAYING){
+                                if(player.state != Jzvd.STATE_PLAYING){
                                     player.startButton.performClick();
                                 }
                             }

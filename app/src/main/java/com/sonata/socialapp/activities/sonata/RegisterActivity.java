@@ -1,9 +1,12 @@
 package com.sonata.socialapp.activities.sonata;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -13,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
@@ -31,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText username,name,email,password;
     Button register;
     ProgressDialog progressDialog;
+    TextView userAgreement, privacyPolicy;
     private long mLastClickTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,23 @@ public class RegisterActivity extends AppCompatActivity {
         email=findViewById(R.id.registeremailedittext);
         password=findViewById(R.id.registerpasswordedittext);
         register=findViewById(R.id.registerregisterbutton);
+        userAgreement = findViewById(R.id.useragreement);
+        userAgreement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                String url = "https://cdn-sn-1-i.sonatasocialapp.com/user-agreement.html";
+
+                if(GenelUtil.getNightMode()){
+                    builder.setToolbarColor(Color.parseColor("#303030"));
+                }
+                else{
+                    builder.setToolbarColor(Color.parseColor("#ffffff"));
+                }
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(RegisterActivity.this, Uri.parse(url));
+            }
+        });
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -152,4 +152,56 @@
 
         </RelativeLayout>
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:layout_above="@+id/anan"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/siyahyazı"
+            android:text="@string/byregisteryouaccespt"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/anan"
+            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/centerv"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_marginBottom="5dp"
+                android:gravity="end"
+                android:textStyle="bold"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@id/centerv"
+                android:layout_height="wrap_content"
+                android:id="@+id/useragreement"
+                android:textColor="@color/blue"
+                android:text="@string/useragreement"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_marginBottom="5dp"
+                android:gravity="start"
+                android:textStyle="bold"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/centerv"
+                android:layout_height="wrap_content"
+                android:id="@+id/privacypolicy"
+                android:textColor="@color/blue"
+                android:text="@string/privacypolicy"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

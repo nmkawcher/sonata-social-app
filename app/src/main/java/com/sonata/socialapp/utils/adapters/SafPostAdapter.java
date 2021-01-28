@@ -752,6 +752,8 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
 
                         JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
+                        //JZDataSource jzDataSource = new JZDataSource(MediaLoader.getInstance(holder.itemView.getContext()).getProxyUrl(url));
+
                         jzDataSource.looping=true;
 
                         glide.load(thumburl).thumbnail(glide.load(thumburl2)).addListener(new RequestListener<Drawable>() {

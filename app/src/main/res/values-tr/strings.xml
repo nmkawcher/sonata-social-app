@@ -218,4 +218,7 @@
     <string name="comment_hint">%1$s olarak yorum yap</string>
     <string name="accsw">%1$s hesabına geçiş yapıldı</string>
     <string name="seesimilarposts">Benzer gönderilere bak</string>
+    <string name="byregisteryouaccespt">Kayıt olarak aşağıdaki anlaşmaları kabul etmiş sayılırsınız</string>
+    <string name="useragreement">Kullanıcı sözleşmesi</string>
+    <string name="privacypolicy">Gizlilik sözleşmesi</string>
 </resources>

@@ -180,8 +180,12 @@
 
     <string name="showotherreplies">View other replies</string>
 
-
+    <string name="byregisteryouaccespt">By registering, you agree to the following agreements</string>
     <string name="followings">Followings</string>
+
+    <string name="useragreement">User agreement</string>
+    <string name="privacypolicy">Privacy policy</string>
+
 
     <string name="loading">Loading…</string>
 
