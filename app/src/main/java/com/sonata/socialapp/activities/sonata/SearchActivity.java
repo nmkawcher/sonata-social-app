@@ -303,7 +303,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                     if(e==null){
                         if(searchText.equals(searchStr)){
                             if(objects!= null){
-                                List<SonataUser> userList =(List<SonataUser>) objects.get(0).get("users");
+                                List<SonataUser> userList = (List<SonataUser>) objects.get(0).get("users");
                                 List<Post> postList = (List<Post>) objects.get(1).get("posts");
                                 boolean hasmore = (boolean)objects.get(1).get("hasmore");
                                 Date date = (Date)objects.get(1).get("date");
