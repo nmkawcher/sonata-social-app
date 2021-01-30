@@ -36,6 +36,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.dueeeke.tablayout.SegmentTabLayout;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -90,7 +91,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
     private ProgressBar progressBar;
     private RelativeLayout search,upload;
     private int loadCheck = 0;
-    private TabLayout tabLayout;
 
 
 
@@ -131,7 +131,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
 
 
-
         linearLayoutManager=new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -148,28 +147,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
 
 
-        tabLayout = view.findViewById(R.id.tabLayoutHome);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition() == 0){
-                    GenelUtil.ToastLong(getContext(),"keşfet");
-                }
-                else if(tab.getPosition() == 1){
-                    GenelUtil.ToastLong(getContext(),"takip edilenler");
-                }
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
 
 
@@ -257,14 +235,17 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
         if(date!=null){
             params.put("date", date);
         }
-        ParseCloud.callFunctionInBackground("getHomeObjects", params, (FunctionCallback<List<Post>>) (objects, e) -> {
+        ParseCloud.callFunctionInBackground("getHomeObjects", params, (FunctionCallback<HashMap>) (objects, e) -> {
             Log.e("done","doneGet");
             if(getActive()){
                 if(e==null){
                     Log.e("done","doneGetErrorNull");
 
 
-                    getAds(objects,isRefresh);
+                    getAds((List<Post>) objects.get("posts")
+                            ,(boolean) objects.get("hasmore")
+                            ,(Date) objects.get("date")
+                            ,isRefresh);
 
                     //initList(objects);
 
@@ -327,14 +308,14 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
 
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam) {
+    private void initList(List<Post> objects,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(getActive()){
             Log.e("done","InitListActive");
-
+            postson =!hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -368,7 +349,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                     }
                 }
                 int an = list.size();
-                date=objects.get(objects.size()-1).getCreatedAt();
                 for(int i=0;i<objects.size();i++){
                     String a = String.valueOf(i+1);
                     if(2 == Integer.parseInt(a.substring(a.length() - 1))){
@@ -395,11 +375,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                 loading =false;
                 progressBar.setVisibility(View.INVISIBLE);
                 swipeRefreshLayout.setRefreshing(false);
-                if(objects.size()<10){
-                    postson = true;
-                }
-                else{
-                    postson=false;
+                if(hasmore){
+
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
@@ -419,7 +396,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
     }
 
-    private void getAds(List<Post> objects,boolean isRefresh){
+    private void getAds(List<Post> objects,boolean hasmore,Date date,boolean isRefresh){
         Log.e("done","doneGetAds");
 
         if(getActive()){
@@ -451,7 +428,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                         list.clear();
                         adapter.notifyDataSetChanged();
                     }
-                    initList(objects,new ArrayList<>());
+                    initList(objects,hasmore,date,new ArrayList<>());
                 }
                 else{
                     int finalC = c;
@@ -484,7 +461,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList);
+                                            initList(objects,hasmore,date,tempList);
                                         }
 
                                     }
@@ -509,7 +486,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList);
+                                            initList(objects,hasmore,date,tempList);
                                         }
 
                                     }
@@ -532,7 +509,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,new ArrayList<>());
+                                        initList(objects,hasmore,date,new ArrayList<>());
                                     }
                                 }
 

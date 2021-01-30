@@ -601,23 +601,23 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                 if(list.size()==0){
                     HashMap<String, Object> params = new HashMap<String, Object>();
                     params.put("userID",user.getObjectId());
-                    ParseCloud.callFunctionInBackground("getSuggestionProfiles", params, new FunctionCallback<List<SonataUser>>() {
+                    ParseCloud.callFunctionInBackground("getSuggestionProfiles", params, new FunctionCallback<HashMap>() {
                         @Override
-                        public void done(List<SonataUser>  objects, ParseException e) {
+                        public void done(HashMap  objects, ParseException e) {
                             Log.e("done","done");
                             if(GenelUtil.isAlive(GuestProfileActivity.this)){
                                 if(e==null){
                                     if(objects!= null){
-                                        if(objects.size()<1){
+                                        if(((List<SonataUser>)objects.get("profiles")).size()<1){
                                             suggestLayout.setVisibility(View.GONE);
                                             return;
                                         }
                                         suggestLayout.setVisibility(View.VISIBLE);
-                                        for(int i=0;i<objects.size();i++){
+                                        for(int i=0;i<((List<SonataUser>)objects.get("profiles")).size();i++){
 
                                             ListObject post = new ListObject();
                                             post.setType("user");
-                                            post.setUser(objects.get(i));
+                                            post.setUser(((List<SonataUser>)objects.get("profiles")).get(i));
                                             suggestList.add(post);
 
                                         }
@@ -824,23 +824,23 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("userID",user.getObjectId());
-            ParseCloud.callFunctionInBackground("getSuggestionProfiles", params, new FunctionCallback<List<SonataUser>>() {
+            ParseCloud.callFunctionInBackground("getSuggestionProfiles", params, new FunctionCallback<HashMap>() {
                 @Override
-                public void done(List<SonataUser>  objects, ParseException e) {
+                public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
                     if(GenelUtil.isAlive(GuestProfileActivity.this)){
                         if(e==null){
                             if(objects!= null){
-                                if(objects.size()<1){
+                                if(((List<SonataUser>)objects.get("profiles")).size()<1){
                                     suggestLayout.setVisibility(View.GONE);
                                     return;
                                 }
                                 suggestLayout.setVisibility(View.VISIBLE);
-                                for(int i=0;i<objects.size();i++){
+                                for(int i=0;i<((List<SonataUser>)objects.get("profiles")).size();i++){
 
                                     ListObject post = new ListObject();
                                     post.setType("user");
-                                    post.setUser(objects.get(i));
+                                    post.setUser(((List<SonataUser>)objects.get("profiles")).get(i));
                                     suggestList.add(post);
 
                                 }
@@ -1049,9 +1049,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             params.put("date", date);
         }
         params.put("userID",user.getObjectId());
-        ParseCloud.callFunctionInBackground("getGuestPosts", params, new FunctionCallback<List<Post>>() {
+        ParseCloud.callFunctionInBackground("getGuestPosts", params, new FunctionCallback<HashMap>() {
             @Override
-            public void done(List<Post>  objects, ParseException e) {
+            public void done(HashMap  objects, ParseException e) {
                 Log.e("done","done");
                 if(GenelUtil.isAlive(GuestProfileActivity.this)){
                     if(e==null){
@@ -1064,7 +1064,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                     postAdapter.notifyDataSetChanged();
                                 }
                             }
-                            initList(objects);
+                            initList((List<Post>) objects.get("posts")
+                                    ,(boolean) objects.get("hasmore")
+                                    ,(Date) objects.get("date"));
 
                         }
 
@@ -1084,11 +1086,11 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
 
 
-    private void initList(List<Post> objects) {
+    private void initList(List<Post> objects,boolean hasmore,Date date) {
         if(GenelUtil.isAlive(GuestProfileActivity.this)){
-
+            postson = !hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -1140,7 +1142,6 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     }
                 }
                 int an = list.size();
-                date=objects.get(objects.size()-1).getCreatedAt();
                 for(int i=0;i<objects.size();i++){
                     ListObject post = new ListObject();
                     post.setType(objects.get(i).getType());
@@ -1154,11 +1155,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     list.add(post);
                 }
                 loading =false;
-                if(objects.size()<39){
-                    postson = true;
-                }
-                else{
-                    postson=false;
+                if(hasmore){
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
@@ -1207,15 +1204,15 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
         if(username!=null){
             params.put("username",username);
         }
-        ParseCloud.callFunctionInBackground("getGuestProfile", params, new FunctionCallback<ParseUser>() {
+        ParseCloud.callFunctionInBackground("getGuestProfile", params, new FunctionCallback<HashMap>() {
             @Override
-            public void done(ParseUser  objects, ParseException e) {
+            public void done(HashMap  objects, ParseException e) {
                 if(GenelUtil.isAlive(GuestProfileActivity.this)){
                     Log.e("userload done","done");
                     if(e==null){
                         if(objects!=null){
 
-                            user=(SonataUser) objects;
+                            user=(SonataUser) objects.get("user");
                             user.setFollow(user.getFollow2());
                             user.setFollowRequest(user.getFollowRequest2());
                             user.setBlock(user.getBlock2());

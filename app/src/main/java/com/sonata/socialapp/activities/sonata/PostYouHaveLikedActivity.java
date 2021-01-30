@@ -207,7 +207,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
             if(date!=null){
                 params.put("date",date);
             }
-            ParseCloud.callFunctionInBackground("getPostYouHaveLiked", params, (FunctionCallback<List<Post>>) (objects, e) -> {
+            ParseCloud.callFunctionInBackground("getPostYouHaveLiked", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
                 if(GenelUtil.isAlive(PostYouHaveLikedActivity.this)){
                     if(e==null){
@@ -218,7 +218,10 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                                 listreklam = null;
                                 listreklam=new ArrayList<>();
                             }
-                            getAds(objects,isRefresh);
+                            getAds((List<Post>)objects.get("posts")
+                                    ,(boolean)objects.get("hasmore")
+                                    ,(Date)objects.get("date")
+                                    ,isRefresh);
                             //initList(objects);
                         }
 
@@ -235,14 +238,14 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
         }
     }
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam) {
+    private void initList(List<Post> objects,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(GenelUtil.isAlive(this)){
             Log.e("done","InitListActive");
-
+            postson = !hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -281,7 +284,6 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                     }
                 }
                 int an = list.size();
-                date=objects.get(objects.size()-1).getCreatedAt();
                 for(int i=0;i<objects.size();i++){
                     String a = String.valueOf(i+1);
                     if(2 == Integer.parseInt(a.substring(a.length() - 1))){
@@ -307,11 +309,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
 
                 loading =false;
                 swipeRefreshLayout.setRefreshing(false);
-                if(objects.size()<10){
-                    postson = true;
-                }
-                else{
-                    postson=false;
+                if(hasmore){
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
@@ -331,7 +329,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
 
     }
     int loadCheck = 0;
-    private void getAds(List<Post> objects,boolean isRefresh){
+    private void getAds(List<Post> objects,boolean hasmore,Date date,boolean isRefresh){
         Log.e("done","doneGetAds");
 
         if(GenelUtil.isAlive(PostYouHaveLikedActivity.this)){
@@ -363,7 +361,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                     list.clear();
                     adapter.notifyDataSetChanged();
                 }
-                initList(objects,new ArrayList<>());
+                initList(objects,hasmore,date,new ArrayList<>());
             }
             else{
                 int finalC = c;
@@ -396,7 +394,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,tempList);
+                                        initList(objects,hasmore,date,tempList);
                                     }
 
                                 }
@@ -422,7 +420,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList);
+                                            initList(objects,hasmore,date,tempList);
                                         }
 
                                     }
@@ -448,7 +446,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
 
                                 }
                                 loadCheck=0;
-                                initList(objects,new ArrayList<>());
+                                initList(objects,hasmore,date,new ArrayList<>());
                             }
 
 

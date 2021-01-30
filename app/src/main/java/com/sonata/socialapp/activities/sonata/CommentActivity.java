@@ -606,14 +606,14 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     private void getObjects(String id){
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("id", id);
-        ParseCloud.callFunctionInBackground("getNotifObjects", params, new FunctionCallback<List<ParseObject>>() {
+        ParseCloud.callFunctionInBackground("getNotifObjects", params, new FunctionCallback<HashMap>() {
             @Override
-            public void done(List<ParseObject>  listObjects, ParseException e) {
+            public void done(HashMap  listObjects, ParseException e) {
                 if(GenelUtil.isAlive(CommentActivity.this)){
                     if(e==null){
                         if(listObjects!=null){
 
-                            Post p2 = (Post)listObjects.get(0);
+                            Post p2 = (Post)listObjects.get("post");
                             p2.setLikenumber(p2.getLikenumber2());
                             p2.setCommentnumber(p2.getCommentnumber2());
                             p2.setSaved(p2.getSaved2());
@@ -621,7 +621,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             p2.setLiked(p2.getLiked2());
                             list.add(p2);
 
-                            Comment comment = (Comment)listObjects.get(1);
+                            Comment comment = (Comment)listObjects.get("parentcomment");
                             comment.setVote(comment.getVote2());
                             comment.setReplyCount(comment.getReplyCount2());
                             comment.setUpvote(comment.getUpvote2());
@@ -630,8 +630,8 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             list.add(comment);
                             a = 3;
 
-                            if(listObjects.size()>2){
-                                Comment comment2 = (Comment)listObjects.get(2);
+                            if(listObjects.get("comment")!=null){
+                                Comment comment2 = (Comment)listObjects.get("comment");
                                 comment2.setVote(comment2.getVote2());
                                 comment2.setReplyCount(comment2.getReplyCount2());
                                 comment2.setUpvote(comment2.getUpvote2());
@@ -839,9 +839,9 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 params.put("date",date1);
             }
             params.put("post", post.getObjectId());
-            ParseCloud.callFunctionInBackground("getComments", params, new FunctionCallback<List<Comment>>() {
+            ParseCloud.callFunctionInBackground("getComments", params, new FunctionCallback<HashMap>() {
                 @Override
-                public void done(List<Comment>  objects, ParseException e) {
+                public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
                     if(GenelUtil.isAlive(CommentActivity.this)){
                         if(e==null){
@@ -850,7 +850,9 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                 if(isRefresh){
                                     refreshSetting();
                                 }
-                                initObjects(objects,isRefresh);
+                                initObjects((List<Comment>)objects.get("comments")
+                                        ,(boolean)objects.get("hasmore")
+                                        ,(Date)objects.get("date"));
                             }
 
                         }
@@ -934,10 +936,11 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     }
 
 
-    private void initObjects(List<Comment> objects,boolean isRefresh){
+    private void initObjects(List<Comment> objects,boolean hasmore,Date date){
         if(GenelUtil.isAlive(CommentActivity.this)){
+            postson = !hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 swipeRefreshLayout.setRefreshing(false);
                 if(list.get(list.size()-1).getString("type").equals("load")){
                     list.remove(list.size()-1);
@@ -964,8 +967,6 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 }
 
                 if(objects.size()<20){
-                    date = objects.get(objects.size()-1).getCreatedAt();
-                    postson =true;
                     loading =false;
                     for(int i=0;i<objects.size();i++){
                         if(!list.contains(objects.get(i))){
@@ -994,7 +995,6 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
                 }
                 else{
-                    date = objects.get(objects.size()-1).getCreatedAt();
                     for(int i=0;i<objects.size();i++){
                         if(!list.contains(objects.get(i))){
                             Comment comment = objects.get(i);
@@ -1070,9 +1070,9 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                         luna.add(media);
                                                         params.put("medialist",luna);
                                                         //params.put("media",media);
-                                                        ParseCloud.callFunctionInBackground("commentImage", params, new FunctionCallback<Comment>() {
+                                                        ParseCloud.callFunctionInBackground("commentImage", params, new FunctionCallback<HashMap>() {
                                                             @Override
-                                                            public void done(Comment postID, ParseException e) {
+                                                            public void done(HashMap postID, ParseException e) {
                                                                 if(!CommentActivity.this.isFinishing()&&!CommentActivity.this.isDestroyed()){
                                                                     alertDialog.dismiss();
                                                                     if(e==null){
@@ -1084,7 +1084,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                                             list.remove(list.size()-1);
                                                                         }
                                                                         imageCancel.performClick();
-                                                                        list.add(postID);
+                                                                        list.add((Comment) postID.get("comment"));
 
                                                                         post.increment("commentnumber");
                                                                         adapter.notifyDataSetChanged();
@@ -1151,9 +1151,9 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             HashMap<String, Object> params = new HashMap<String, Object>();
                             params.put("text", commenttext.getText().toString().trim());
                             params.put("post",post.getObjectId());
-                            ParseCloud.callFunctionInBackground("commentText", params, new FunctionCallback<Comment>() {
+                            ParseCloud.callFunctionInBackground("commentText", params, new FunctionCallback<HashMap>() {
                                 @Override
-                                public void done(Comment postID, ParseException e) {
+                                public void done(HashMap postID, ParseException e) {
                                     if(!CommentActivity.this.isFinishing()&&!CommentActivity.this.isDestroyed()){
                                         alertDialog.dismiss();
                                         if(e==null){
@@ -1164,7 +1164,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                 list.remove(list.size()-1);
                                             }
                                             imageCancel.performClick();
-                                            list.add(postID);
+                                            list.add((Comment) postID.get("comment"));
 
                                             post.increment("commentnumber");
                                             adapter.notifyDataSetChanged();

@@ -201,9 +201,9 @@ public class ChangeUsernameActivity extends AppCompatActivity {
                     progressDialog.show();
                     HashMap<String,String> params =new HashMap<>();
                     params.put("username",editText.getText().toString().trim());
-                    ParseCloud.callFunctionInBackground("updateUsername", params, new FunctionCallback<ParseUser>() {
+                    ParseCloud.callFunctionInBackground("updateUsername", params, new FunctionCallback<HashMap>() {
                         @Override
-                        public void done(ParseUser object, ParseException e) {
+                        public void done(HashMap object, ParseException e) {
                             if(GenelUtil.isAlive(ChangeUsernameActivity.this)){
                                 if(e==null){
                                     progressDialog.dismiss();

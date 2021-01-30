@@ -191,14 +191,15 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
             params.put("seenList",seenList);
             params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
             params.put("text",hashtag);
-            ParseCloud.callFunctionInBackground("getRestOfTheDiscoverPost", params, (FunctionCallback<List<Post>>) (objects, e) -> {
+            ParseCloud.callFunctionInBackground("getRestOfTheDiscoverPost", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
                 if(GenelUtil.isAlive(GetRestDiscoverActivity.this)){
                     if(e==null){
-
-                        if(objects!= null){
-                            for(int ii = 0; ii < objects.size(); ii++){
-                                String id = objects.get(ii).getObjectId();
+                        Log.e("hashmap ",objects.toString());
+                        List<Post> tpL = (List<Post>) objects.get("posts");
+                        if(tpL != null){
+                            for(int ii = 0; ii < tpL.size(); ii++){
+                                String id = tpL.get(ii).getObjectId();
                                 if(!seenList.contains(id) && id != null){
                                     seenList.add(id);
                                 }
@@ -209,7 +210,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                                 listreklam = null;
                                 listreklam=new ArrayList<>();
                             }
-                            getAds(objects,isRefresh);
+                            getAds(((List<Post>)objects.get("posts")),((boolean)objects.get("hasmore")),((Date)objects.get("date")),isRefresh);
                             //initList(objects);
                         }
 
@@ -226,14 +227,14 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         }
     }
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam) {
+    private void initList(List<Post> objects,boolean hasMore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(GenelUtil.isAlive(this)){
             Log.e("done","InitListActive");
-
+            postson = !hasMore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -272,7 +273,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                     }
                 }
                 int an = list.size();
-                date=objects.get(objects.size()-1).getCreatedAt();
+
                 for(int i=0;i<objects.size();i++){
                     String a = String.valueOf(i+1);
                     if(2 == Integer.parseInt(a.substring(a.length() - 1))){
@@ -298,11 +299,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
                 loading =false;
                 swipeRefreshLayout.setRefreshing(false);
-                if(objects.size()<10){
-                    postson = true;
-                }
-                else{
-                    postson=false;
+                if(!postson){
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
@@ -322,7 +319,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
     }
     int loadCheck = 0;
-    private void getAds(List<Post> objects,boolean isRefresh){
+    private void getAds(List<Post> objects,boolean hasMore,Date date,boolean isRefresh){
         Log.e("done","doneGetAds");
 
         if(GenelUtil.isAlive(GetRestDiscoverActivity.this)){
@@ -354,7 +351,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                     list.clear();
                     adapter.notifyDataSetChanged();
                 }
-                initList(objects,new ArrayList<>());
+                initList(objects,hasMore,date,new ArrayList<>());
             }
             else{
                 int finalC = c;
@@ -387,7 +384,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,tempList);
+                                        initList(objects,hasMore,date,tempList);
                                     }
 
                                 }
@@ -413,7 +410,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList);
+                                            initList(objects,hasMore,date,tempList);
                                         }
 
                                     }
@@ -438,7 +435,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
                                 }
                                 loadCheck=0;
-                                initList(objects,new ArrayList<>());
+                                initList(objects,hasMore,date,new ArrayList<>());
                             }
 
 

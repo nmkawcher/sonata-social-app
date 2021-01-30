@@ -112,9 +112,9 @@ public class DiscoverFragment extends Fragment implements GridClick {
     private void getReqs(Date date,boolean isRefresh){
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
-        ParseCloud.callFunctionInBackground("getDiscoverObjects", params, new FunctionCallback<List<Post>>() {
+        ParseCloud.callFunctionInBackground("getDiscoverObjects", params, new FunctionCallback<HashMap>() {
             @Override
-            public void done(List<Post>  objects, ParseException e) {
+            public void done(HashMap  objects, ParseException e) {
                 Log.e("done","done");
                 if(getActivity() != null && GenelUtil.isAlive(getActivity()) && !DiscoverFragment.this.isDetached()){
                     if(e==null){
@@ -123,8 +123,8 @@ public class DiscoverFragment extends Fragment implements GridClick {
                             if(isRefresh){
                                 list.clear();
                             }
-                            Collections.shuffle(objects);
-                            initList(objects);
+                            Collections.shuffle(((List<Post>)objects.get("posts")));
+                            initList(((List<Post>)objects.get("posts")));
 
                         }
 

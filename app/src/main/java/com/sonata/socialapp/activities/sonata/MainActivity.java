@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             startActivity(new Intent(this,EditProfileActivity.class));
         }
         HashMap<String,String> params = new HashMap<>();
-        ParseCloud.callFunctionInBackground("refreshOwnProfile", params, new FunctionCallback<ParseUser>() {
+        ParseCloud.callFunctionInBackground("refreshOwnProfile", params, new FunctionCallback<HashMap>() {
             @Override
-            public void done(ParseUser object, ParseException e) {
+            public void done(HashMap object, ParseException e) {
                 if(e==null){
                     if(Objects.requireNonNull(GenelUtil.getCurrentUser()).getNotifCount()>0){
                         addBadgeAt(2,(int)GenelUtil.getCurrentUser().getNotifCount());
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     if(getSupportFragmentManager().findFragmentById(R.id.homeframeprofile)!=null){
                         ProfilFragment homeFragment = (ProfilFragment) getSupportFragmentManager().findFragmentById(R.id.homeframeprofile);
                         assert homeFragment != null;
-                        homeFragment.setProfile((SonataUser) object);
+                        homeFragment.setProfile((SonataUser) object.get("user"));
                     }
                 }
 

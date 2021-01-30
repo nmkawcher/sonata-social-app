@@ -209,7 +209,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
                 params.put("date",date);
             }
             params.put("text",hashtag);
-            ParseCloud.callFunctionInBackground("searchPost", params, (FunctionCallback<List<Post>>) (objects, e) -> {
+            ParseCloud.callFunctionInBackground("searchPost", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
                 if(GenelUtil.isAlive(HashtagActivity.this)){
                     if(e==null){
@@ -220,7 +220,10 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
                                 listreklam = null;
                                 listreklam=new ArrayList<>();
                             }
-                            getAds(objects,isRefresh);
+                            getAds((List<Post>) objects.get("posts")
+                                    ,(boolean) objects.get("hasmore")
+                                    ,(Date) objects.get("date")
+                                    ,isRefresh);
                             //initList(objects);
                         }
 
@@ -237,7 +240,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
         }
     }
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam) {
+    private void initList(List<Post> objects,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(GenelUtil.isAlive(this)){
@@ -333,7 +336,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
     }
     int loadCheck = 0;
-    private void getAds(List<Post> objects,boolean isRefresh){
+    private void getAds(List<Post> objects,boolean hasmore,Date date,boolean isRefresh){
         Log.e("done","doneGetAds");
 
         if(GenelUtil.isAlive(HashtagActivity.this)){
@@ -365,7 +368,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
                     list.clear();
                     adapter.notifyDataSetChanged();
                 }
-                initList(objects,new ArrayList<>());
+                initList(objects,hasmore,date,new ArrayList<>());
             }
             else{
                 int finalC = c;
@@ -399,7 +402,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,tempList);
+                                        initList(objects,hasmore,date,tempList);
                                     }
 
                                 }
@@ -424,7 +427,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
                                             }
                                             loadCheck=0;
-                                            initList(objects,tempList);
+                                            initList(objects,hasmore,date,tempList);
                                         }
 
                                     }
@@ -449,7 +452,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
                                 }
                                 loadCheck=0;
-                                initList(objects,new ArrayList<>());
+                                initList(objects,hasmore,date,new ArrayList<>());
                             }
 
 

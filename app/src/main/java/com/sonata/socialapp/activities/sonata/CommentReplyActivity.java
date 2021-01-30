@@ -564,9 +564,9 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
             }
             params.put("reply",parentComment.getObjectId());
             params.put("post", post.getObjectId());
-            ParseCloud.callFunctionInBackground("getComments", params, new FunctionCallback<List<Comment>>() {
+            ParseCloud.callFunctionInBackground("getComments", params, new FunctionCallback<HashMap>() {
                 @Override
-                public void done(List<Comment>  objects, ParseException e) {
+                public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
                     if(!CommentReplyActivity.this.isFinishing()||!CommentReplyActivity.this.isDestroyed()){
                         if(e==null){
@@ -577,7 +577,9 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                 if(isRefresh){
                                     refreshSetting();
                                 }
-                                initList(objects);
+                                initList((List<Comment>)objects.get("comments")
+                                        ,(boolean)objects.get("hasmore")
+                                        ,(Date)objects.get("date"));
                             }
 
 
@@ -601,10 +603,11 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
 
 
-    private void initList(List<Comment> objects){
+    private void initList(List<Comment> objects,boolean hasmore,Date date){
         if(GenelUtil.isAlive(this)){
+            postson = !hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 swipeRefreshLayout.setRefreshing(false);
                 if(list.get(list.size()-1).getString("type").equals("load")){
                     list.remove(list.size()-1);
@@ -626,8 +629,6 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                     list.remove(list.size()-1);
                 }
                 if(objects.size()<20){
-                    date = objects.get(objects.size()-1).getCreatedAt();
-                    postson =true;
                     loading =false;
                     for(int i=0;i<objects.size();i++){
                         if(!list.contains(objects.get(i))){
@@ -657,7 +658,6 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
                 }
                 else{
-                    date = objects.get(objects.size()-1).getCreatedAt();
                     for(int i=0;i<objects.size();i++){
                         if(!list.contains(objects.get(i))){
                             Comment comment = objects.get(i);

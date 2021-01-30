@@ -231,12 +231,12 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         user = (SonataUser) ParseUser.getCurrentUser();
         setProfile(user);
         HashMap<String,String> params = new HashMap<>();
-        ParseCloud.callFunctionInBackground("refreshOwnProfile", params, new FunctionCallback<ParseUser>() {
+        ParseCloud.callFunctionInBackground("refreshOwnProfile", params, new FunctionCallback<HashMap>() {
             @Override
-            public void done(ParseUser object, ParseException e) {
+            public void done(HashMap object, ParseException e) {
                 if(getActive()){
                     if(e==null){
-                        setProfile((SonataUser)object);
+                        setProfile((SonataUser)object.get("user"));
                     }
                 }
 
@@ -406,14 +406,15 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         ((MainActivity) Objects.requireNonNull(getActivity())).profileFragmentComment(post);
     }
 
-    private void initList(List<Post> objects) {
+    private void initList(List<Post> objects,boolean hasmore,Date date) {
         Log.e("done","InitList");
 
         if(getActive()){
             Log.e("done","InitListActive");
 
+            postson = !hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -464,7 +465,6 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                     }
                 }
                 int an = list.size();
-                date=objects.get(objects.size()-1).getCreatedAt();
                 for(int i=0;i<objects.size();i++){
 
                     ListObject post = new ListObject();
@@ -481,11 +481,8 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
 
                 loading =false;
                 swipeRefreshLayout.setRefreshing(false);
-                if(objects.size()<39){
-                    postson = true;
-                }
-                else{
-                    postson=false;
+                if(hasmore){
+
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
@@ -521,7 +518,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         if(date!=null){
             params.put("date", date);
         }
-        ParseCloud.callFunctionInBackground("getOwnPosts", params, (FunctionCallback<List<Post>>) (objects, e) -> {
+        ParseCloud.callFunctionInBackground("getOwnPosts", params, (FunctionCallback<HashMap>) (objects, e) -> {
             Log.e("done","done");
             if(getActive()){
                 if(e==null){
@@ -534,7 +531,9 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                                 postAdapter.notifyDataSetChanged();
                             }
                         }
-                        initList(objects);
+                        initList((List<Post>)objects.get("posts")
+                                ,(boolean) objects.get("hasmore")
+                                ,(Date)objects.get("date"));
                     }
 
 

@@ -267,14 +267,17 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
 
             params.put("text",searchStr);
             params.put("date",date);
-            ParseCloud.callFunctionInBackground("searchPost", params, (FunctionCallback<List<Post>>) (objects, e) -> {
+            ParseCloud.callFunctionInBackground("searchPost", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
                 if(GenelUtil.isAlive(SearchActivity.this)){
                     if(e==null){
                         if(searchStr.equals(searchText)){
                             if(objects!= null){
 
-                                getAds(objects,searchStr);
+                                getAds((List<Post>) objects.get("posts")
+                                        ,(boolean) objects.get("hasmore")
+                                        ,(Date) objects.get("date")
+                                        ,searchStr);
                                 //initList(objects);
                             }
                         }
@@ -294,17 +297,19 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
         if(GenelUtil.isAlive(this)){
             HashMap<String, Object> params = new HashMap<>();
             params.put("text",searchStr);
-            ParseCloud.callFunctionInBackground("search", params, (FunctionCallback<List<List>>) (objects, e) -> {
+            ParseCloud.callFunctionInBackground("search", params, (FunctionCallback<List<HashMap>>) (objects, e) -> {
                 Log.e("done","done");
                 if(GenelUtil.isAlive(SearchActivity.this)){
                     if(e==null){
                         if(searchText.equals(searchStr)){
                             if(objects!= null){
-                                List<SonataUser> userList = (List<SonataUser>) objects.get(0);
-                                List<Post> postList = (List<Post>) objects.get(1);
+                                List<SonataUser> userList =(List<SonataUser>) objects.get(0).get("users");
+                                List<Post> postList = (List<Post>) objects.get(1).get("posts");
+                                boolean hasmore = (boolean)objects.get(1).get("hasmore");
+                                Date date = (Date)objects.get(1).get("date");
                                 initUser(userList);
 
-                                getAds(postList,searchStr);
+                                getAds(postList,hasmore,date,searchStr);
                                 //initList(objects);
                             }
                         }
@@ -345,14 +350,15 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
     }
 
 
-    private void initList(List<Post> objects,List<UnifiedNativeAd> listreklam,boolean isrefresh) {
+    private void initList(List<Post> objects,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam,boolean isrefresh) {
         Log.e("done","InitList");
 
         if(GenelUtil.isAlive(this)){
             Log.e("done","InitListActive");
-
+            postson =!hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
+
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -384,7 +390,6 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                     }
                 }
                 int an = list.size();
-                date=objects.get(objects.size()-1).getCreatedAt();
                 for(int i=0;i<objects.size();i++){
                     String a = String.valueOf(i+1);
                     if(2 == Integer.parseInt(a.substring(a.length() - 1))){
@@ -409,11 +414,8 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                 }
 
                 loading =false;
-                if(objects.size()<10){
-                    postson = true;
-                }
-                else{
-                    postson=false;
+                if(hasmore){
+
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
@@ -436,7 +438,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
 
     }
     int loadCheck = 0;
-    private void getAds(List<Post> objects,String searchString){
+    private void getAds(List<Post> objects,boolean hasmore,Date date,String searchString){
         Log.e("done","doneGetAds");
 
         if(GenelUtil.isAlive(SearchActivity.this)){
@@ -464,7 +466,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
             Log.e("Ad Count",""+c);
             if(c<=0){
 
-                initList(objects,new ArrayList<>(),false);
+                initList(objects,hasmore,date,new ArrayList<>(),false);
             }
             else{
                 int finalC = c;
@@ -492,7 +494,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                                     if(GenelUtil.isAlive(SearchActivity.this)){
 
                                         loadCheck=0;
-                                        initList(objects,tempList,false);
+                                        initList(objects,hasmore,date,tempList,false);
                                     }
 
                                 }
@@ -513,7 +515,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                                             Log.e("adError !isLoading: ",""+adError.getCode());
 
                                             loadCheck=0;
-                                            initList(objects,tempList,false);
+                                            initList(objects,hasmore,date,tempList,false);
                                         }
 
                                     }
@@ -533,7 +535,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                             if(GenelUtil.isAlive(SearchActivity.this)){
 
                                 loadCheck=0;
-                                initList(objects,new ArrayList<>(),false);
+                                initList(objects,hasmore,date,new ArrayList<>(),false);
                             }
 
 

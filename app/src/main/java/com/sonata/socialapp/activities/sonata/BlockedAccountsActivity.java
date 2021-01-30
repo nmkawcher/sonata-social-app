@@ -154,9 +154,9 @@ public class BlockedAccountsActivity extends AppCompatActivity implements Blocke
             if(date!=null){
                 params.put("date",date);
             }
-            ParseCloud.callFunctionInBackground("getBlockedAccounts", params, new FunctionCallback<List<SonataUser>>() {
+            ParseCloud.callFunctionInBackground("getBlockedAccounts", params, new FunctionCallback<HashMap>() {
                 @Override
-                public void done(List<SonataUser>  objects, ParseException e) {
+                public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
                     if(GenelUtil.isAlive(BlockedAccountsActivity.this)){
                         if(e==null){
@@ -165,11 +165,20 @@ public class BlockedAccountsActivity extends AppCompatActivity implements Blocke
                                 if(isRefresh){
                                     refreshSetting();
                                 }
-                                initList(objects);
+                                initList((List<SonataUser>)objects.get("result")
+                                        ,(boolean)objects.get("hasmore")
+                                        ,(Date)objects.get("date"));
                             }
+                            else{
+                                initList(new ArrayList<>(),false,new Date());
+                            }
+
+
                         }
                         else{
-                            getReqs(date,isRefresh);
+                            initList(new ArrayList<>(),false,new Date());
+
+
                         }
                     }
                 }
@@ -177,10 +186,12 @@ public class BlockedAccountsActivity extends AppCompatActivity implements Blocke
         }
     }
 
-    private void initList(List<SonataUser> objects) {
+    private void initList(List<SonataUser> objects,boolean hasmore,Date date) {
         if(GenelUtil.isAlive(this)){
+            postson =!hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
+
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -204,14 +215,12 @@ public class BlockedAccountsActivity extends AppCompatActivity implements Blocke
 
             }
             else{
-                date=objects.get(0).getDate("date");
                 if(list.size()>0){
                     if(list.get(list.size()-1).getType().equals("load")){
                         list.remove(list.get(list.size()-1));
                     }
                 }
                 if(objects.size()<10){
-                    postson =true;
                     for(int i=0;i<objects.size();i++){
 
                         ListObject post = new ListObject();

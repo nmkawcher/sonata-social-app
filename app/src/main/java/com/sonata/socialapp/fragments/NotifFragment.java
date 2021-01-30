@@ -180,9 +180,9 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
             if(date!=null){
                 params.put("date",date);
             }
-            ParseCloud.callFunctionInBackground("getNotifs", params, new FunctionCallback<List<Notif>>() {
+            ParseCloud.callFunctionInBackground("getNotifs", params, new FunctionCallback<HashMap>() {
                 @Override
-                public void done(List<Notif>  objects, ParseException e) {
+                public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
                     if(!NotifFragment.this.isDetached()){
                         if(e==null){
@@ -191,16 +191,16 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
                                 if(isRefresh){
                                     refreshSetting();
                                 }
-                                initList(objects);
+                                initList((List<Notif>)objects.get("notifs"),(boolean)objects.get("hasmore"),(Date)objects.get("date"));
                             }
                             else{
-                                initList(new ArrayList<>());
+                                initList(new ArrayList<>(),false,new Date());
                             }
 
 
                         }
                         else{
-                            initList(new ArrayList<>());
+                            initList(new ArrayList<>(),false,new Date());
 
 
                         }
@@ -271,10 +271,11 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
     }
 
 
-    private void initList(List<Notif> objects) {
+    private void initList(List<Notif> objects,boolean hasMore,Date date) {
         if(getActive()){
+            postson = !hasMore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -308,9 +309,7 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
                     }
                 }
 
-                date=objects.get(objects.size()-1).getCreatedAt();
                 if(objects.size()<40){
-                    postson =true;
                     list.addAll(objects);
 
                     adapter.notifyDataSetChanged();

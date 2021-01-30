@@ -30,6 +30,7 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
+import com.parse.ParseFile;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.Comment;
@@ -38,6 +39,7 @@ import com.sonata.socialapp.utils.interfaces.CommentReplyAdapterClick;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.tylersuehr.socialtextview.SocialTextView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -202,69 +204,51 @@ public class SafCommentAdapter extends RecyclerView.Adapter<SafCommentAdapter.Vi
             }
 
             if(post.getType().equals("image")){
-                if(((float)post.getRatioH()/(float)post.getRatioW())>1.4f){
-                    holder.ratiolayout.setAspectRatio(10,14);
-                }
-                else{
-                    if(((float)post.getRatioH()/(float)post.getRatioW())<0.4f){
-                        holder.ratiolayout.setAspectRatio(10,4);
+                try {
+                    List<HashMap> mediaList = post.getMediaList();
+                    HashMap media = mediaList.get(0);
+                    ParseFile mainMedia = (ParseFile) media.get("media");
+                    ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                    String url = mainMedia.getUrl();
+                    String thumburl = thumbnail.getUrl();
+
+                    int width = (int) media.get("width");
+                    int height = (int) media.get("height");
+
+                    if(((float)height/(float)width)>1.4f){
+                        holder.ratiolayout.setAspectRatio(10,14);
                     }
                     else{
-                        holder.ratiolayout.setAspectRatio(post.getRatioW(),post.getRatioH());
+                        if(((float)height/(float)width)<0.4f){
+                            holder.ratiolayout.setAspectRatio(10,4);
+                        }
+                        else{
+                            holder.ratiolayout.setAspectRatio(width,height);
+                        }
                     }
-                }
 
-
-                String url=post.getMainMedia().getUrl();
-                String thumburl=post.getThumbMedia().getUrl();
-
-                if(post.getRatioH()>1280||post.getRatioW()>1280){
-                    int ih = 1280;
-                    int iw = 1280;
-                    if(post.getRatioH()>post.getRatioW()){
-                        ih = 1280;
-                        iw = 1280 * (post.getRatioW()/post.getRatioH());
+                    if(height>1280||width>1280){
+                        int ih = 1280;
+                        int iw = 1280;
+                        if(height>width){
+                            //ih = 1280;
+                            iw = 1280 * (int) (width/height);
+                        }
+                        else{
+                            //iw = 1280;
+                            ih = 1280 * (int) (height/width);
+                        }
+                        glide.load(url).fitCenter().override(iw,ih).thumbnail(glide.load(thumburl)).into(holder.postimage);
                     }
                     else{
-                        iw = 1280;
-                        ih = 1280 * (post.getRatioH()/post.getRatioW());
+                        //holder.nsfwIcon.setVisibility(View.INVISIBLE);
+                        glide.load(url).fitCenter().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).thumbnail(glide.load(thumburl)).into(holder.postimage);
                     }
-                    glide.load(post.getMainMedia().getUrl()).fitCenter().override(iw,ih).transform(new FitCenter()).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            holder.imageprogress.setVisibility(View.INVISIBLE);
-                            holder.reloadlayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
 
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            holder.imageprogress.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-                    }).into(holder.postimage);
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                else{
-                    glide.load(post.getMainMedia().getUrl()).fitCenter().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).transform(new FitCenter()).thumbnail(glide.load(post.getThumbMedia().getUrl())).addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            holder.imageprogress.setVisibility(View.INVISIBLE);
-                            holder.reloadlayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            holder.imageprogress.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-                    }).into(holder.postimage);
-
-                }
-
-
-
 
             }
 

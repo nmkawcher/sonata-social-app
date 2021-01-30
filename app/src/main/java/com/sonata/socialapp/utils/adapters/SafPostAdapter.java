@@ -756,29 +756,11 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
                         jzDataSource.looping=true;
 
-                        glide.load(thumburl).thumbnail(glide.load(thumburl2)).addListener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                return false;
-                            }
-                        }).into(holder.videoPlayer.posterImageView);
+                        glide.load(thumburl).thumbnail(glide.load(thumburl2)).into(holder.videoPlayer.posterImageView);
                         holder.videoPlayer.setUp(jzDataSource,Jzvd.SCREEN_NORMAL, JZMediaExo.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
-
-
-
-
-
-
 
 
                 }

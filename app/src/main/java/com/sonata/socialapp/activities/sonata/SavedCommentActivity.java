@@ -169,9 +169,9 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
             if(date!=null){
                 params.put("date",date);
             }
-            ParseCloud.callFunctionInBackground("getSavedComments", params, new FunctionCallback<List<Comment>>() {
+            ParseCloud.callFunctionInBackground("getSavedComments", params, new FunctionCallback<HashMap>() {
                 @Override
-                public void done(List<Comment>  objects, ParseException e) {
+                public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
                     if(GenelUtil.isAlive(SavedCommentActivity.this)){
                         if(e==null){
@@ -180,16 +180,18 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                                 if(isRefresh){
                                     refreshSetting();
                                 }
-                                initList(objects);
+                                initList((List<Comment>)objects.get("comments")
+                                        ,(boolean)objects.get("hasmore")
+                                        ,(Date)objects.get("date"));
                             }
                             else{
-                                initList(new ArrayList<>());
+                                initList(new ArrayList<>(),false,new Date());
                             }
 
 
                         }
                         else{
-                            initList(new ArrayList<>());
+                            initList(new ArrayList<>(),false,new Date());
 
 
                         }
@@ -199,10 +201,11 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
         }
     }
 
-    private void initList(List<Comment> objects){
+    private void initList(List<Comment> objects,boolean hasmore,Date date){
         if(GenelUtil.isAlive(this)){
+            this.date = date;
+            postson = !hasmore;
             if(objects.size()==0){
-                postson =true;
                 swipeRefreshLayout.setRefreshing(false);
                 if(list.size()>0){
                     if(list.get(list.size()-1).getString("type").equals("load")){
@@ -234,8 +237,6 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                 }
 
                 if(objects.size()<10){
-                    date = objects.get(objects.size()-1).getDate("date");
-                    postson =true;
                     loading =false;
                     for(int i=0;i<objects.size();i++){
                         if(!list.contains(objects.get(i))){
@@ -265,7 +266,6 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
 
                 }
                 else{
-                    date = objects.get(objects.size()-1).getDate("date");
                     for(int i=0;i<objects.size();i++){
                         if(!list.contains(objects.get(i))){
                             Comment comment = objects.get(i);

@@ -23,6 +23,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
+import com.sonata.socialapp.socialview.Hashtag;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
@@ -182,9 +183,9 @@ public class SettingsActivity extends AppCompatActivity {
                                 progressDialog.show();
                                 HashMap<String, Object> params = new HashMap<String, Object>();
                                 params.put("type",SonataUser.ACCOUNT_TYPE_CONTENT_CREATOR);
-                                ParseCloud.callFunctionInBackground("switchAccountType", params, new FunctionCallback<ParseUser>() {
+                                ParseCloud.callFunctionInBackground("switchAccountType", params, new FunctionCallback<HashMap>() {
                                     @Override
-                                    public void done(ParseUser object, ParseException e) {
+                                    public void done(HashMap object, ParseException e) {
                                         if(GenelUtil.isAlive(SettingsActivity.this)){
                                             if(e==null){
                                                 prvAccountLayout.setVisibility(View.GONE);
@@ -236,9 +237,9 @@ public class SettingsActivity extends AppCompatActivity {
                                 progressDialog.show();
                                 HashMap<String, Object> params = new HashMap<String, Object>();
                                 params.put("type",SonataUser.ACCOUNT_TYPE_PERSONAL);
-                                ParseCloud.callFunctionInBackground("switchAccountType", params, new FunctionCallback<ParseUser>() {
+                                ParseCloud.callFunctionInBackground("switchAccountType", params, new FunctionCallback<HashMap>() {
                                     @Override
-                                    public void done(ParseUser object, ParseException e) {
+                                    public void done(HashMap object, ParseException e) {
                                         if(GenelUtil.isAlive(SettingsActivity.this)){
                                             if(e==null){
                                                 privateAccount = findViewById(R.id.settingprivateaccountswitch);
@@ -253,9 +254,9 @@ public class SettingsActivity extends AppCompatActivity {
                                                             progressDialog.setMessage(getString(R.string.privaccount));
                                                             progressDialog.show();
                                                             HashMap<String,String> params = new HashMap<>();
-                                                            ParseCloud.callFunctionInBackground("makeProfilePrivate", params, new FunctionCallback<ParseUser>() {
+                                                            ParseCloud.callFunctionInBackground("makeProfilePrivate", params, new FunctionCallback<HashMap>() {
                                                                 @Override
-                                                                public void done(ParseUser object, ParseException e) {
+                                                                public void done(HashMap object, ParseException e) {
                                                                     if(!SettingsActivity.this.isDestroyed()&&!SettingsActivity.this.isFinishing()){
                                                                         if(e==null){
                                                                             progressDialog.dismiss();
@@ -277,9 +278,9 @@ public class SettingsActivity extends AppCompatActivity {
                                                             progressDialog.setMessage(getString(R.string.privaccount));
                                                             progressDialog.show();
                                                             HashMap<String,String> params = new HashMap<>();
-                                                            ParseCloud.callFunctionInBackground("makeProfileUnprivate", params, new FunctionCallback<ParseUser>() {
+                                                            ParseCloud.callFunctionInBackground("makeProfileUnprivate", params, new FunctionCallback<HashMap>() {
                                                                 @Override
-                                                                public void done(ParseUser object, ParseException e) {
+                                                                public void done(HashMap object, ParseException e) {
                                                                     if(!SettingsActivity.this.isDestroyed()&&!SettingsActivity.this.isFinishing()){
                                                                         if(e==null){
                                                                             progressDialog.dismiss();

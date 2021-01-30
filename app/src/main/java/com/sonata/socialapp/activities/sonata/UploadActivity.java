@@ -43,6 +43,7 @@ import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
+import com.sonata.socialapp.socialview.Hashtag;
 import com.sonata.socialapp.socialview.Mention;
 import com.sonata.socialapp.socialview.SocialAutoCompleteTextView;
 import com.sonata.socialapp.utils.GenelUtil;
@@ -493,13 +494,13 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
         params.put("text", postdesc.getText().toString().trim());
         params.put("medialist",parseFileList);
 
-        ParseCloud.callFunctionInBackground("shareImage", params, new FunctionCallback<Boolean>() {
+        ParseCloud.callFunctionInBackground("shareImage", params, new FunctionCallback<HashMap>() {
             @Override
-            public void done(Boolean postID, ParseException e) {
+            public void done(HashMap postID, ParseException e) {
                 if(!UploadActivity.this.isFinishing()&&!UploadActivity.this.isDestroyed()){
                     if(e==null){
 
-                        if(postID){
+                        if((boolean)postID.get("result")){
                             GenelUtil.saveUploadTexts(postdesc.getText().toString().trim());
                             //GenelUtil.saveUploadUri(uri.toString());
                             Intent data = new Intent();
@@ -607,13 +608,13 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                                                    lista.add(videoHash);
                                                                                                                    params.put("medialist",lista);
 
-                                                                                                                   ParseCloud.callFunctionInBackground("shareVideo", params, new FunctionCallback<Boolean>() {
+                                                                                                                   ParseCloud.callFunctionInBackground("shareVideo", params, new FunctionCallback<HashMap>() {
                                                                                                                        @Override
-                                                                                                                       public void done(Boolean postID, ParseException e) {
+                                                                                                                       public void done(HashMap postID, ParseException e) {
                                                                                                                            if(!UploadActivity.this.isFinishing()&&!UploadActivity.this.isDestroyed()){
                                                                                                                                if(e==null){
 
-                                                                                                                                   if(postID){
+                                                                                                                                   if((boolean)postID.get("result")){
                                                                                                                                        GenelUtil.saveUploadTexts(postdesc.getText().toString().trim());
                                                                                                                                        GenelUtil.saveUploadUri(uri.toString());
                                                                                                                                        Intent data = new Intent();
@@ -742,13 +743,13 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                        videoHash.put("thumbnail",thumbnail);
                                                                                        lista.add(videoHash);
                                                                                        params.put("medialist",lista);
-                                                                                       ParseCloud.callFunctionInBackground("shareVideo", params, new FunctionCallback<Boolean>() {
+                                                                                       ParseCloud.callFunctionInBackground("shareVideo", params, new FunctionCallback<HashMap>() {
                                                                                            @Override
-                                                                                           public void done(Boolean postID, ParseException e) {
+                                                                                           public void done(HashMap postID, ParseException e) {
                                                                                                if(!UploadActivity.this.isFinishing()&&!UploadActivity.this.isDestroyed()){
                                                                                                    if(e==null){
 
-                                                                                                       if(postID){
+                                                                                                       if((boolean)postID.get("result")){
                                                                                                            GenelUtil.saveUploadTexts(postdesc.getText().toString().trim());
                                                                                                            GenelUtil.saveUploadUri(uri.toString());
                                                                                                            Intent data = new Intent();
