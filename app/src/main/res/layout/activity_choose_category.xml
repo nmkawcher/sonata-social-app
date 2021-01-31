@@ -1,9 +1,843 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.sonata.ChooseCategoryActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:text="@string/choosecategory"
+                android:gravity="start"
+                android:layout_toStartOf="@+id/nexttextripple"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/nexttextripple"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:textColor="@color/blue"
+                    android:text="@string/nextc"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_settings"/>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:background="?attr/recyclerbackground"
+        android:layout_height="match_parent"
+        android:layout_below="@id/z_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:textColor="?attr/siyahyazı"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="7.5dp"
+                android:gravity="center_horizontal|top"
+                android:layout_height="wrap_content"
+                android:text="@string/chinttext"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_0">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_humor"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_0"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/humorfun"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_0"
+                        android:layout_toStartOf="@+id/content_check_0"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_0"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_1">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_cinema"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_1"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tvcinema"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_1"
+                        android:layout_toStartOf="@+id/content_check_1"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_1"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_2">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_pc"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_2"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pcgame"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_2"
+                        android:layout_toStartOf="@+id/content_check_2"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_2"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_3">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_atom"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_3"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sciencetech"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_3"
+                        android:layout_toStartOf="@+id/content_check_3"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_3"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_4">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_sport"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_4"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/spor"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_4"
+                        android:layout_toStartOf="@+id/content_check_4"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_4"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_6">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_sup"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_6"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/comic"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_6"
+                        android:layout_toStartOf="@+id/content_check_6"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_6"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_7">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_elephant"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_7"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nature"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_7"
+                        android:layout_toStartOf="@+id/content_check_7"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_7"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_8">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_bilgi"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_8"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bilgi"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_8"
+                        android:layout_toStartOf="@+id/content_check_8"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_8"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_13">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_diy"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_13"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/diy"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_13"
+                        android:layout_toStartOf="@+id/content_check_13"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_13"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_14">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_food"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_14"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/food"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_14"
+                        android:layout_toStartOf="@+id/content_check_14"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_14"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_15">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_approval"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_15"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/relaxing"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_15"
+                        android:layout_toStartOf="@+id/content_check_15"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_15"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_16">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_music"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_16"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/muzik"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_16"
+                        android:layout_toStartOf="@+id/content_check_16"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_16"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_5">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_arch"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_5"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mimarlik"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_5"
+                        android:layout_toStartOf="@+id/content_check_5"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_5"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_9">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_virgo"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_9"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/teen"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_9"
+                        android:layout_toStartOf="@+id/content_check_9"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_9"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_10">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_art"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_10"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/art"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_10"
+                        android:layout_toStartOf="@+id/content_check_10"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_10"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_11">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_roket"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_11"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/motiv"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_11"
+                        android:layout_toStartOf="@+id/content_check_11"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_11"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_height="40dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/content_ripple_12">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_love"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/content_icon_12"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/love"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/content_icon_12"
+                        android:layout_toStartOf="@+id/content_check_12"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <CheckBox
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/content_check_12"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+
+</RelativeLayout>

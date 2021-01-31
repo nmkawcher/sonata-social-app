@@ -389,7 +389,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
             swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
             getComments(null,false);
-            refreshComment(parentComment.getObjectId());
+            //refreshComment(parentComment.getObjectId());
             setSendButtonClickListener();
 
 
@@ -417,9 +417,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                         comment.setUpvote(comment.getUpvote2());
                         comment.setDownvote(comment.getDownvote2());
                         comment.setSaved(comment.getSaved2());
-                        if(adapter!=null){
-                            adapter.notifyDataSetChanged();
-                        }
+
 
 
 
@@ -577,6 +575,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                 if(isRefresh){
                                     refreshSetting();
                                 }
+
                                 initList((List<Comment>)objects.get("comments")
                                         ,(boolean)objects.get("hasmore")
                                         ,(Date)objects.get("date"));

@@ -206,9 +206,9 @@ public class EditProfileActivity extends AppCompatActivity {
                                         params.put("pp", media);
                                         params.put("name", name.getText().toString().trim());
                                         params.put("bio", bio.getText().toString().trim());
-                                        ParseCloud.callFunctionInBackground("updateOwnProfile", params, new FunctionCallback<ParseUser>() {
+                                        ParseCloud.callFunctionInBackground("updateOwnProfile", params, new FunctionCallback<HashMap>() {
                                             @Override
-                                            public void done(ParseUser object, ParseException e) {
+                                            public void done(HashMap object, ParseException e) {
                                                 if(e==null){
                                                     progressDialog.dismiss();
                                                     finish();

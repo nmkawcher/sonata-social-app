@@ -577,7 +577,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 if(!CommentActivity.this.isFinishing()&&!CommentActivity.this.isDestroyed()){
 
                     getComments(null,false);
-                    refreshPost(post.getObjectId());
+                    //refreshPost(post.getObjectId());
                 }
             }
             else{
@@ -776,8 +776,8 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
                     }
                     else{
-                        if(e.getCode()!=ParseException.OBJECT_NOT_FOUND&&e.getMessage().equals("Denied")){
-                            refreshPost(id);
+                        if(e.getCode()!=ParseException.OBJECT_NOT_FOUND&&e.getMessage().equals("Denied")&&e.getMessage().equals("denied")){
+                            refreshPostIlk(id);
                         }
 
 
@@ -850,6 +850,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                 if(isRefresh){
                                     refreshSetting();
                                 }
+
                                 initObjects((List<Comment>)objects.get("comments")
                                         ,(boolean)objects.get("hasmore")
                                         ,(Date)objects.get("date"));
@@ -944,17 +945,16 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 swipeRefreshLayout.setRefreshing(false);
                 if(list.get(list.size()-1).getString("type").equals("load")){
                     list.remove(list.size()-1);
+                    adapter.notifyItemRemoved(list.size());
                 }
                 if(list.size()==1){
                     Comment load = new Comment();
                     load.setType("boş");
                     list.add(load);
+                    adapter.notifyItemInserted(1);
                 }
 
-
-
-
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(list.size()-1);
                 loading =false;
                 swipeRefreshLayout.setRefreshing(false);
@@ -963,9 +963,10 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 if(list.size()>0){
                     if(list.get(list.size()-1).getString("type").equals("load")){
                         list.remove(list.size()-1);
+                        adapter.notifyItemRemoved(list.size());
                     }
                 }
-
+                int an = list.size();
                 if(objects.size()<20){
                     loading =false;
                     for(int i=0;i<objects.size();i++){
@@ -984,8 +985,8 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
 
 
-
-                    adapter.notifyDataSetChanged();
+                    adapter.notifyItemRangeInserted(an, list.size()-an);
+                    //adapter.notifyDataSetChanged();
 
 
 
@@ -1016,8 +1017,8 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     Comment load = new Comment();
                     load.setType("load");
                     list.add(load);
-
-                    adapter.notifyDataSetChanged();
+                    adapter.notifyItemRangeInserted(an, list.size()-an);
+                    //adapter.notifyDataSetChanged();
 
                     loading =false;
                     swipeRefreshLayout.setRefreshing(false);

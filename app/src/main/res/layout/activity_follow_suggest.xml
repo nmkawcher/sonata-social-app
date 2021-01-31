@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.sonata.FollowSuggestActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_toStartOf="@+id/nexttextripple"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:text="@string/suggestions"
+                android:gravity="start"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/nexttextripple"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:textColor="@color/blue"
+                    android:text="@string/nextc"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_settings"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:paddingTop="5dp"
+        android:clipToPadding="false"
+        android:layout_below="@+id/z_toolbar"
+        android:background="?attr/recyclerbackground"
+        android:id="@+id/folreqrecyclerview"
+        android:layout_height="match_parent"/>
+
+
+</RelativeLayout>

@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //startActivity(new Intent(this,ChooseCategoryActivity.class));
         MyApp.ses=false;
         //GenelUtil.ToastLong(this,Build.MODEL);
         if(getIntent() != null && getIntent().getBooleanExtra("newregister",false)){

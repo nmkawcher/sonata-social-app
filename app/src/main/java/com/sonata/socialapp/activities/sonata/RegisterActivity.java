@@ -120,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                                 if(user!=null){
                                                                     if(e==null){
                                                                         GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),RegisterActivity.this);
-                                                                        startActivity(new Intent(RegisterActivity.this,MainActivity.class).putExtra("newregister",true));
+                                                                        startActivity(new Intent(RegisterActivity.this,ChooseCategoryActivity.class));
                                                                         finish();
                                                                     }
                                                                 }

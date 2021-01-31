@@ -327,7 +327,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(((GridLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition()>(list.size()-7)){
+                if(((GridLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition()>(list.size()-4)){
                     if(!loading&&!postson){
                         loading=true;
                         getPosts(date,false);
@@ -1225,7 +1225,21 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                 if(user.getFollow()){
                                     adapter.setUser(user);
 
-                                    getPosts(date,isRefresh);
+                                    //getPosts(date,isRefresh);
+                                    HashMap ps = (HashMap) objects.get("posts");
+                                    if(ps!= null){
+                                        if(isRefresh){
+                                            list.clear();
+                                            adapter.notifyDataSetChanged();
+                                            if(postAdapter!=null){
+                                                postAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                        initList((List<Post>) ps.get("posts")
+                                                ,(boolean) ps.get("hasmore")
+                                                ,(Date) ps.get("date"));
+
+                                    }
 
                                 }
                                 else{
@@ -1248,7 +1262,21 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                             }
                             else{
                                 adapter.setUser(user);
-                                getPosts(date,isRefresh);
+                                //getPosts(date,isRefresh);
+                                HashMap ps = (HashMap) objects.get("posts");
+                                if(ps!= null){
+                                    if(isRefresh){
+                                        list.clear();
+                                        adapter.notifyDataSetChanged();
+                                        if(postAdapter!=null){
+                                            postAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                    initList((List<Post>) ps.get("posts")
+                                            ,(boolean) ps.get("hasmore")
+                                            ,(Date) ps.get("date"));
+
+                                }
                             }
 
 
@@ -1671,7 +1699,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     @Override
                     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                         super.onScrolled(recyclerView, dx, dy);
-                        if(((LinearLayoutManager)postRecyclerView.getLayoutManager()).findFirstVisibleItemPosition()>(list.size()-10)&&!loading&&!postson){
+                        if(((LinearLayoutManager)postRecyclerView.getLayoutManager()).findFirstVisibleItemPosition()>(list.size()-4)&&!loading&&!postson){
                             loading=true;
                             getPosts(date,false);
                         }

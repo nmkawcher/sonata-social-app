@@ -29,6 +29,8 @@
 
     <string name="settings">Settings</string>
 
+    <string name="choosecategory">Choose category</string>
+
     <string name="groupsettings">Group options</string>
 
     <string name="search">Search</string>
@@ -348,6 +350,8 @@
     <string name="reply">Reply</string>
     <string name="account">Account</string>
 
+    <string name="chinttext">What are your interests? We will try to show you relevant posts and accounts based on this.</string>
+
     <string name="close">Close</string>
 
     <string name="confirm">Confirm</string>
@@ -385,6 +389,8 @@
 
     <string name="blockedaccounts">Blocked accounts</string>
 
+    <string name="suggestions">Suggestions</string>
+
     <string name="createnewgroup">Create new group</string>
 
     <string name="selectnewimage">Select new image</string>
@@ -416,6 +422,44 @@
     <string name="switchaccount">Switch Account</string>
     <string name="addaccount">Add Account</string>
     <string name="video">Video</string>
+
+    <string name="humorfun">Humor, Fun, Funny</string>
+
+    <string name="tvcinema">Tv shows, Movies, Cinema</string>
+
+    <string name="pcgame">PC, Gamer, Gaming, Setups, Streams</string>
+
+    <string name="sciencetech">Science, Technology, Space</string>
+
+    <string name="spor">Sports, Athlete</string>
+
+    <string name="mimarlik">Architecture, Buildings</string>
+
+    <string name="comic">Comic book, Super hero</string>
+
+    <string name="nature">Animals, Nature</string>
+
+    <string name="bilgi">Information, General knowledge</string>
+
+    <string name="teen">Aesthetic, Teens</string>
+
+    <string name="art">Art</string>
+
+    <string name="motiv">Motivation, Inspiring</string>
+
+    <string name="love">Love, Relationship</string>
+
+    <string name="diy">Tutorials, Life tips, Crafts</string>
+
+    <string name="food">Food, Cooking, Chef</string>
+
+    <string name="relaxing">Relaxing, Satisfying</string>
+
+    <string name="muzik">Music, Song</string>
+
+    <string name="nextc">Next</string>
+
+    <string name="skip">Skip</string>
 
 
 </resources>

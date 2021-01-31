@@ -289,9 +289,9 @@
                             android:layout_below="@+id/profilename"
                             android:layout_alignParentLeft="true"
                             android:layout_marginLeft="20dp"
+                            android:textColor="?attr/siyahyazı"
                             android:layout_marginTop="10dp"
                             android:id="@+id/profilebio"
-                            android:autoLink="all"
                             android:layout_marginRight="50dp"/>
 
                         <TextView

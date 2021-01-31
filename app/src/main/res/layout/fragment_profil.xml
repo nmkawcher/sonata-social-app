@@ -206,7 +206,7 @@
                             android:layout_marginLeft="20dp"
                             android:layout_marginTop="10dp"
                             android:id="@+id/profilebio"
-                            android:autoLink="all"
+                            android:textColor="?attr/siyahyazı"
                             android:layout_marginRight="50dp"/>
 
                         <TextView

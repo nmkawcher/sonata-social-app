@@ -26,7 +26,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.sonata.ChooseCategoryActivity"></activity>
+        <activity android:name=".activities.sonata.FollowSuggestActivity"></activity>
+        <activity android:name=".activities.sonata.ChooseCategoryActivity" />
         <activity
             android:name=".activities.sonata.GetRestDiscoverActivity"
             android:screenOrientation="portrait"

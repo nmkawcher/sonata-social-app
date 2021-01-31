@@ -221,4 +221,26 @@
     <string name="byregisteryouaccespt">Kayıt olarak aşağıdaki anlaşmaları kabul etmiş sayılırsınız</string>
     <string name="useragreement">Kullanıcı sözleşmesi</string>
     <string name="privacypolicy">Gizlilik sözleşmesi</string>
+    <string name="choosecategory">Kategori seç</string>
+    <string name="chinttext">İlgi alanların neler? Seçimine bağlı olarak sana daha alakalı gönderiler ve hesaplar önermeye çalışacağız.</string>
+    <string name="humorfun">Mizah, Eğlence, Komik</string>
+    <string name="tvcinema">Diziler, Filmler, Sinema</string>
+    <string name="pcgame">PC, Oyun, Oyuncu, Sistem, Yayın</string>
+    <string name="sciencetech">Bilim, Teknoloji, Uzay</string>
+    <string name="spor">Spor, Sporcu</string>
+    <string name="mimarlik">Mimarlık, Yapılar</string>
+    <string name="comic">Çizgi roman, Süper kahraman</string>
+    <string name="nature">Hayvanlar, Doğa</string>
+    <string name="bilgi">Bilgi, Genel kültür</string>
+    <string name="teen">Aesthetic, Genç</string>
+    <string name="art">Sanat</string>
+    <string name="motiv">Motivasyon, İlham verici</string>
+    <string name="love">Aşk, İlişki</string>
+    <string name="diy">Öğretici, İpuçları, Zanaat</string>
+    <string name="food">Yemek, Yemek pişirmek, Aşçı</string>
+    <string name="relaxing">Rahatlatıcı, Tatmin edici</string>
+    <string name="muzik">Müzik, Şarkı</string>
+    <string name="nextc">İleri</string>
+    <string name="skip">Geç</string>
+    <string name="suggestions">Önerilenler</string>
 </resources>
