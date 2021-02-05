@@ -49,13 +49,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +78,109 @@ public class GenelUtil {
     public static void editSavedUser(String id, Context context){
 
     }
+
+    public static void updateUser(JSONObject user,Context context){
+        SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
+        String userArrayStr = pref.getString("accounts","");
+
+        try {
+            if(userArrayStr != null && userArrayStr.length()>0){
+                Log.e("deneme","string not null");
+                JSONObject jsonObject = new JSONObject(userArrayStr);
+                JSONArray array = jsonObject.getJSONArray("users");
+
+
+
+                    JSONObject jsonObject2 = new JSONObject();
+                    JSONArray newArr = new JSONArray();
+                    newArr.put(user);
+
+                    for(int i=0;i<array.length();i++){
+                        JSONObject us = array.getJSONObject(i);
+                        if(!us.get("id").equals(user.get("id"))){
+                            newArr.put(us);
+                        }
+                    }
+
+                    jsonObject2.put("users",newArr);
+                    SharedPreferences.Editor editor = pref.edit();
+
+                    editor.putString("accounts",jsonObject2.toString());
+                    editor.apply();
+
+
+            }
+            else{
+                Log.e("deneme","string null yada uzunluk 0");
+                JSONObject jsonObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                array.put(user);
+                jsonObject.put("users",array);
+                SharedPreferences.Editor editor = pref.edit();
+
+                editor.putString("accounts",jsonObject.toString());
+                editor.apply();
+            }
+
+        } catch (JSONException e) {
+            Log.e("saveUser",e.toString());
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void updateUser2(JSONObject user,Context context){
+        SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
+        String userArrayStr = pref.getString("accounts","");
+
+        try {
+            if(userArrayStr != null && userArrayStr.length()>0){
+                Log.e("deneme","string not null");
+                JSONObject jsonObject = new JSONObject(userArrayStr);
+                JSONArray array = jsonObject.getJSONArray("users");
+
+
+
+                JSONObject jsonObject2 = new JSONObject();
+                JSONArray newArr = new JSONArray();
+                newArr.put(user);
+
+                for(int i=0;i<array.length();i++){
+                    JSONObject us = array.getJSONObject(i);
+                    if(!us.get("id").equals(user.get("id"))){
+                        newArr.put(us);
+                    }
+                }
+
+                jsonObject2.put("users",newArr);
+                SharedPreferences.Editor editor = pref.edit();
+
+                editor.putString("accounts",jsonObject2.toString());
+                editor.apply();
+
+
+            }
+            else{
+                Log.e("deneme","string null yada uzunluk 0");
+                JSONObject jsonObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                array.put(user);
+                jsonObject.put("users",array);
+                SharedPreferences.Editor editor = pref.edit();
+
+                editor.putString("accounts",jsonObject.toString());
+                editor.apply();
+            }
+
+        } catch (JSONException e) {
+            Log.e("saveUser",e.toString());
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     public static void saveNewUser(JSONObject user,Context context){
         SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);

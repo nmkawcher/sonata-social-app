@@ -38,6 +38,7 @@ import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseCloud;
+import com.parse.ParseDecoder;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -331,10 +332,9 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
             postson=false;
             get(null,true);
             HashMap<String,String> params = new HashMap<>();
-            ParseCloud.callFunctionInBackground("refreshOwnProfile", params, (FunctionCallback<ParseUser>) (object, e) -> {
+            ParseCloud.callFunctionInBackground("refreshOwnProfile", params, (FunctionCallback<HashMap>) (object, e) -> {
                 if(e==null){
-                    user = (SonataUser) object;
-                    user.revert("followreqcount");
+                    user = (SonataUser)object.get("user");
                     setProfile(user);
                 }
 

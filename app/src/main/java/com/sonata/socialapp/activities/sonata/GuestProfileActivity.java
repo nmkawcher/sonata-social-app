@@ -1154,18 +1154,18 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     post.setPost(p2);
                     list.add(post);
                 }
-                loading =false;
+
                 if(hasmore){
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
                 }
-
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyItemRangeInserted(an, list.size()-an);
                 if(postAdapter!=null){
                     postAdapter.notifyItemRangeInserted(an, list.size()-an);
                 }
-
+                loading = false;
 
 
 
