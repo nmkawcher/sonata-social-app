@@ -459,16 +459,17 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                         params.put("text", commenttext.getText().toString().trim());
                         params.put("post",post.getObjectId());
                         params.put("reply",parentComment.getObjectId());
-                        ParseCloud.callFunctionInBackground("commentText", params, new FunctionCallback<Comment>() {
+                        ParseCloud.callFunctionInBackground("commentText", params, new FunctionCallback<HashMap>() {
                             @Override
-                            public void done(Comment postID, ParseException e) {
+                            public void done(HashMap postID, ParseException e) {
                                 if(!CommentReplyActivity.this.isFinishing()||!CommentReplyActivity.this.isDestroyed()){
                                     alertDialog.dismiss();
                                     if(e==null){
                                         if(list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
                                             list.remove(list.size()-1);
                                         }
-                                        list.add(postID);
+                                        Comment com = (Comment) postID.get("comment");
+                                        list.add(com);
                                         parentComment.increment("replycount");
                                         post.increment("commentnumber");
                                         adapter.notifyDataSetChanged();
