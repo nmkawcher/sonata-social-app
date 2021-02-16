@@ -209,10 +209,13 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                         if(t.equals(commenttext.getText().toString())){
                                             HashMap<String, Object> params = new HashMap<>();
                                             params.put("text",queryString.replace("@","").toLowerCase());
-                                            ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<List<SonataUser>>) (object, e) -> {
+                                            ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                                 Log.e("done","done");
                                                 if(GenelUtil.isAlive(CommentReplyActivity.this)){
+
                                                     if(e==null){
+                                                        List<SonataUser> object = (List<SonataUser>) objecta.get("users");
+
                                                         if(t.equals(commenttext.getText().toString())){
                                                             if(object!= null){
                                                                 defaultMentionAdapter.clear();
@@ -266,10 +269,11 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                     if(t.equals(commenttext.getText().toString())){
                                         HashMap<String, Object> params = new HashMap<>();
                                         params.put("text",t.replace("@","").toLowerCase());
-                                        ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<List<SonataUser>>) (object, e) -> {
+                                        ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                             Log.e("done","done");
                                             if(GenelUtil.isAlive(CommentReplyActivity.this)){
                                                 if(e==null){
+                                                    List<SonataUser> object = (List<SonataUser>) objecta.get("users");
                                                     if(t.equals(commenttext.getText().toString())){
                                                         if(object!= null){
                                                             defaultMentionAdapter.clear();

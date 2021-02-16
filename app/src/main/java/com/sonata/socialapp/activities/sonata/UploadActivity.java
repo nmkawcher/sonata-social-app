@@ -89,6 +89,8 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
     private long mLastClickTime = 0;
     private final int imagerequestcode = 13271;
     private final int videorequestcode = 24381;
+    private final int newvideorequestcode = 35492;
+
     RelativeLayout uploadsec;
     SocialAutoCompleteTextView postdesc;
     RelativeLayout addphoto,addvideo,backbutton,uploadbutton;
@@ -208,10 +210,12 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                         if(t.equals(postdesc.getText().toString())){
                                             HashMap<String, Object> params = new HashMap<>();
                                             params.put("text",queryString.replace("@","").toLowerCase());
-                                            ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<List<SonataUser>>) (object, e) -> {
+                                            ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                                 Log.e("done","done");
                                                 if(GenelUtil.isAlive(UploadActivity.this)){
                                                     if(e==null){
+                                                        List<SonataUser> object = (List<SonataUser>) objecta.get("users");
+
                                                         if(t.equals(postdesc.getText().toString())){
                                                             if(object!= null){
                                                                 defaultMentionAdapter.clear();
@@ -265,10 +269,12 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                     if(t.equals(postdesc.getText().toString())){
                                         HashMap<String, Object> params = new HashMap<>();
                                         params.put("text",t.replace("@","").toLowerCase());
-                                        ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<List<SonataUser>>) (object, e) -> {
+                                        ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                             Log.e("done","done");
                                             if(GenelUtil.isAlive(UploadActivity.this)){
                                                 if(e==null){
+                                                    List<SonataUser> object = (List<SonataUser>) objecta.get("users");
+
                                                     if(t.equals(postdesc.getText().toString())){
                                                         if(object!= null){
                                                             defaultMentionAdapter.clear();
@@ -387,7 +393,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                         progressDialog.setMessage(getString(R.string.preparingimage));
 
                         Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-                        options.size=55;
+                        options.size=155;
 
                         List<Uri> uriList = new ArrayList<>();
                         for(int i = 0;i<list.size();i++){
@@ -926,6 +932,55 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
 
                 }
 
+                else if(requestCode == newvideorequestcode){
+                    Uri uri=data.getData();
+                    try{
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(this,uri);
+
+                        long sure = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+
+                        Log.e("Video Suresi :",sure+"");
+                        if(sure>60500){
+                            progressDialog.dismiss();
+                            GenelUtil.ToastLong(getApplicationContext(),getString(R.string.videosure));
+                        }
+                        else{
+                            if(adapter==null){
+                                list = new ArrayList<>();
+                                list.add(new UploadObject(uri,"video"));
+
+                                adapter = new UploadPostAdapter();
+                                adapter.setContext(list,Glide.with(UploadActivity.this),UploadActivity.this);
+                                LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
+                                linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+                                recyclerView.setLayoutManager(linearLayoutManager);
+                                recyclerView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            }
+                            else{
+                                if(list.size()>0){
+                                    if(list.get(list.size()-1).getType().equals("add")){
+                                        list.remove(list.size()-1);
+                                    }
+                                }
+                                if(list.size()==0){
+                                    list.add(new UploadObject(uri,"video"));
+                                }
+
+                                adapter.notifyDataSetChanged();
+                            }
+                            uploadsec.setVisibility(View.GONE);
+                            uploadbutton.setVisibility(View.VISIBLE);
+                            progressDialog.dismiss();
+
+                        }
+                    }catch (Exception e){
+                        GenelUtil.ToastLong(UploadActivity.this,getString(R.string.error)+e.getMessage());
+                        progressDialog.dismiss();
+                    }
+                }
+
                 else if(requestCode==videorequestcode){
                     progressDialog.show();
                     List<Uri> tList = Matisse.obtainResult(data);
@@ -1082,7 +1137,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
     }
 
     private void selectVideo(){
-        Matisse.from(UploadActivity.this)
+        /*Matisse.from(UploadActivity.this)
                 .choose(MimeType.of(MimeType.MP4,MimeType.AVI,MimeType.MKV,MimeType.MPEG))
                 .countable(true)
                 .maxSelectable(1)
@@ -1092,6 +1147,11 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                 .showSingleMediaType(true)
                 .imageEngine(new GlideEngine())
                 .showPreview(true) // Default is `true`
-                .forResult(videorequestcode);
+                .forResult(videorequestcode);*/
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setType("video/*");
+        startActivityForResult(Intent.createChooser(intent,getString(R.string.video)),newvideorequestcode);
     }
 }

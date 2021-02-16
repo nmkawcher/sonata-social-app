@@ -131,7 +131,7 @@ public class DiscoverFragment extends Fragment implements GridClick {
 
                     }
                     else{
-                        Log.e("error code",""+e.getCode());
+                        Log.e("error code",""+e.toString());
                         if(e.getCode() == ParseException.CONNECTION_FAILED){
                             getReqs(date,isRefresh);
                         }

@@ -243,4 +243,15 @@
     <string name="nextc">İleri</string>
     <string name="skip">Geç</string>
     <string name="suggestions">Önerilenler</string>
+    <string name="advancedsettings">Gelişmiş ayarlar</string>
+    <string name="changeemail">E-posta değiştir</string>
+    <string name="changepassword">Şifre değiştir</string>
+    <string name="newemail">Yeni e-posta</string>
+    <string name="currentpassword">Mevcut şifre</string>
+    <string name="emailchanged">E-posta değiştirildi</string>
+    <string name="passwordchanged">Şifre değiştirildi</string>
+    <string name="newpassword">Yeni şifre</string>
+    <string name="newpasswordagain">Yeni şifre tekrar</string>
+    <string name="passwordsdoesntmatch">Şifreler eşleşmiyor</string>
+    <string name="changepasstext">Eğer şifreni değiştirirsen hesaptan çıkış yapılır ve tekrar giriş yapmak zorunda kalırsın. Devam etmek istiyor musun?</string>
 </resources>

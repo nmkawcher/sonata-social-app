@@ -68,10 +68,13 @@ public class StartActivity extends AppCompatActivity {
         if(userList.length()>a){
             try {
                 JSONObject usob = (JSONObject) userList.get(a);
+
                 ParseUser.becomeInBackground(usob.getString("session"), new LogInCallback() {
                     @Override
                     public void done(ParseUser user, ParseException e) {
                         if(e==null){
+                            String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
+                            GenelUtil.ToastLong(StartActivity.this,text);
                             MobileAds.initialize(StartActivity.this, new OnInitializationCompleteListener() {
                                 @Override
                                 public void onInitializationComplete(InitializationStatus initializationStatus) {

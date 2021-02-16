@@ -210,7 +210,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                             @Override
                                             public void done(HashMap object, ParseException e) {
                                                 if(e==null){
-                                                    GenelUtil.updateUser(GenelUtil.convertUserToJson((SonataUser) object.get("user")),EditProfileActivity.this);
+                                                    GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) object.get("user")),EditProfileActivity.this);
                                                     progressDialog.dismiss();
                                                     finish();
                                                 }

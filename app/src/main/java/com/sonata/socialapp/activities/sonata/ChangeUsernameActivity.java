@@ -20,6 +20,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.classes.SonataUser;
 
 import java.util.HashMap;
 
@@ -206,6 +207,7 @@ public class ChangeUsernameActivity extends AppCompatActivity {
                         public void done(HashMap object, ParseException e) {
                             if(GenelUtil.isAlive(ChangeUsernameActivity.this)){
                                 if(e==null){
+                                    GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) object.get("user")),ChangeUsernameActivity.this);
                                     progressDialog.dismiss();
                                     onBackPressed();
                                 }

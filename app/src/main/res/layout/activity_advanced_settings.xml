@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.sonata.AdvancedSettingsActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="50dp"
+                app:corner_radius="25dp"
+                android:id="@+id/backbutton"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_height="50dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/backbuttonbutton"
+                    android:background="?attr/selectableItemBackground"
+
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="6dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icback"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_toEndOf="@+id/backbutton"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:text="@string/advancedsettings"
+                android:gravity="start"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:background="?attr/recyclerbackground"
+        android:layout_height="match_parent"
+        android:layout_below="@id/z_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:layout_height="60dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/changeusername"
+                    android:background="?attr/selectableItemBackground"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="3dp"
+                            android:src="@drawable/ic_at_settings"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginEnd="15dp"
+                            android:id="@+id/changeusernameicon"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/changeusername"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/changeusernameicon"
+                            android:textStyle="bold"
+                            android:textColor="?attr/siyahyazı"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:layout_height="60dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/changeemail"
+                    android:background="?attr/selectableItemBackground"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="3dp"
+                            android:src="@drawable/ic_email"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginEnd="15dp"
+                            android:id="@+id/changeemailicon"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/changeemail"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/changeemailicon"
+                            android:textStyle="bold"
+                            android:textColor="?attr/siyahyazı"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:layout_height="60dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/changepass"
+                    android:background="?attr/selectableItemBackground"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="3dp"
+                            android:src="@drawable/ic_passw"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginEnd="15dp"
+                            android:id="@+id/changepassicon"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/changepassword"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/changepassicon"
+                            android:textStyle="bold"
+                            android:textColor="?attr/siyahyazı"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/cvbnhh"
+                    android:layout_height="52.5dp">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_type"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/ppico"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/accounttype"
+                        android:gravity="start"
+                        android:id="@+id/vvghty"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/ppico"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/vvghty"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginStart="15dp"
+                        android:id="@+id/settingsaccountypespinner"/>
+
+
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ifyouselect"
+                    android:gravity="start"
+                    android:layout_below="@+id/cvbnhh"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="18dp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?attr/beyazbackground"
+                android:layout_marginTop="7.5dp"
+                android:id="@+id/praclayout"
+                android:layout_height="60dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_lock"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="15dp"
+                        android:id="@+id/privateaccounticon"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privaccount"
+                        android:gravity="start"
+                        android:layout_toStartOf="@+id/settingprivateaccountswitch"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/privateaccounticon"
+                        android:textStyle="bold"
+                        android:textColor="?attr/siyahyazı"/>
+
+                    <Switch
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginStart="15dp"
+                        android:id="@+id/settingprivateaccountswitch"/>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

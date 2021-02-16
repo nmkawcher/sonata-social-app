@@ -5,7 +5,7 @@
 
     <string name="tab_home">Home</string>
     <string name="tab_backyard">Groups</string>
-    <string name="tab_discover">Discover</string>
+    <string name="tab_discover">Explore</string>
     <string name="tab_notif">Notifications</string>
     <string name="tab_profile">Profile</string>
     <string name="namesurname">Name</string>
@@ -84,6 +84,8 @@
     <string name="blockpost">Chain Post</string>
 
     <string name="username">Username</string>
+    <string name="newemail">New e-mail</string>
+
 
     <string name="usernametoolong">Username too long</string>
 
@@ -93,6 +95,17 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="error">Error</string>
+    <string name="emailchanged">E-mail changed</string>
+
+
+    <string name="passwordchanged">Password changed</string>
+
+    <string name="currentpassword">Current password</string>
+
+    <string name="newpassword">New password</string>
+    <string name="newpasswordagain">New password again</string>
+
+    <string name="passwordsdoesntmatch">Passwords doesn\'t match</string>
 
 
     <string name="youcantselectmorethanfour">You can\'t select more than four images</string>
@@ -250,6 +263,9 @@
 
     <string name="deletetitle">Delete post?</string>
 
+
+    <string name="changepasstext">If you change your password you will log out now and you have to login again. Do you want to countinue?</string>
+
     <string name="deleteandbantitle">Delete post and ban user?</string>
 
     <string name="deletetitlecomment">Delete comment?</string>
@@ -364,15 +380,15 @@
 
     <string name="swtocr">Switch account type to Content creator?</string>
 
-    <string name="swtocrdesc">If you select Content creator, your posts will be visible on discover tab</string>
+    <string name="swtocrdesc">If you select Content creator, your posts will be visible on explore tab</string>
 
     <string name="swtopa">Switch account type to Personal account?</string>
 
-    <string name="swtopadesc">If you select Personal account, your posts will not be visible on discover tab</string>
+    <string name="swtopadesc">If you select Personal account, your posts will not be visible on explore tab</string>
 
     <string name="atchanged">Account type changed successfully</string>
 
-    <string name="ifyouselect">If you select Content creator, your posts will be visible on discover tab. Posts of personal accounts doesn\'t reach to discover tab.</string>
+    <string name="ifyouselect">If you select Content creator, your posts will be visible on explore tab. Posts of personal accounts doesn\'t reach to explore tab.</string>
 
     <string name="contentcreator">Content creator</string>
 
@@ -409,9 +425,15 @@
 
     <string name="savedposts">Saved posts</string>
 
+    <string name="advancedsettings">Advanced settings</string>
+
     <string name="savedcomments">Saved comments</string>
 
     <string name="changeusername">Change username</string>
+
+    <string name="changeemail">Change e-mail</string>
+
+    <string name="changepassword">Change password</string>
 
     <string name="opensourcelicences">Open source licences</string>
 
