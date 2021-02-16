@@ -58,6 +58,8 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
             }
         });
         SonataUser user = (SonataUser) ParseUser.getCurrentUser();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
         prvAccountLayout = findViewById(R.id.praclayout);
         spinner = findViewById(R.id.settingsaccountypespinner);
         List<String> list = new ArrayList<>();
