@@ -589,7 +589,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     }
     public void notifyAdapter(){
         if(lastCommentPosition > -1 && list != null){
-            if(list.get(lastCommentPosition).getPost().getIsDeleted()){
+            if(list.get(lastCommentPosition).getPost() != null && list.get(lastCommentPosition).getPost().getIsDeleted()){
                 list.remove(lastCommentPosition);
             }
         }

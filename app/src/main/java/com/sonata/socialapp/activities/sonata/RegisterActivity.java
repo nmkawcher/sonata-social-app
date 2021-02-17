@@ -76,6 +76,24 @@ public class RegisterActivity extends AppCompatActivity {
                 customTabsIntent.launchUrl(RegisterActivity.this, Uri.parse(url));
             }
         });
+
+        privacyPolicy = findViewById(R.id.privacypolicy);
+        privacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                String url = "https://cdn-sn-1-i.sonatasocialapp.com/b0de9d742124c27da0a82cd2a59fb3d4_privacy-policy.html";
+
+                if(GenelUtil.getNightMode()){
+                    builder.setToolbarColor(Color.parseColor("#303030"));
+                }
+                else{
+                    builder.setToolbarColor(Color.parseColor("#ffffff"));
+                }
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(RegisterActivity.this, Uri.parse(url));
+            }
+        });
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

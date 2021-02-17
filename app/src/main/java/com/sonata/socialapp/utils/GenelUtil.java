@@ -669,10 +669,8 @@ public class GenelUtil {
                 // Night mode is active, we're using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
-                return pref.getBoolean("nightMode",false);
+                return pref.getBoolean("nightMode",true);
         }
-
-
     }
 
     public static boolean getNightModeApp(Context context){
@@ -686,7 +684,7 @@ public class GenelUtil {
                 // Night mode is active, we're using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
-                return pref.getBoolean("nightMode",false);
+                return pref.getBoolean("nightMode",true);
         }
 
     }

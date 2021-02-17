@@ -245,9 +245,10 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
         if(GenelUtil.isAlive(this)){
             Log.e("done","InitListActive");
-
+            postson =!hasmore;
+            this.date = date;
             if(objects.size()==0){
-                postson =true;
+
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
@@ -286,7 +287,6 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
                     }
                 }
                 int an = list.size();
-                date=objects.get(objects.size()-1).getCreatedAt();
                 for(int i=0;i<objects.size();i++){
                     String a = String.valueOf(i+1);
                     if(2 == Integer.parseInt(a.substring(a.length() - 1))){
@@ -312,11 +312,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
                 loading =false;
                 swipeRefreshLayout.setRefreshing(false);
-                if(objects.size()<10){
-                    postson = true;
-                }
-                else{
-                    postson=false;
+                if(hasmore){
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
