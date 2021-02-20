@@ -131,46 +131,120 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
             }
         };
 
+        post = getIntent().getParcelableExtra("post");
+        if(post != null) {
+            kategori = post.getUser() != null ? post.getUser().getContent() : new ArrayList<>();
+            list=new ArrayList<>();
+            ListObject posto = new ListObject();
+            posto.setType(post.getType());
+            posto.setPost(post);
+            seenList.add(post.getObjectId());
+            list.add(posto);
+            listreklam = new ArrayList<>();
+            ListObject object2 = new ListObject();
+            object2.setType("load");
+            list.add(object2);
+            linearLayoutManager=new LinearLayoutManager(GetRestDiscoverActivity.this);
+            linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            adapter=new SafPostAdapter();
+            adapter.setContext(list, Glide.with(GetRestDiscoverActivity.this),this);
+            adapter.setHasStableIds(true);
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            recyclerView.smoothScrollBy(0,1);
 
-        list=new ArrayList<>();
-        ListObject posto = new ListObject();
-        posto.setType(post.getType());
-        posto.setPost(post);
-        list.add(posto);
-        listreklam = new ArrayList<>();
-        ListObject object2 = new ListObject();
-        object2.setType("load");
-        list.add(object2);
-        linearLayoutManager=new LinearLayoutManager(GetRestDiscoverActivity.this);
-        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        adapter=new SafPostAdapter();
-        adapter.setContext(list, Glide.with(GetRestDiscoverActivity.this),this);
-        adapter.setHasStableIds(true);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        recyclerView.smoothScrollBy(0,1);
+            onRefreshListener = () -> {
+                if(!loading){
+                    loading=true;
 
-        onRefreshListener = () -> {
-            if(!loading){
-                loading=true;
+                    date=null;
 
-                date=null;
+                    getReqs(null,true,kategori);
 
-                getReqs(null,true,kategori);
+                }
+            };
+            swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
+
+
+            recyclerView.addOnScrollListener(onScrollListener);
+
+            if(GenelUtil.isAlive(this)){
+                getReqs(null,false,kategori);
             }
-        };
-        swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
+        }
+        else{
+            String id = getIntent().getStringExtra("id");
+            seenList.add(id);
+            if(id!=null){
+
+                list=new ArrayList<>();
+
+                listreklam = new ArrayList<>();
+                ListObject object2 = new ListObject();
+                object2.setType("load");
+                list.add(object2);
+                linearLayoutManager=new LinearLayoutManager(GetRestDiscoverActivity.this);
+                linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                adapter=new SafPostAdapter();
+                adapter.setContext(list, Glide.with(GetRestDiscoverActivity.this),this);
+                adapter.setHasStableIds(true);
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollBy(0,1);
+
+                onRefreshListener = () -> {
+                    if(!loading){
+                        loading=true;
+
+                        date=null;
+
+                        getReqs(null,true,kategori);
+
+                    }
+                };
+                swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
 
 
-        recyclerView.addOnScrollListener(onScrollListener);
+                recyclerView.addOnScrollListener(onScrollListener);
 
-        if(GenelUtil.isAlive(this)){
-            getReqs(null,false,kategori);
+                if(GenelUtil.isAlive(this)){
+                    getPost(id);
+                    //getReqs(null,false,kategori);
+                }
+            }
         }
 
+
+    }
+
+    private void getPost(String id) {
+        HashMap<String,String> params = new HashMap<>();
+        params.put("id",id);
+        ParseCloud.callFunctionInBackground("updatePost", params, new FunctionCallback<Post>() {
+            @Override
+            public void done(Post post, ParseException e) {
+                if(e==null){
+                    kategori = post.getUser() != null ? post.getUser().getContent() : new ArrayList<>();
+                    GetRestDiscoverActivity.this.post = post;
+                    ListObject posto = new ListObject();
+                    posto.setType(post.getType());
+                    posto.setPost(post);
+                    if(list.size()>0){
+                        if(list.get(list.size()-1).getType().equals("load")){
+                            list.remove(list.size()-1);
+
+                        }
+                    }
+                    list.add(posto);
+                    adapter.notifyDataSetChanged();
+                    getReqs(null,false,kategori);
+                }
+            }
+        });
     }
 
     @Override

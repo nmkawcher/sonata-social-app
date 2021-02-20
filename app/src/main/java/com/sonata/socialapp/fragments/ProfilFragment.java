@@ -245,6 +245,9 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         });
         RelativeLayout settings = view.findViewById(R.id.appoptionsripple);
         settings.setOnClickListener(v -> {
+            if(dialog != null){
+                dialog.dismiss();
+            }
             if(GenelUtil.clickable(500)){
                 ((MainActivity)Objects.requireNonNull(getActivity())).startSettingsActivity();
             }

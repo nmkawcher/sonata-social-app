@@ -65,6 +65,8 @@
 
         <item name="icarrowdown">@drawable/ic_arrow_down_day</item>
 
+        <item name="icmessage">@drawable/ic_message_day</item>
+
 
 
 
@@ -135,7 +137,7 @@
 
         <item name="icarrowdown">@drawable/ic_arrow_down_night</item>
 
-
+        <item name="icmessage">@drawable/ic_message_night</item>
 
 
 

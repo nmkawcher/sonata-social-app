@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.sonata.NewMessageActivity">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
+        android:elevation="4dp"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="50dp"
+                app:corner_radius="25dp"
+                android:id="@+id/backbutton"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_height="50dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/backbuttonbutton"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:background="?attr/selectableItemBackground"
+
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="6dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icback"/>
+                </RelativeLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+            <androidx.appcompat.widget.SearchView
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                app:queryHint="@string/search"
+
+                android:layout_centerVertical="true"
+                app:iconifiedByDefault="false"
+                android:layout_toEndOf="@id/backbutton"
+                android:id="@+id/searchView"/>
+
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:background="?attr/recyclerbackground"
+        android:id="@+id/folreqrecyclerview"
+        android:paddingTop="6dp"
+        android:clipToPadding="false"
+        android:layout_below="@+id/z_toolbar"
+        android:layout_height="match_parent"/>
+
+
+</RelativeLayout>

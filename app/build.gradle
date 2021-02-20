@@ -13,8 +13,8 @@ android {
         applicationId "com.sonata.socialapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,6 +34,7 @@ android {
         exclude 'META-INF/rxjava.properties'
     }
 
+
     buildTypes {
         release {
             minifyEnabled true
@@ -41,6 +42,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 
 }
 
@@ -133,6 +135,8 @@ dependencies {
 
     //implementation 'com.vincan:medialoader:1.0.0'
     //implementation 'com.github.dueeeke:dk-tablayout:1.0.2'
+
+    implementation 'com.github.tgio:rncryptor-native:0.0.9'
 
 }
 

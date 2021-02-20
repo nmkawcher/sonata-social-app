@@ -107,9 +107,34 @@
                         android:textStyle="bold"
                         android:text="@string/tab_notif"
                         android:gravity="left"
+                        android:layout_toStartOf="@+id/messagebutton"
                         android:layout_centerVertical="true"
                         android:id="@+id/profileusernametext"
                         />
+
+
+                    <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                        android:layout_width="50dp"
+                        app:corner_radius="25dp"
+                        android:id="@+id/messagebutton"
+                        android:layout_marginEnd="5dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_height="50dp">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:id="@+id/messageButton"
+                            android:background="?attr/selectableItemBackground"
+
+                            android:layout_height="match_parent">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:padding="10dp"
+                                android:layout_height="match_parent"
+                                android:src="?attr/icmessage"/>
+                        </RelativeLayout>
+
+                    </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
 
 
 

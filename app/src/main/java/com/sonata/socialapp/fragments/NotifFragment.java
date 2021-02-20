@@ -26,6 +26,7 @@ import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
 import com.sonata.socialapp.activities.sonata.FollowRequestActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
+import com.sonata.socialapp.activities.sonata.MessagesActivity;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.adapters.NotificationAdapter;
 import com.sonata.socialapp.utils.classes.Notif;
@@ -54,7 +55,7 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
 
     private TextView followReqText;
     private RelativeLayout followReqLayout;
-    private RelativeLayout followreqs;
+    private RelativeLayout followreqs,messages;
 
     @Override
     public void onDestroy() {
@@ -110,6 +111,13 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
         else{
             followReqLayout.setVisibility(View.GONE);
         }
+        messages = view.findViewById(R.id.messageButton);
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), MessagesActivity.class));
+            }
+        });
 
         recyclerView = view.findViewById(R.id.notifrecyclerview);
         swipeRefreshLayout = view.findViewById(R.id.nSwipeRefresh);

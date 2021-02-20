@@ -254,4 +254,6 @@
     <string name="newpasswordagain">Yeni şifre tekrar</string>
     <string name="passwordsdoesntmatch">Şifreler eşleşmiyor</string>
     <string name="changepasstext">Eğer şifreni değiştirirsen hesaptan çıkış yapılır ve tekrar giriş yapmak zorunda kalırsın. Devam etmek istiyor musun?</string>
+    <string name="youmaylikethis">Bunu sevebilirsin</string>
+    <string name="messages">Mesajlar</string>
 </resources>

@@ -26,6 +26,7 @@ import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
 import com.sonata.socialapp.activities.sonata.FollowRequestActivity;
+import com.sonata.socialapp.activities.sonata.GetRestDiscoverActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 
 import java.util.HashMap;
@@ -77,6 +78,38 @@ public class FcmService extends FirebaseMessagingService {
                     if(remoteMessage.getData().get("type")!=null){
 
                         switch (remoteMessage.getData().get("type")) {
+                            case "youmaylikethis": {
+
+                                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    setupChannels();
+                                }
+                                String title = getString(R.string.youmaylikethis);
+                                Intent intent = new Intent(this, GetRestDiscoverActivity.class);
+
+                                intent.putExtra("id", remoteMessage.getData().get("postid"));
+                                intent.putExtra("notif", true);
+
+                                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
+
+                                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                        .setSmallIcon(R.drawable.ic_new_notification_icon)
+                                        .setColor(getResources().getColor(R.color.notif))
+                                        .setLargeIcon(bitmap)//a resource for your custom small icon
+                                        .setContentTitle(getString(R.string.app_name)+" - "+title) //the "title" value you sent in your notification
+                                        .setContentText(addition+ remoteMessage.getData().get("desc")) //ditto
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)//dismisses the notification on click
+                                        .setSound(defaultSoundUri)
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
+                                notificationManager.notify(getUniqueNumberFromString("i" + remoteMessage.getData().get("username")), notificationBuilder.build());
+                                break;
+                            }
                             case "followedyou": {
 
                                 notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
