@@ -75,9 +75,8 @@ public class GenelUtil {
     private static long a;
     public static final int ACCOUNT_LIMIT = 5;
 
-    public static void editSavedUser(String id, Context context){
 
-    }
+
 
     public static void updateUser(JSONObject user,Context context){
         SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
@@ -726,9 +725,13 @@ public class GenelUtil {
     }
 
     public static void showKeyboard(Activity activity){
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        assert inputMethodManager != null;
-        inputMethodManager.toggleSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        try{
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert inputMethodManager != null;
+            inputMethodManager.toggleSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        } catch (Exception ignored){
+
+        }
     }
 
     public static void hideKeyboard(Activity activity) {

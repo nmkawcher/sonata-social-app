@@ -16,6 +16,9 @@ public class Chat extends ParseObject {
         return getString("lastposter");
     }
 
+    public void setRead(boolean read){
+        put("read",read);
+    }
     public boolean isRead(){
         return getBoolean("read");
     }
@@ -23,4 +26,10 @@ public class Chat extends ParseObject {
     public String getKey(){
         return getString("key");
     }
+
+    public String getEncryptedMessage(){
+        return getString("lastmessage");
+    }
+
+
 }

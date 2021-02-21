@@ -11,6 +11,15 @@ public class ListObject implements Serializable {
 
     private Chat chat;
 
+    String decryptedMessage;
+    public void setDecryptedMessage(String str){
+        this.decryptedMessage = str;
+    }
+
+    public String getDecryptedMessage(){
+        return decryptedMessage;
+    }
+
     public void setChat(Chat chat){
         this.chat = chat;
     }

@@ -64,45 +64,51 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void asdasdas (int a,JSONArray userList){
+        if(userList.length()>0){
+            if(userList.length()>a){
+                try {
+                    JSONObject usob = (JSONObject) userList.get(a);
 
-        if(userList.length()>a){
-            try {
-                JSONObject usob = (JSONObject) userList.get(a);
-
-                ParseUser.becomeInBackground(usob.getString("session"), new LogInCallback() {
-                    @Override
-                    public void done(ParseUser user, ParseException e) {
-                        if(e==null){
-                            String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                            GenelUtil.ToastLong(StartActivity.this,text);
-                            MobileAds.initialize(StartActivity.this, new OnInitializationCompleteListener() {
-                                @Override
-                                public void onInitializationComplete(InitializationStatus initializationStatus) {
-                                    startActivity(new Intent(StartActivity.this,MainActivity.class));
-                                    finish();
-                                }
-                            });
-                        }
-                        else{
-                            if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
-                                try {
-                                    GenelUtil.removeUserFromCache(usob.getString("id"), StartActivity.this);
-                                } catch (JSONException ex) {
-                                    ex.printStackTrace();
-                                }
+                    ParseUser.becomeInBackground(usob.getString("session"), new LogInCallback() {
+                        @Override
+                        public void done(ParseUser user, ParseException e) {
+                            if(e==null){
+                                String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
+                                GenelUtil.ToastLong(StartActivity.this,text);
+                                MobileAds.initialize(StartActivity.this, new OnInitializationCompleteListener() {
+                                    @Override
+                                    public void onInitializationComplete(InitializationStatus initializationStatus) {
+                                        startActivity(new Intent(StartActivity.this,MainActivity.class));
+                                        finish();
+                                    }
+                                });
                             }
-                            asdasdas(a+1,userList);
+                            else{
+                                if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
+                                    try {
+                                        GenelUtil.removeUserFromCache(usob.getString("id"), StartActivity.this);
+                                    } catch (JSONException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                                asdasdas(a+1,userList);
+                            }
                         }
-                    }
-                });
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                startActivity(new Intent(this,LoginActivity.class));
+                finish();
             }
         }
         else{
             startActivity(new Intent(this,LoginActivity.class));
             finish();
         }
+
     }
 
 
