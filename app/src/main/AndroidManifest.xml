@@ -24,7 +24,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.sonata.NewMessageActivity"></activity>
+        <activity android:name=".activities.sonata.DirectMessageActivity"></activity>
+        <activity android:name=".activities.sonata.NewMessageActivity" />
         <activity android:name=".activities.sonata.MessagesActivity" />
         <activity
             android:name=".activities.sonata.ChangePasswordActivity"

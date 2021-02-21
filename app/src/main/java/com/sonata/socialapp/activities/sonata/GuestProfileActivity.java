@@ -1311,6 +1311,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     other.add(getString(R.string.unblock));
                 } else {
                     other.add(getString(R.string.block));
+                    other.add(getString(R.string.sendmessage));
                 }
 
                 String[] popupMenu = other.toArray(new String[other.size()]);
@@ -1373,6 +1374,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                 }
                             });
 
+                        }
+                        if (select.equals(getString(R.string.sendmessage))) {
+                            startActivity(new Intent(GuestProfileActivity.this, DirectMessageActivity.class).putExtra("user",user));
                         }
                     }
                 });

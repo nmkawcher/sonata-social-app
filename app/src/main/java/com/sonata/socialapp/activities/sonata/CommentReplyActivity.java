@@ -104,7 +104,6 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
     RelativeLayout makecommentlayout;
 
-    RoundKornerRelativeLayout errorlayout;
 
     private ArrayAdapter<Mention> defaultMentionAdapter;
 
@@ -131,7 +130,6 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
         }
 
 
-        errorlayout=findViewById(R.id.errorlayout);
         makecommentlayout = findViewById(R.id.makecommentlayout);
         post = getIntent().getParcelableExtra("post");
         parentComment = getIntent().getParcelableExtra("parentcomment");

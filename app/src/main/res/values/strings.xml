@@ -149,6 +149,9 @@
 
     <string name="reportsucces">Reported</string>
 
+
+    <string name="sendmessage">Send message</string>
+
     <string name="block">Block</string>
     <string name="unblock">Unblock</string>
     <string name="follow">Follow</string>
