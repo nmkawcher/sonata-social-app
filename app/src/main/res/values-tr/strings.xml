@@ -257,4 +257,6 @@
     <string name="youmaylikethis">Bunu sevebilirsin</string>
     <string name="messages">Mesajlar</string>
     <string name="sendmessage">Mesaj gönder</string>
+    <string name="sending">Gönderiliyor…</string>
+    <string name="messagesenderror">Hata. Tekrar denemek için dokun.</string>
 </resources>

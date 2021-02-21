@@ -10,6 +10,7 @@
         android:id="@+id/z_toolbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:elevation="4dp"
         android:layout_alignParentTop="true"
         android:background="?attr/toolbarcolor"
 

@@ -63,13 +63,20 @@
 
 
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_below="@+id/z_toolbar"
+        android:layout_height="match_parent"
         android:layout_above="@+id/makecommentlayout"
-        android:background="?attr/recyclerbackground"
-        android:id="@+id/commentrecyclerview"
-        android:layout_height="match_parent"/>
+        android:id="@+id/homeFragmentSwipeRefreshLayout"
+        android:layout_below="@+id/z_toolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:background="?attr/recyclerbackground"
+            android:id="@+id/commentrecyclerview"
+            android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 

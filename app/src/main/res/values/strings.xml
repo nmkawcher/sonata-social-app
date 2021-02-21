@@ -152,6 +152,10 @@
 
     <string name="sendmessage">Send message</string>
 
+    <string name="sending">Sending…</string>
+
+    <string name="messagesenderror">Error. Click to retry.</string>
+
     <string name="block">Block</string>
     <string name="unblock">Unblock</string>
     <string name="follow">Follow</string>
