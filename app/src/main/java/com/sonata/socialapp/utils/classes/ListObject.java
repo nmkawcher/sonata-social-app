@@ -9,6 +9,15 @@ public class ListObject implements Serializable {
     private String type;
     private UnifiedNativeAd ad;
 
+    private Chat chat;
+
+    public void setChat(Chat chat){
+        this.chat = chat;
+    }
+
+    public Chat getChat(){
+        return chat;
+    }
     public SonataUser getUser() {
         return user;
     }

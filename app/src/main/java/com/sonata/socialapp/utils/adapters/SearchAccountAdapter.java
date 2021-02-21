@@ -74,9 +74,7 @@ public class SearchAccountAdapter extends RecyclerView.Adapter<SearchAccountAdap
                 holder.profilephoto.setImageDrawable(null);
                 holder.profilephoto.setImageBitmap(null);
             }
-
         }
-
     }
 
 
@@ -105,12 +103,6 @@ public class SearchAccountAdapter extends RecyclerView.Adapter<SearchAccountAdap
         if(getItemViewType(holder.getAdapterPosition())!=TYPE_LOAD&&getItemViewType(holder.getAdapterPosition())!=TYPE_EMPTY){
 
             SonataUser user = list.get(holder.getAdapterPosition()).getUser();
-            if(user.getObjectId().equals(GenelUtil.getCurrentUser().getObjectId())){
-                holder.buttonLay.setVisibility(View.INVISIBLE);
-            }
-            else{
-                holder.buttonLay.setVisibility(View.VISIBLE);
-            }
             if(user.getHasPp()){
                 glide.load(user.getPPAdapter())
                         .placeholder(new ColorDrawable(ContextCompat.getColor(holder.profilephoto.getContext(), R.color.placeholder_gray)))
@@ -123,32 +115,6 @@ public class SearchAccountAdapter extends RecyclerView.Adapter<SearchAccountAdap
             holder.name.setText(user.getName());
             holder.username.setText("@"+user.getUsername());
 
-
-            if(user.getBlock()){
-                holder.buttonText.setText(holder.itemView.getContext().getString(R.string.unblock));
-                holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
-                holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_engel));
-            }
-            else{
-                if(user.getFollow()){
-                    holder.buttonText.setText(holder.itemView.getContext().getString(R.string.unfollow));
-                    holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
-                    holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_dolu));
-                }
-                else{
-                    if(user.getFollowRequest()){
-                        holder.buttonText.setText(holder.itemView.getContext().getString(R.string.requestsent));
-                        holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
-                        holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_dolu));
-                    }
-                    else{
-                        holder.buttonText.setText(holder.itemView.getContext().getString(R.string.follow));
-                        holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.blue));
-                        holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background));
-                    }
-
-                }
-            }
 
         }
     }
@@ -166,10 +132,8 @@ public class SearchAccountAdapter extends RecyclerView.Adapter<SearchAccountAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profilephoto;
-        TextView name,username,buttonText;
-        RelativeLayout button;
-        RoundKornerRelativeLayout buttonLay;
-        long a = 0;
+        TextView name,username;
+        RelativeLayout clickLay;
 
 
 
@@ -177,43 +141,16 @@ public class SearchAccountAdapter extends RecyclerView.Adapter<SearchAccountAdap
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            button = itemView.findViewById(R.id.blockButton);
-            buttonText = itemView.findViewById(R.id.followButtonText);
-            buttonLay = itemView.findViewById(R.id.folreqacceptlayout);
             profilephoto = itemView.findViewById(R.id.followreqlayoutpp);
             name = itemView.findViewById(R.id.followreqname);
             username = itemView.findViewById(R.id.followrequsername);
+            clickLay = itemView.findViewById(R.id.clickLayout);
 
-            if(profilephoto!=null){
-                profilephoto.setOnClickListener(new View.OnClickListener() {
+            if(clickLay!=null){
+                clickLay.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         click.goToProfileClick(getAdapterPosition());
-                    }
-                });
-            }
-            if(name!=null){
-                name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        click.goToProfileClick(getAdapterPosition());
-                    }
-                });
-            }
-            if(username!=null){
-                username.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        click.goToProfileClick(getAdapterPosition());
-                    }
-                });
-            }
-
-            if(button!=null&&buttonText!=null&&buttonLay!=null){
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        click.buttonClick(getAdapterPosition(),buttonText,buttonLay);
                     }
                 });
             }

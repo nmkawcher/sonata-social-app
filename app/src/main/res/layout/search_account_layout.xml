@@ -12,71 +12,60 @@
         android:layout_alignParentTop="true"
         android:background="?attr/beyazbackground"
         android:layout_marginBottom="5dp">
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_centerVertical="true"
-            android:id="@+id/freqlcay"/>
-
-        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            app:corner_radius="25dp"
-            android:id="@+id/followreqlayoutpplayout">
-            <ImageView
+            android:layout_height="match_parent"
+            android:id="@+id/clickLayout"
+            android:background="?attr/selectableItemBackground">
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/notif"
-                android:id="@+id/followreqlayoutpp"/>
-        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+                android:layout_height="0dp"
+                android:layout_centerVertical="true"
+                android:id="@+id/freqlcay"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/followreqname"
-            android:ellipsize="end"
-            android:layout_toEndOf="@id/followreqlayoutpplayout"
-            android:layout_above="@id/freqlcay"
-            android:layout_toStartOf="@+id/folreqacceptlayout"
-            android:maxLines="1"
-            android:textColor="?attr/siyahyazı"
-            android:textStyle="bold"
-            android:text="Ali Öksüz"/>
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                app:corner_radius="25dp"
+                android:id="@+id/followreqlayoutpplayout">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/notif"
+                    android:id="@+id/followreqlayoutpp"/>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:id="@+id/followrequsername"
-            android:layout_toStartOf="@+id/folreqacceptlayout"
-            android:layout_toEndOf="@id/followreqlayoutpplayout"
-            android:layout_below="@id/freqlcay"
-            android:maxLines="1"
-            android:text="ali"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/followreqname"
+                android:ellipsize="end"
+                android:layout_toEndOf="@id/followreqlayoutpplayout"
+                android:layout_above="@id/freqlcay"
+                android:layout_toStartOf="@+id/folreqacceptlayout"
+                android:maxLines="1"
+                android:textColor="?attr/siyahyazı"
+                android:textStyle="bold"
+                android:text="Ali Öksüz"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:id="@+id/followrequsername"
+                android:layout_toStartOf="@+id/folreqacceptlayout"
+                android:layout_toEndOf="@id/followreqlayoutpplayout"
+                android:layout_below="@id/freqlcay"
+                android:maxLines="1"
+                android:text="ali"/>
+
+        </RelativeLayout>
 
 
     </RelativeLayout>
-
-
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_below="@+id/anan"
-        android:id="@+id/btayirici"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btayirici"
-        android:id="@+id/clickLayout"
-        android:background="?attr/selectableItemBackground"/>
-
-
-
 
 
 </RelativeLayout>
