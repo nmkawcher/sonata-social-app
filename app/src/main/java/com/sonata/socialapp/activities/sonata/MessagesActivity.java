@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.MyApp;
 
 public class MessagesActivity extends AppCompatActivity {
 
@@ -39,5 +40,38 @@ public class MessagesActivity extends AppCompatActivity {
                 startActivity(new Intent(MessagesActivity.this, NewMessageActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApp.whereAmI = "allMessages";
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MyApp.whereAmI = "";
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getIntent()!=null) {
+            if(getIntent().getBooleanExtra("notif",false)){
+                if(this.isTaskRoot()){
+                    startActivity(new Intent(this,MainActivity.class));
+                    finish();
+                }
+                else{
+                    super.onBackPressed();
+                }
+            }
+            else{
+                super.onBackPressed();
+            }
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 }

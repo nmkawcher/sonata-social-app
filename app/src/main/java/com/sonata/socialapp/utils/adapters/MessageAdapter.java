@@ -157,11 +157,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 holder.progresstext.setVisibility(View.GONE);
                 holder.mainLayout.setOnClickListener(null);
             }
-
         }
         else{
             //bana gönderildi
-            glide.load(user.getPPAdapter()).into(holder.profilephoto);
+            if(list.size()>holder.getAdapterPosition()+1){
+                if(list.get(holder.getAdapterPosition()+1).getOwner().equals(message.getOwner())){
+                    holder.profilephoto.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    holder.profilephoto.setVisibility(View.VISIBLE);
+                    glide.load(user.getPPAdapter()).into(holder.profilephoto);
+                }
+            }
+            else{
+                holder.profilephoto.setVisibility(View.VISIBLE);
+                glide.load(user.getPPAdapter()).into(holder.profilephoto);
+            }
         }
     }
 

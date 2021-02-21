@@ -25,14 +25,18 @@ import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
+import com.sonata.socialapp.activities.sonata.DirectMessageActivity;
 import com.sonata.socialapp.activities.sonata.FollowRequestActivity;
 import com.sonata.socialapp.activities.sonata.GetRestDiscoverActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
+import com.sonata.socialapp.activities.sonata.MessagesActivity;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+
+import tgio.rncryptor.RNCryptorNative;
 
 public class FcmService extends FirebaseMessagingService {
 
@@ -49,7 +53,7 @@ public class FcmService extends FirebaseMessagingService {
     final static int replyComment = 987372;
     final static int uploadComplete = 198483;
 
-
+    RNCryptorNative rncryptor = new RNCryptorNative();
 
 
 
@@ -66,7 +70,6 @@ public class FcmService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
         if(ParseUser.getCurrentUser()!=null){
             if(remoteMessage.getData().get("to")!=null){
                 List<Object> res = GenelUtil.isUserSaved(this,remoteMessage.getData().get("to"));
@@ -78,6 +81,48 @@ public class FcmService extends FirebaseMessagingService {
                     if(remoteMessage.getData().get("type")!=null){
 
                         switch (remoteMessage.getData().get("type")) {
+                            case "sendyouamessage": {
+                                String from = remoteMessage.getData().get("fromwho");
+                                if(!MyApp.whereAmI.equals("allMessages")){
+                                    if(!MyApp.whereAmI.endsWith(from)){
+                                        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            setupChannels();
+                                        }
+                                        String title = addition+ remoteMessage.getData().get("name")+" "+getString(R.string.sendyouamessage);
+                                        Intent intent = new Intent(this, MessagesActivity.class);
+
+                                        intent.putExtra("id", from);
+                                        intent.putExtra("notif", true);
+
+                                        if (!iseq) {
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        }
+                                        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                        Bitmap bitmap = getBitmap(remoteMessage.getData().get("image")); //obtain the image
+
+                                        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                                                .setSmallIcon(R.drawable.ic_message_day)
+                                                .setColor(getResources().getColor(R.color.notif))
+                                                .setLargeIcon(bitmap)//a resource for your custom small icon
+                                                .setContentTitle(title) //the "title" value you sent in your notification
+                                                .setContentText(rncryptor.decrypt(remoteMessage.getData().get("message"), remoteMessage.getData().get("key"))) //ditto
+                                                .setAutoCancel(true)
+                                                .setContentIntent(pendingIntent)//dismisses the notification on click
+                                                .setSound(defaultSoundUri);
+                                        notificationManager.notify(getUniqueNumberFromString("pm" + remoteMessage.getData().get("fromwho")), notificationBuilder.build());
+                                        break;
+                                    }
+                                    break;
+                                }
+                                break;
+
+
+                            }
                             case "youmaylikethis": {
 
                                 notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

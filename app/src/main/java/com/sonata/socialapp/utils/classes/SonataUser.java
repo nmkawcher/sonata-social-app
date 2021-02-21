@@ -150,6 +150,9 @@ public class SonataUser extends ParseUser {
     public long getNotifCount(){
         return getLong("notifcount");
     }
+    public long getMessageCount(){
+        return getLong("messages");
+    }
 
 
 

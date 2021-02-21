@@ -35,6 +35,8 @@ import com.zxy.tiny.Tiny;
 public class MyApp extends Application {
 
     public static boolean ses = false;
+
+    public static String whereAmI= "";
     @Override
     public void onCreate() {
         super.onCreate();

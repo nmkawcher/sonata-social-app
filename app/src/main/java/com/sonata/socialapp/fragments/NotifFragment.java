@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 
 public class NotifFragment extends Fragment implements NotifRecyclerView {
@@ -112,10 +116,17 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
             followReqLayout.setVisibility(View.GONE);
         }
         messages = view.findViewById(R.id.messageButton);
+        addBadgeToMessages((int) GenelUtil.getCurrentUser().getMessageCount());
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), MessagesActivity.class));
+                if(badgeView!=null){
+                    badgeView.hide(true);
+                    badgeView=null;
+
+                    ParseCloud.callFunctionInBackground("notifResetMessages",new HashMap<>());
+                }
             }
         });
 
@@ -215,6 +226,20 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
                     }
                 }
             });
+        }
+    }
+
+    QBadgeView badgeView = null;
+    public void addBadgeToMessages(int i){
+        if(messages!=null && i > 0){
+            if (badgeView == null){
+                badgeView = new QBadgeView(getContext());
+            }
+
+            badgeView.setBadgeNumber(i)
+                    .setBadgeGravity(Gravity.TOP|Gravity.END)
+                    //.setGravityOffset(-15, -15, true)
+                    .bindTarget(messages);
         }
     }
 

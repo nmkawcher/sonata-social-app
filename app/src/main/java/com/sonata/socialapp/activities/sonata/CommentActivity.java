@@ -1229,7 +1229,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     @Override
     public void onBackPressed() {
 
-        if(getIntent()!=null){
+        if(getIntent()!=null) {
             if(getIntent().getBooleanExtra("notif",false)){
                 if(this.isTaskRoot()){
                     if(commentimage!=null){
@@ -1257,7 +1257,8 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 }
                 super.onBackPressed();
             }
-        }else{
+        }
+        else{
             if(commentimage!=null){
                 Glide.with(commentimage).clear(commentimage);
                 commentimage.setImageBitmap(null);

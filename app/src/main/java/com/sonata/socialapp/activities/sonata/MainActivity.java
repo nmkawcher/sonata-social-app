@@ -152,6 +152,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     if(Objects.requireNonNull(GenelUtil.getCurrentUser()).getNotifCount()>0){
                         addBadgeAt(2,(int)GenelUtil.getCurrentUser().getNotifCount());
                     }
+
+                    if(getSupportFragmentManager().findFragmentById(R.id.homeframenotif)!=null){
+                        NotifFragment notifFragment = (NotifFragment) getSupportFragmentManager().findFragmentById(R.id.homeframenotif);
+                        assert notifFragment != null;
+                        notifFragment.addBadgeToMessages((int) GenelUtil.getCurrentUser().getMessageCount());
+                    }
+
                     if(getSupportFragmentManager().findFragmentById(R.id.homeframeprofile)!=null){
                         ProfilFragment homeFragment = (ProfilFragment) getSupportFragmentManager().findFragmentById(R.id.homeframeprofile);
                         assert homeFragment != null;
@@ -388,8 +395,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             else if(bottombar.getCurrentItem()==0){
                 ((HomeFragment) Objects.requireNonNull(getSupportFragmentManager().findFragmentById(R.id.homeframehome))).backPress();
             }
-
-
         }
         else{
             super.onBackPressed();

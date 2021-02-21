@@ -844,4 +844,26 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if(getIntent()!=null) {
+            if(getIntent().getBooleanExtra("notif",false)){
+                if(this.isTaskRoot()){
+
+                    startActivity(new Intent(this,MainActivity.class));
+                    finish();
+                }
+                else{
+                    super.onBackPressed();
+                }
+            }
+            else{
+                super.onBackPressed();
+            }
+        }
+        else{
+            super.onBackPressed();
+        }
+    }
 }

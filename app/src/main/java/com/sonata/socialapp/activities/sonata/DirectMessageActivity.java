@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.adapters.MessageAdapter;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.Message;
@@ -49,6 +51,7 @@ public class DirectMessageActivity extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
 
     ProgressBar progressBar;
+    String to = "";
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -63,6 +66,7 @@ public class DirectMessageActivity extends AppCompatActivity {
 
         topUsername = findViewById(R.id.profileusernametext);
         user = getIntent().getParcelableExtra("user");
+        to = user.getObjectId();
         if(user == null) return;
         topUsername.setText("@"+user.getUsername());
 
@@ -157,6 +161,18 @@ public class DirectMessageActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApp.whereAmI = "directMessage"+to;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MyApp.whereAmI = "";
+    }
+
     private void setSendClick(){
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,5 +235,27 @@ public class DirectMessageActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getIntent()!=null) {
+            if(getIntent().getBooleanExtra("notif",false)){
+                if(this.isTaskRoot()){
+
+                    startActivity(new Intent(this,MainActivity.class));
+                    finish();
+                }
+                else{
+                    super.onBackPressed();
+                }
+            }
+            else{
+                super.onBackPressed();
+            }
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 }

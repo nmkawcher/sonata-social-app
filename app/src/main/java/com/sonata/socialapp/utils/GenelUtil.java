@@ -669,7 +669,7 @@ public class GenelUtil {
                 // Night mode is active, we're using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
-                return pref.getBoolean("nightMode",true);
+                return pref.getBoolean("nightMode",false);
         }
     }
 
@@ -684,7 +684,7 @@ public class GenelUtil {
                 // Night mode is active, we're using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
-                return pref.getBoolean("nightMode",true);
+                return pref.getBoolean("nightMode",false);
         }
 
     }
