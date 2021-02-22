@@ -429,6 +429,7 @@ public class DirectMessageActivity extends AppCompatActivity {
                                 list.add(0,object);
                                 //Log.e("chat id",chat.getObjectId());
                                 adapter.notifyItemInserted(0);
+                                if(list.size()>0) adapter.notifyItemChanged(1);
                                 recyclerView.scrollToPosition(0);
                             }
                         }
