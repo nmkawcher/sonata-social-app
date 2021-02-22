@@ -7,7 +7,7 @@ import com.parse.ParseObject;
 public class Message extends ParseObject {
 
     public String getType() {
-        return getString("type");
+        return getString("type") != null ? getString("type") : "";
     }
 
     public void setType(String type){
@@ -38,7 +38,7 @@ public class Message extends ParseObject {
         put("owner",owner);
     }
 
-    public void setChat(Chat chat){
+    public void setChat(String chat){
         put("chat",chat);
     }
 

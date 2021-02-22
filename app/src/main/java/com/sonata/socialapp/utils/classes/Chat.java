@@ -12,12 +12,20 @@ public class Chat extends ParseObject {
         return getDate("lastedit");
     }
 
+    public void setLastEdit(Date date){
+        put("lastedit",date);
+    }
+
     public String getLastPoster(){
         return getString("lastposter");
     }
 
     public void setRead(boolean read){
         put("read",read);
+    }
+
+    public void setMessage(String message){
+        put("message",message);
     }
     public boolean isRead(){
         return getBoolean("read");

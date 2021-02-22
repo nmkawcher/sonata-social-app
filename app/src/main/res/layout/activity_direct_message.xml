@@ -70,6 +70,8 @@
         android:background="?attr/recyclerbackground"
         android:layout_above="@+id/makecommentlayout"
         android:layout_below="@+id/z_toolbar"
+        android:paddingTop="6dp"
+        android:clipToPadding="false"
         android:id="@+id/commentrecyclerview"
         android:layout_height="match_parent"/>
 

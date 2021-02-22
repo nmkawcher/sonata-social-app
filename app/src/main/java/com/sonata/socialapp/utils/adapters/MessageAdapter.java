@@ -1,38 +1,25 @@
 package com.sonata.socialapp.utils.adapters;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
-import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.Message;
-import com.sonata.socialapp.utils.classes.Notif;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
-import java.util.HashMap;
 import java.util.List;
 
 import tgio.rncryptor.RNCryptorNative;
@@ -50,7 +37,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private SonataUser user;
     private String owner;
     private String key;
-    RNCryptorNative rncryptor = new RNCryptorNative();
+    private RNCryptorNative rncryptor = new RNCryptorNative();
     public void setContext(List<Message> list
             ,RequestManager glide
             ,SonataUser user
@@ -72,9 +59,24 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return position;
     }
 
+    private int VIEW_TYPE_LOAD = 112;
+    private int VIEW_TYPE_OWNER = 113;
+    private int VIEW_TYPE_OTHER = 114;
+
     @Override
     public int getItemViewType(int position) {
-        return position;
+        if(list.get(position).getType().equals("load")){
+            return VIEW_TYPE_LOAD;
+        }
+        else{
+            if(list.get(position).getOwner().equals(owner)){
+                return VIEW_TYPE_OWNER;
+            }
+            else{
+                return VIEW_TYPE_OTHER;
+            }
+        }
+        //return position;
     }
 
     @Override
@@ -100,17 +102,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @NonNull
     @Override
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        if(list.get(i).getOwner().equals(owner)){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_owner_layout,viewGroup,false);
+        if(i==VIEW_TYPE_LOAD){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_load,viewGroup,false);
             return new ViewHolder(view);
         }
         else{
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_other_layout,viewGroup,false);
-            return new ViewHolder(view);
+            if(i==VIEW_TYPE_OWNER){
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_owner_layout,viewGroup,false);
+                return new ViewHolder(view);
+            }
+            else{
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_other_layout,viewGroup,false);
+                return new ViewHolder(view);
+            }
         }
     }
 
-    private void saveMessage(Message message, TextView progresstext,RelativeLayout mainlayout,int position){
+    private void saveMessage(Message message, TextView progresstext,RelativeLayout mainlayout,int position,TextView text){
         progresstext.setTextColor(Color.parseColor("#999999"));
         progresstext.setVisibility(View.VISIBLE);
         progresstext.setText(progresstext.getContext().getString(R.string.sending));
@@ -118,16 +126,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             @Override
             public void done(ParseException e) {
                 if(e==null){
+                    progresstext.setVisibility(View.GONE);
+                    mainlayout.setOnClickListener(null);
                     message.setMessage(rncryptor.decrypt(message.getEncryptedMessage(), key));
-                    notifyItemChanged(list.indexOf(message));
+                    //notifyItemChanged(position);
+                    text.setText(message.getMessage());
                 }
                 else{
-                    setRetryClick(message,progresstext,mainlayout,position);
+                    Log.e("MessageSaveError",e.getMessage());
+                    setRetryClick(message,progresstext,mainlayout,position,text);
                 }
             }
         });
     }
-    private void setRetryClick(Message message, TextView progresstext,RelativeLayout mainlayout,int position){
+    private void setRetryClick(Message message, TextView progresstext,RelativeLayout mainlayout,int position,TextView text){
         progresstext.setTextColor(Color.parseColor("#ff0000"));
         progresstext.setVisibility(View.VISIBLE);
         progresstext.setText(progresstext.getContext().getString(R.string.messagesenderror));
@@ -135,7 +147,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 if(message.getObjectId() == null){
-                    saveMessage(message,progresstext,mainlayout,position);
+                    saveMessage(message,progresstext,mainlayout,position,text);
                 }
             }
         });
@@ -145,31 +157,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
-        Message message = list.get(holder.getAdapterPosition());
-        holder.text.setText(message.getMessage());
+        if(getItemViewType(holder.getAdapterPosition())!=VIEW_TYPE_LOAD){
+            Message message = list.get(holder.getAdapterPosition());
+            holder.text.setText(message.getMessage());
 
-        if(message.getOwner().equals(owner)){
-            //Ben gönderdim
-            if(message.getObjectId() == null){
-                saveMessage(message,holder.progresstext,holder.mainLayout,holder.getAdapterPosition());
-            }
-            else{
-                holder.progresstext.setVisibility(View.GONE);
-                holder.mainLayout.setOnClickListener(null);
-            }
-        }
-        else{
-            //bana gönderildi
-            if(list.size()>holder.getAdapterPosition()+1){
-                if(list.get(holder.getAdapterPosition()+1).getOwner().equals(message.getOwner())){
-                    holder.profilephoto.setVisibility(View.INVISIBLE);
+            if(message.getOwner().equals(owner)){
+                //Ben gönderdim
+                if(message.getObjectId() == null){
+                    saveMessage(message,holder.progresstext,holder.mainLayout,holder.getAdapterPosition(),holder.text);
                 }
                 else{
-                    holder.profilephoto.setVisibility(View.VISIBLE);
-                    glide.load(user.getPPAdapter()).into(holder.profilephoto);
+                    holder.progresstext.setVisibility(View.GONE);
+                    holder.mainLayout.setOnClickListener(null);
                 }
             }
             else{
+                //bana gönderildi
                 holder.profilephoto.setVisibility(View.VISIBLE);
                 glide.load(user.getPPAdapter()).into(holder.profilephoto);
             }
@@ -186,15 +189,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profilephoto;
         TextView text,progresstext;
         RelativeLayout mainLayout;
-
-
-
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
