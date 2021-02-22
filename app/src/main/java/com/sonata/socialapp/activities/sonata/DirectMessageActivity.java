@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -120,7 +121,7 @@ public class DirectMessageActivity extends AppCompatActivity {
         list=new ArrayList<>();
         linearLayoutManager=new LinearLayoutManager(DirectMessageActivity.this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter=new MessageAdapter();
         adapter.setContext(list
@@ -128,7 +129,7 @@ public class DirectMessageActivity extends AppCompatActivity {
                 ,user
                 ,ParseUser.getCurrentUser().getObjectId()
                 ,key);
-        adapter.setHasStableIds(true);
+        adapter.setHasStableIds(false);
         recyclerView.setAdapter(adapter);
         onScrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -140,7 +141,8 @@ public class DirectMessageActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(dy<0&&linearLayoutManager.findFirstVisibleItemPosition()==0&&!loading&&hasmore){
+                if(list==null)return;
+                if(dy<0&&linearLayoutManager.findLastVisibleItemPosition()==list.size()-1&&!loading&&hasmore){
                     if(chat==null)return;
                     loading=true;
                     getMessages(date,chat);
@@ -193,7 +195,7 @@ public class DirectMessageActivity extends AppCompatActivity {
                 if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
                 if(e==null){
                     chat = object.get("chat") != null ? (Chat) object.get("chat") : null;
-                    setUpAfterFetch((List<Message>) object.get("messages"),(boolean)object.get("hasmore"),(Date)object.get("date"));
+                    setUpAfterFetch((List<Message>) object.get("messages"), object.get("hasmore") != null && (boolean) object.get("hasmore"),object.get("date") != null?(Date)object.get("date"): Calendar.getInstance().getTime());
 
 
                 }
@@ -219,7 +221,7 @@ public class DirectMessageActivity extends AppCompatActivity {
 
         //Collections.reverse(tempList);
         Observable.fromCallable(() -> {
-            Collections.reverse(tempList);
+            //Collections.reverse(tempList);
             try{
                 for(int i = 0; i < tempList.size(); i++){
                     Message message = tempList.get(i);
@@ -235,21 +237,22 @@ public class DirectMessageActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((result) -> {
                     if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
-                    if(list.size()>0 && list.get(0).getType().equals("load")){
-                        list.remove(0);
-                        adapter.notifyDataSetChanged();
+                    if(list.size()>0 && list.get(list.size()-1).getType().equals("load")){
+                        list.remove(list.size()-1);
+                        //adapter.notifyDataSetChanged();
                     }
 
                     int preSize = list.size();
                     if(hasmore){
                         Message m = new Message();
                         m.setType("load");
-                        tempList.add(0,m);
+                        tempList.add(m);
                     }
-                    list.addAll(0,tempList);
+                    list.addAll(tempList);
 
 
-                    adapter.notifyItemRangeInserted(0, tempList.size());
+                    adapter.notifyDataSetChanged();
+                    //recyclerView.scrollToPosition(tempList.size());
                     loading=false;
 
                 });
@@ -264,12 +267,12 @@ public class DirectMessageActivity extends AppCompatActivity {
         this.date = date;
         if(chat != null) {
             setUpRecyclerView(chat.getKey());
-            int preSize = list.size();
+
 
 
             //Collections.reverse(tempList);
             Observable.fromCallable(() -> {
-                Collections.reverse(tempList);
+                //Collections.reverse(tempList);
                 try{
                     for(int i = 0; i < tempList.size(); i++){
                         Message message = tempList.get(i);
@@ -285,13 +288,14 @@ public class DirectMessageActivity extends AppCompatActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((result) -> {
                         if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
-
-                        list.addAll(0,tempList);
+                        int preSize = list.size();
                         if(hasmore){
                             Message m = new Message();
                             m.setType("load");
-                            list.add(0,m);
+                            tempList.add(m);
                         }
+                        list.addAll(tempList);
+
                         bottomCommentLayout.setVisibility(View.VISIBLE);
 
                         adapter.notifyItemRangeInserted(preSize, list.size()-preSize);
@@ -344,10 +348,11 @@ public class DirectMessageActivity extends AppCompatActivity {
                         message.setMessage(editText.getText().toString().trim());
                         message.setEncryptedMessage(new String(rncryptor.encrypt(editText.getText().toString().trim()
                                 , chat.getKey())));
-                        list.add(message);
+                        list.add(0,message);
                         //Log.e("chat id",chat.getObjectId());
-                        adapter.notifyItemInserted(list.size()-1);
-                        recyclerView.scrollToPosition(list.size()-1);
+                        adapter.notifyItemInserted(0);
+                        recyclerView.scrollToPosition(0);
+
 
                     }
                     else{
@@ -388,9 +393,9 @@ public class DirectMessageActivity extends AppCompatActivity {
                     chat = object.get("chat") != null ? (Chat) object.get("chat") : null;
                     Message message = (Message) object.get("message");
                     message.setMessage(rncryptor.decrypt(message.getEncryptedMessage(), chat.getKey()));
-                    list.add(message);
-                    adapter.notifyItemInserted(list.size()-1);
-                    recyclerView.scrollToPosition(list.size()-1);
+                    list.add(0,message);
+                    adapter.notifyItemInserted(0);
+                    recyclerView.scrollToPosition(0);
                     connectLiveServer(chat);
                     progressDialog.dismiss();
                 }
@@ -421,9 +426,10 @@ public class DirectMessageActivity extends AppCompatActivity {
                             Log.e("LiveQuery","id "+object.getObjectId());
                             if(!object.getOwner().equals(GenelUtil.getCurrentUser().getObjectId())){
                                 object.setMessage(rncryptor.decrypt(object.getEncryptedMessage(), chat.getKey()));
-                                list.add(object);
-                                adapter.notifyItemInserted(list.size()-1);
-                                recyclerView.scrollToPosition(list.size()-1);
+                                list.add(0,object);
+                                //Log.e("chat id",chat.getObjectId());
+                                adapter.notifyItemInserted(0);
+                                recyclerView.scrollToPosition(0);
                             }
                         }
                     });
