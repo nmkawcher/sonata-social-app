@@ -3,6 +3,7 @@ package com.sonata.socialapp.utils.classes;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
+import java.util.Comparator;
 import java.util.Date;
 
 @ParseClassName("Chat")
@@ -20,13 +21,11 @@ public class Chat extends ParseObject {
         return getString("lastposter");
     }
 
+
     public void setRead(boolean read){
         put("read",read);
     }
 
-    public void setMessage(String message){
-        put("message",message);
-    }
     public boolean isRead(){
         return getBoolean("read");
     }
@@ -35,9 +34,15 @@ public class Chat extends ParseObject {
         return getString("key");
     }
 
-    public String getEncryptedMessage(){
+    public String getMessage(){
         return getString("lastmessage");
     }
 
+
+    class SortByDate implements Comparator<Chat> {
+        public int compare(Chat a, Chat b) {
+            return a.getLastEdit().after(b.getLastEdit()) ? 1 : -1;
+        }
+    }
 
 }

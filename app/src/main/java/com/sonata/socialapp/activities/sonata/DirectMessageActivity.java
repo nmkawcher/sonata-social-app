@@ -54,7 +54,6 @@ import cn.jzvd.Jzvd;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import tgio.rncryptor.RNCryptorNative;
 
 public class DirectMessageActivity extends AppCompatActivity {
 
@@ -63,16 +62,16 @@ public class DirectMessageActivity extends AppCompatActivity {
     Chat chat;
     RelativeLayout back, bottomCommentLayout;
     EditText editText;
-    RNCryptorNative rncryptor;
     ImageButton send;
     RecyclerView recyclerView;
     MessageAdapter adapter;
     List<Message> list;
     LinearLayoutManager linearLayoutManager;
     ParseQuery<Message> parseQuery;
+    ParseLiveQueryClient parseLiveQueryClient;
     ProgressBar progressBar;
     String to = "";
-    ParseLiveQueryClient parseLiveQueryClient;
+
     Date date;
     boolean hasmore,loading;
 
@@ -109,7 +108,6 @@ public class DirectMessageActivity extends AppCompatActivity {
         bottomCommentLayout = findViewById(R.id.makecommentlayout);
         progressBar = findViewById(R.id.progressBar);
         editText = findViewById(R.id.commentedittext);
-        rncryptor = new RNCryptorNative();
         //chat = getIntent() != null ? getIntent().getParcelableExtra("chat") : null;
         bottomCommentLayout.setVisibility(View.INVISIBLE);
         getChatAndMessages(to);
@@ -127,8 +125,7 @@ public class DirectMessageActivity extends AppCompatActivity {
         adapter.setContext(list
                 , Glide.with(DirectMessageActivity.this)
                 ,user
-                ,ParseUser.getCurrentUser().getObjectId()
-                ,key);
+                ,ParseUser.getCurrentUser().getObjectId());
         adapter.setHasStableIds(false);
         recyclerView.setAdapter(adapter);
         onScrollListener = new RecyclerView.OnScrollListener() {
@@ -175,6 +172,7 @@ public class DirectMessageActivity extends AppCompatActivity {
                         getMessages(date,chat);
                     }
                     else{
+                        Log.e("Error Message",e.getMessage());
                         GenelUtil.ToastLong(DirectMessageActivity.this,getString(R.string.error));
                         finish();
                     }
@@ -204,6 +202,7 @@ public class DirectMessageActivity extends AppCompatActivity {
                         getChatAndMessages(id);
                     }
                     else{
+                        Log.e("Error Message",e.getMessage());
                         GenelUtil.ToastLong(DirectMessageActivity.this,getString(R.string.error));
                         finish();
                     }
@@ -225,7 +224,6 @@ public class DirectMessageActivity extends AppCompatActivity {
             try{
                 for(int i = 0; i < tempList.size(); i++){
                     Message message = tempList.get(i);
-                    message.setMessage(rncryptor.decrypt(message.getEncryptedMessage(), chat.getKey()));
                 }
                 return true;
             }catch (Exception e){
@@ -276,7 +274,6 @@ public class DirectMessageActivity extends AppCompatActivity {
                 try{
                     for(int i = 0; i < tempList.size(); i++){
                         Message message = tempList.get(i);
-                        message.setMessage(rncryptor.decrypt(message.getEncryptedMessage(), chat.getKey()));
                     }
                     return true;
                 }catch (Exception e){
@@ -299,6 +296,7 @@ public class DirectMessageActivity extends AppCompatActivity {
                         bottomCommentLayout.setVisibility(View.VISIBLE);
 
                         adapter.notifyItemRangeInserted(preSize, list.size()-preSize);
+                        chat.setRead(true);
                         setSendClick();
                         progressBar.setVisibility(View.INVISIBLE);
                         connectLiveServer(chat);
@@ -346,8 +344,6 @@ public class DirectMessageActivity extends AppCompatActivity {
                         message.setChat(chat.getObjectId());
                         message.setOwner(ParseUser.getCurrentUser().getObjectId());
                         message.setMessage(editText.getText().toString().trim());
-                        message.setEncryptedMessage(new String(rncryptor.encrypt(editText.getText().toString().trim()
-                                , chat.getKey())));
                         list.add(0,message);
                         //Log.e("chat id",chat.getObjectId());
                         adapter.notifyItemInserted(0);
@@ -371,16 +367,10 @@ public class DirectMessageActivity extends AppCompatActivity {
         progressDialog.setMessage(getString(R.string.sendmessage));
         progressDialog.show();
 
-        String key = new String(rncryptor.encrypt(user.getObjectId()+ ParseUser.getCurrentUser().getObjectId()
-                , user.getObjectId()+ ParseUser.getCurrentUser().getObjectId()));
-        adapter.setkey(key);
-
         HashMap<String,Object> params = new HashMap<>();
         params.put("to",user.getObjectId());
-        params.put("key",key);
 
-        String text = new String(rncryptor.encrypt(editText.getText().toString().trim()
-                , key));
+        String text = editText.getText().toString().trim();
 
         params.put("text",text);
 
@@ -392,7 +382,7 @@ public class DirectMessageActivity extends AppCompatActivity {
 
                     chat = object.get("chat") != null ? (Chat) object.get("chat") : null;
                     Message message = (Message) object.get("message");
-                    message.setMessage(rncryptor.decrypt(message.getEncryptedMessage(), chat.getKey()));
+
                     list.add(0,message);
                     adapter.notifyItemInserted(0);
                     recyclerView.scrollToPosition(0);
@@ -410,7 +400,7 @@ public class DirectMessageActivity extends AppCompatActivity {
     private void connectLiveServer(Chat chat){
 
         try {
-            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://ws-server.sonatasocialapp.com/parse/"));
+            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://ws-server.sonatasocialapp.com/ws-server/parse/"));
             parseQuery = ParseQuery.getQuery(Message.class);
             parseQuery.whereEqualTo("chat",chat.getObjectId());
             parseQuery.whereEqualTo("owner",to);
@@ -425,7 +415,6 @@ public class DirectMessageActivity extends AppCompatActivity {
                         public void run() {
                             Log.e("LiveQuery","id "+object.getObjectId());
                             if(!object.getOwner().equals(GenelUtil.getCurrentUser().getObjectId())){
-                                object.setMessage(rncryptor.decrypt(object.getEncryptedMessage(), chat.getKey()));
                                 list.add(0,object);
                                 //Log.e("chat id",chat.getObjectId());
                                 adapter.notifyItemInserted(0);
@@ -467,6 +456,6 @@ public class DirectMessageActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(parseLiveQueryClient != null) parseLiveQueryClient.unsubscribe(parseQuery);
+        if(parseLiveQueryClient != null && parseQuery != null) parseLiveQueryClient.unsubscribe(parseQuery);
     }
 }

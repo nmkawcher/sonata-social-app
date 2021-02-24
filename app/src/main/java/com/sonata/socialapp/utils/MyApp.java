@@ -47,7 +47,14 @@ public class MyApp extends Application {
             LeakCanary.install(this);
         }*/
 
-
+        if(GenelUtil.getNightModeApp(getApplicationContext())){
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else{
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO);
+        }
 
         Tiny.getInstance().init(this);
 
@@ -72,7 +79,7 @@ public class MyApp extends Application {
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("fDVnuSxHVTycjWW2J3ZG9WHukxewXxZq")
                 .enableLocalDataStore()
-                .server("http://23.94.219.164:1337/parse/")
+                .server("https://loadbalancer.sonatasocialapp.com/parse/")
                 .build());
 
 

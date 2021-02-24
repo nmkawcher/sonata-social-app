@@ -136,7 +136,7 @@ dependencies {
     //implementation 'com.vincan:medialoader:1.0.0'
     //implementation 'com.github.dueeeke:dk-tablayout:1.0.2'
 
-    implementation 'com.github.tgio:rncryptor-native:0.0.9'
+    //implementation 'com.github.tgio:rncryptor-native:0.0.9'
 
 }
 

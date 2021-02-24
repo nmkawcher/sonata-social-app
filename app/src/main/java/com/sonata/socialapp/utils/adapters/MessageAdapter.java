@@ -22,7 +22,6 @@ import com.sonata.socialapp.utils.classes.SonataUser;
 
 import java.util.List;
 
-import tgio.rncryptor.RNCryptorNative;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -37,17 +36,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private SonataUser user;
     private String owner;
     private String key;
-    private RNCryptorNative rncryptor = new RNCryptorNative();
     public void setContext(List<Message> list
             ,RequestManager glide
             ,SonataUser user
-            ,String owner
-            ,String key){
+            ,String owner){
         this.list=list;
         this.glide=glide;
         this.user=user;
         this.owner=owner;
-        this.key=key;
     }
 
     public void setkey(String key){
@@ -128,7 +124,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 if(e==null){
                     progresstext.setVisibility(View.GONE);
                     mainlayout.setOnClickListener(null);
-                    message.setMessage(rncryptor.decrypt(message.getEncryptedMessage(), key));
                     //notifyItemChanged(position);
                     text.setText(message.getMessage());
                 }

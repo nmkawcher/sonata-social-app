@@ -14,21 +14,14 @@ public class Message extends ParseObject {
         put("type",type);
     }
 
-    public String getEncryptedMessage(){
+    public String getMessage(){
         return getString("message");
     }
 
-    public void setEncryptedMessage(String message){
+    public void setMessage(String message){
         put("message",message);
     }
 
-    public String getMessage(){
-        return getString("message2");
-    }
-
-    public void setMessage(String message){
-        put("message2",message);
-    }
 
     public String getOwner(){
         return getString("owner");

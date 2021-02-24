@@ -796,6 +796,7 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
                     public void onChildViewAdded(View view, View view1) {
                         if (view1 instanceof ImageView) {
                             ImageView imageView = (ImageView) view1;
+                            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                             imageView.setAdjustViewBounds(true);
                         }
                     }

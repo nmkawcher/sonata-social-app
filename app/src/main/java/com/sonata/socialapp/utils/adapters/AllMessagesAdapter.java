@@ -115,7 +115,8 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
                 glide.load(holder.profilephoto.getContext().getResources().getDrawable(R.drawable.emptypp,null)).into(holder.profilephoto);
             }
 
-            if(chat.getLastPoster().equals(GenelUtil.getCurrentUser().getObjectId())){
+            boolean anan = chat.getLastPoster().equals(GenelUtil.getCurrentUser().getObjectId());
+            if(anan){
                 holder.name.setTextColor(Color.parseColor("#999999"));
                 holder.message.setTextColor(Color.parseColor("#999999"));
                 holder.indicator.setVisibility(View.INVISIBLE);
@@ -134,7 +135,13 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
                 }
             }
             holder.name.setText(user.getName());
-            holder.message.setText(listObject.getDecryptedMessage());
+            if(anan){
+                holder.message.setText(holder.itemView.getContext().getString(R.string.you)+" "+chat.getMessage());
+            }
+            else{
+                holder.message.setText(chat.getMessage());
+            }
+
             holder.date.setText(DateUtils.getRelativeTimeSpanString(chat.getLastEdit().getTime(), System.currentTimeMillis(), DateUtils.FORMAT_24HOUR));
 
 

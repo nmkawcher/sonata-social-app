@@ -3,6 +3,7 @@ package com.sonata.socialapp.utils.classes;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 public class ListObject implements Serializable {
 
@@ -87,5 +88,21 @@ public class ListObject implements Serializable {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public static class SortByDate implements Comparator<ListObject> {
+        public int compare(ListObject a, ListObject b) {
+            if(a.getChat() != null && b.getChat() !=null){
+                return a.getChat().getLastEdit().after(b.getChat().getLastEdit()) ? -1 : 1;
+            }
+            else if(a.getChat() == null && b.getChat() !=null){
+                return 1;
+            }
+            else if(a.getChat() != null && b.getChat() ==null){
+                return -1;
+            }
+            return 0;
+
+        }
     }
 }

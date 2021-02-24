@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-import tgio.rncryptor.RNCryptorNative;
 
 public class FcmService extends FirebaseMessagingService {
 
@@ -53,7 +52,6 @@ public class FcmService extends FirebaseMessagingService {
     final static int replyComment = 987372;
     final static int uploadComplete = 198483;
 
-    RNCryptorNative rncryptor = new RNCryptorNative();
 
 
 
@@ -93,10 +91,11 @@ public class FcmService extends FirebaseMessagingService {
                                         String title = addition+ remoteMessage.getData().get("name")+" "+getString(R.string.sendyouamessage);
                                         Intent intent = new Intent(this, MessagesActivity.class);
 
-                                        intent.putExtra("id", from);
+                                        //intent.putExtra("id", from);
                                         intent.putExtra("notif", true);
+                                        intent.putExtra("to", toId);
 
-                                        if (!iseq) {
+                                        if(!iseq) {
                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         }
                                         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -110,7 +109,7 @@ public class FcmService extends FirebaseMessagingService {
                                                 .setColor(getResources().getColor(R.color.notif))
                                                 .setLargeIcon(bitmap)//a resource for your custom small icon
                                                 .setContentTitle(title) //the "title" value you sent in your notification
-                                                .setContentText(rncryptor.decrypt(remoteMessage.getData().get("message"), remoteMessage.getData().get("key"))) //ditto
+                                                .setContentText(remoteMessage.getData().get("message")) //ditto
                                                 .setAutoCancel(true)
                                                 .setContentIntent(pendingIntent)//dismisses the notification on click
                                                 .setSound(defaultSoundUri);

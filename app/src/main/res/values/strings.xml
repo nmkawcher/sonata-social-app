@@ -423,6 +423,8 @@
 
     <string name="messages">Messages</string>
 
+    <string name="you">You:</string>
+
     <string name="pendingfollowreqs">Pending follow requests</string>
 
     <string name="likedposts">Posts you\'ve liked</string>
