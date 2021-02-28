@@ -38,7 +38,6 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
-import com.parse.Parse;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -46,18 +45,13 @@ import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
-import com.sonata.socialapp.activities.sonata.MainActivity;
-import com.sonata.socialapp.activities.sonata.SavedPostsActivity;
 import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.GroupSafPostAdapter;
-import com.sonata.socialapp.utils.adapters.HomeAdapter;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
-import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.Group;
 import com.sonata.socialapp.utils.classes.GroupPost;
 import com.sonata.socialapp.utils.classes.ListObject;
-import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.interfaces.GroupRecyclerViewClick;
 
 import java.util.ArrayList;
@@ -1262,12 +1256,12 @@ public class GroupActivity extends AppCompatActivity implements GroupRecyclerVie
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        if(clickType== HomeAdapter.TYPE_HASHTAG){
+        if(clickType== MyApp.TYPE_HASHTAG){
             //hashtag
             startActivity(new Intent(GroupActivity.this, HashtagActivity.class).putExtra("hashtag",text.replace("#","")));
 
         }
-        else if(clickType==HomeAdapter.TYPE_MENTION){
+        else if(clickType==MyApp.TYPE_MENTION){
             //mention
             String username = text;
 
@@ -1279,7 +1273,7 @@ public class GroupActivity extends AppCompatActivity implements GroupRecyclerVie
             }
 
         }
-        else if(clickType==HomeAdapter.TYPE_LINK){
+        else if(clickType==MyApp.TYPE_LINK){
             CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
             String url = text;
             if(!url.startsWith("http")){

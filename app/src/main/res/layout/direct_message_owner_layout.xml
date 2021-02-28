@@ -13,21 +13,25 @@
         android:layout_marginEnd="5dp"
         android:id="@+id/anan"
         android:layout_marginStart="80dp"
-        android:background="@color/blue"
+        android:background="?attr/mesajownerbackground"
         app:bottom_left_corner_radius="15dp"
         app:top_right_corner_radius="15dp"
         app:top_left_corner_radius="15dp">
-        <TextView
+        <com.tylersuehr.socialtextview.SocialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
+            app:hashtagColor="@color/blue"
+            app:mentionColor="@color/blue"
+            app:urlColor="@color/blue"
+            app:linkModes="hashtag|mention|url"
             android:textSize="16sp"
             android:layout_centerVertical="true"
             android:id="@+id/messageText"
-            android:textColor="@color/white"/>
+            android:textColor="?attr/siyahyazı"/>
     </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
     <TextView
         android:layout_width="wrap_content"

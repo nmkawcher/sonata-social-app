@@ -35,11 +35,15 @@
             app:bottom_right_corner_radius="15dp"
             app:top_right_corner_radius="15dp"
             app:top_left_corner_radius="15dp">
-            <TextView
+            <com.tylersuehr.socialtextview.SocialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
+                app:hashtagColor="@color/blue"
+                app:mentionColor="@color/blue"
+                app:urlColor="@color/blue"
+                app:linkModes="hashtag|mention|url"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"

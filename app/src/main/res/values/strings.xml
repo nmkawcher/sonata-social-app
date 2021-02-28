@@ -301,6 +301,9 @@
 
     <string name="darkmode">Dark mode</string>
 
+    <string name="share">Share</string>
+
+
     <string name="nopostshareone">Seems like you have no posts. Click the circle button at the bottom right to share one.</string>
 
     <string name="removevideo">Remove video</string>

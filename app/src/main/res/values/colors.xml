@@ -13,7 +13,9 @@
     <color name="placeholder_gray">#A9A9A9</color>
 
 
+    <color name="mesajownergunduz">#D3D1D1</color>
 
+    <color name="mesajownergece">#3E3E3E</color>
 
     <color name="colorRed">#a64942</color>
 
@@ -21,6 +23,8 @@
 
 
     <color name="blue">#0384BE</color>
+
+    <color name="lightblue">#47BBEF</color>
 
 
     <color name="toolbarcolorgunduz">#ffffff</color>

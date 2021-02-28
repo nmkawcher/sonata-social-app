@@ -139,6 +139,23 @@ public class RegisterActivity extends AppCompatActivity {
                                                                     if(e==null){
                                                                         GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),RegisterActivity.this);
                                                                         startActivity(new Intent(RegisterActivity.this,ChooseCategoryActivity.class));
+                                                                        if(getIntent() != null && getIntent().getStringExtra("deplinkintent") != null){
+                                                                            String text = getIntent().getStringExtra("deplinkintent");
+                                                                            String newS = text.substring(text.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
+                                                                            if(newS.startsWith("/")){
+                                                                                newS = newS.substring(1);
+                                                                            }
+                                                                            if(newS.startsWith("post/")){
+                                                                                newS = newS.replace("post/","");
+                                                                                startActivity(new Intent(RegisterActivity.this, CommentActivity.class).putExtra("id",newS));
+                                                                            }
+                                                                            else if(newS.startsWith("user/")){
+                                                                                newS = newS.replace("user/","");
+                                                                                if(!newS.equals(ParseUser.getCurrentUser().getUsername())){
+                                                                                    startActivity(new Intent(RegisterActivity.this, GuestProfileActivity.class).putExtra("username",newS));
+                                                                                }
+                                                                            }
+                                                                        }
                                                                         finish();
                                                                     }
                                                                 }

@@ -67,6 +67,8 @@
 
         <item name="icmessage">@drawable/ic_message_day</item>
 
+        <item name="mesajownerbackground">@color/mesajownergunduz</item>
+
 
 
 
@@ -139,6 +141,7 @@
 
         <item name="icmessage">@drawable/ic_message_night</item>
 
+        <item name="mesajownerbackground">@color/mesajownergece</item>
 
 
     </style>

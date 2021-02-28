@@ -7,26 +7,16 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.parse.Parse;
-import com.parse.ParseCloud;
-import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.sonata.socialapp.utils.classes.Block;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.Comment;
-import com.sonata.socialapp.utils.classes.CommentDownvote;
-import com.sonata.socialapp.utils.classes.CommentUpvote;
-import com.sonata.socialapp.utils.classes.Follow;
 import com.sonata.socialapp.utils.classes.Group;
 import com.sonata.socialapp.utils.classes.GroupPost;
-import com.sonata.socialapp.utils.classes.Like;
 import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.Notif;
 import com.sonata.socialapp.utils.classes.Post;
-import com.sonata.socialapp.utils.classes.Report;
 import com.sonata.socialapp.utils.classes.SonataUser;
-import com.squareup.leakcanary.LeakCanary;
 import com.zxy.tiny.Tiny;
 
 
@@ -37,6 +27,11 @@ public class MyApp extends Application {
     public static boolean ses = false;
 
     public static String whereAmI= "";
+
+    public static final int TYPE_HASHTAG = 1;
+    public static final int TYPE_LINK = 8;
+    public static final int TYPE_MENTION = 2;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,17 +57,11 @@ public class MyApp extends Application {
 
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Comment.class);
-        ParseObject.registerSubclass(Like.class);
         ParseObject.registerSubclass(Group.class);
-        ParseObject.registerSubclass(Report.class);
-        ParseObject.registerSubclass(CommentUpvote.class);
-        ParseObject.registerSubclass(CommentDownvote.class);
-        ParseObject.registerSubclass(Block.class);
         ParseObject.registerSubclass(GroupPost.class);
         ParseObject.registerSubclass(Chat.class);
         ParseObject.registerSubclass(Message.class);
         ParseObject.registerSubclass(Notif.class);
-        ParseObject.registerSubclass(Follow.class);
         ParseUser.registerSubclass(SonataUser.class);
 
 

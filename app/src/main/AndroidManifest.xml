@@ -148,12 +148,61 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.sonata.GuestProfileActivity"
+            android:theme="@style/SplashTheme"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:scheme="http"
+                    android:host="sonatasocialapp.com"
+                    android:pathPrefix="/user" />
+
+                <data android:scheme="http"
+                    android:host="www.sonatasocialapp.com"
+                    android:pathPrefix="/user" />
+
+                <data android:scheme="https"
+                    android:host="sonatasocialapp.com"
+                    android:pathPrefix="/user" />
+
+                <data android:scheme="https"
+                    android:host="www.sonatasocialapp.com"
+                    android:pathPrefix="/user" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.sonata.CommentActivity"
+            android:theme="@style/SplashTheme"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:scheme="http"
+                    android:host="sonatasocialapp.com"
+                    android:pathPrefix="/post" />
+
+                <data android:scheme="http"
+                    android:host="www.sonatasocialapp.com"
+                    android:pathPrefix="/post" />
+
+                <data android:scheme="https"
+                    android:host="sonatasocialapp.com"
+                    android:pathPrefix="/post" />
+
+                <data android:scheme="https"
+                    android:host="www.sonatasocialapp.com"
+                    android:pathPrefix="/post" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".activities.sonata.UploadActivity"
             android:screenOrientation="portrait"

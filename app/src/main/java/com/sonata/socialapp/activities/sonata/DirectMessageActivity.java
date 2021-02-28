@@ -23,39 +23,33 @@ import com.bumptech.glide.Glide;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.livequery.OkHttp3SocketClientFactory;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.MyApp;
-import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.MessageAdapter;
 import com.sonata.socialapp.utils.classes.Chat;
-import com.sonata.socialapp.utils.classes.Encryption;
 import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import cn.jzvd.Jzvd;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 
-public class DirectMessageActivity extends AppCompatActivity {
+public class DirectMessageActivity extends AppCompatActivity implements MessageAdapter.MessageClick {
 
     TextView topUsername;
     SonataUser user;
@@ -125,7 +119,8 @@ public class DirectMessageActivity extends AppCompatActivity {
         adapter.setContext(list
                 , Glide.with(DirectMessageActivity.this)
                 ,user
-                ,ParseUser.getCurrentUser().getObjectId());
+                ,ParseUser.getCurrentUser().getObjectId()
+                ,this);
         adapter.setHasStableIds(false);
         recyclerView.setAdapter(adapter);
         onScrollListener = new RecyclerView.OnScrollListener() {
@@ -224,6 +219,7 @@ public class DirectMessageActivity extends AppCompatActivity {
             try{
                 for(int i = 0; i < tempList.size(); i++){
                     Message message = tempList.get(i);
+                    //Log.e("object class", message.getClassName());
                 }
                 return true;
             }catch (Exception e){
@@ -248,7 +244,7 @@ public class DirectMessageActivity extends AppCompatActivity {
                     }
                     list.addAll(tempList);
 
-
+                    //Log.e("object class", list.get(0).getClassName());
                     adapter.notifyDataSetChanged();
                     //recyclerView.scrollToPosition(tempList.size());
                     loading=false;
@@ -400,7 +396,7 @@ public class DirectMessageActivity extends AppCompatActivity {
     private void connectLiveServer(Chat chat){
 
         try {
-            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://ws-server.sonatasocialapp.com/ws-server/parse/"));
+            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://ws-server.sonatasocialapp.com/ws-server/parse/"),new OkHttp3SocketClientFactory(new OkHttpClient()));
             parseQuery = ParseQuery.getQuery(Message.class);
             parseQuery.whereEqualTo("chat",chat.getObjectId());
             parseQuery.whereEqualTo("owner",to);
@@ -457,5 +453,10 @@ public class DirectMessageActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if(parseLiveQueryClient != null && parseQuery != null) parseLiveQueryClient.unsubscribe(parseQuery);
+    }
+
+    @Override
+    public void onTextClick(int position, int clickType, String text) {
+        GenelUtil.handleLinkClicks(this,text,clickType);
     }
 }

@@ -35,13 +35,10 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.adapters.HomeAdapter;
+import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.adapters.SafCommentAdapter;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.interfaces.CommentReplyAdapterClick;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -662,38 +659,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
 
     @Override
     public void onCommentSocialClick(int position, int clickType, String text) {
-        if(clickType== HomeAdapter.TYPE_HASHTAG){
-            //hashtag
-            startActivity(new Intent(SavedCommentActivity.this, HashtagActivity.class).putExtra("hashtag",text.replace("#","")));
-
-        }
-        else if(clickType==HomeAdapter.TYPE_MENTION){
-            //mention
-            String username = text;
-
-            username = username.replace("@","").trim();
-
-
-            if(!username.equals(ParseUser.getCurrentUser().getUsername())){
-                startActivity(new Intent(SavedCommentActivity.this, GuestProfileActivity.class).putExtra("username",username));
-            }
-
-        }
-        else if(clickType==HomeAdapter.TYPE_LINK){
-            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-            String url = text;
-            if(!url.startsWith("http")){
-                url = "http://"+url;
-            }
-            if(GenelUtil.getNightMode()){
-                builder.setToolbarColor(Color.parseColor("#303030"));
-            }
-            else{
-                builder.setToolbarColor(Color.parseColor("#ffffff"));
-            }
-            CustomTabsIntent customTabsIntent = builder.build();
-            customTabsIntent.launchUrl(SavedCommentActivity.this, Uri.parse(url));
-        }
+        GenelUtil.handleLinkClicks(this,text,clickType);
     }
 
 }

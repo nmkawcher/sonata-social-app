@@ -261,4 +261,5 @@
     <string name="messagesenderror">Hata. Tekrar denemek için dokun.</string>
     <string name="sendyouamessage">sana bir mesaj gönderdi</string>
     <string name="you">Sen:</string>
+    <string name="share">Paylaş</string>
 </resources>

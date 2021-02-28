@@ -15,23 +15,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
@@ -40,27 +33,24 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.BlockedPersonAdapter;
 import com.sonata.socialapp.utils.adapters.GuestGridProfilAdapter;
 import com.sonata.socialapp.utils.adapters.GuestProfilAdapter;
-import com.sonata.socialapp.utils.adapters.HomeAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import cn.jzvd.Jzvd;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 
 
 public class GuestProfileActivity extends AppCompatActivity implements RecyclerViewClick {
@@ -109,6 +99,8 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
     List<ListObject> suggestList;
     LinearLayoutManager suggestLayoutManager;
 
+
+    boolean actionIntent;
 
 
     @Override
@@ -167,50 +159,70 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guest_profile);
 
-        if(getIntent().getStringExtra("to")!=null){
-            String to = getIntent().getStringExtra("to");
-            if(ParseUser.getCurrentUser().getObjectId().equals(to)){
-                setUpOnCreate();
+        if(Objects.equals(getIntent().getAction(), Intent.ACTION_VIEW)){
+            actionIntent = true;
+            String data = getIntent().getData().toString();
+            if(ParseUser.getCurrentUser()==null){
+                startActivity(new Intent(this,LoginActivity.class).putExtra("deplinkintent",data));
+                finish();
+                return;
             }
-            else{
-                List<Object> an = GenelUtil.isUserSaved(this,to);
-                boolean isExist = (boolean) an.get(0);
-                if(isExist){
-                    String session = (String) an.get(2);
-                    ParseUser.becomeInBackground(session, new LogInCallback() {
-                        @Override
-                        public void done(ParseUser user, ParseException e) {
+            String newS = data.substring(data.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
+            if(newS.startsWith("/")){
+                newS = newS.substring(1);
+            }
+            if(newS.startsWith("user/")){
+                newS = newS.replace("user/","");
+                setUpOnCreate(newS);
 
-                            if(e==null){
-                                String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                                GenelUtil.ToastLong(GuestProfileActivity.this,text);
-
-                                setUpOnCreate();
-                            }
-                            else{
-                                if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
-                                    GenelUtil.removeUserFromCache(to, GuestProfileActivity.this);
-                                }
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.invalidsessiontoken));
-                                startActivity(new Intent(GuestProfileActivity.this, StartActivity.class));
-                                finish();
-                            }
-                        }
-                    });
-                }
-                else{
-                    startActivity(new Intent(this, StartActivity.class));
-                    finish();
-                }
             }
         }
         else{
-            setUpOnCreate();
+            if(getIntent().getStringExtra("to")!=null){
+                String to = getIntent().getStringExtra("to");
+                if(ParseUser.getCurrentUser().getObjectId().equals(to)){
+                    setUpOnCreate(null);
+                }
+                else{
+                    List<Object> an = GenelUtil.isUserSaved(this,to);
+                    boolean isExist = (boolean) an.get(0);
+                    if(isExist){
+                        String session = (String) an.get(2);
+                        ParseUser.becomeInBackground(session, new LogInCallback() {
+                            @Override
+                            public void done(ParseUser user, ParseException e) {
+
+                                if(e==null){
+                                    String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
+                                    GenelUtil.ToastLong(GuestProfileActivity.this,text);
+
+                                    setUpOnCreate(null);
+                                }
+                                else{
+                                    if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
+                                        GenelUtil.removeUserFromCache(to, GuestProfileActivity.this);
+                                    }
+                                    GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.invalidsessiontoken));
+                                    startActivity(new Intent(GuestProfileActivity.this, StartActivity.class));
+                                    finish();
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        startActivity(new Intent(this, StartActivity.class));
+                        finish();
+                    }
+                }
+            }
+            else{
+                setUpOnCreate(null);
+            }
         }
 
     }
 
-    private void setUpOnCreate(){
+    private void setUpOnCreate(String usernamestr){
         loadingLayout=findViewById(R.id.guestprofileloading);
 
         mainLayout=findViewById(R.id.guestmainlayout);
@@ -254,6 +266,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
         options = findViewById(R.id.appoptionsripple);
         usernamestring=getIntent().getStringExtra("username");
+        if(usernamestr != null) {
+            usernamestring = usernamestr;
+        }
         back1=findViewById(R.id.backbuttonbutton1);
         back1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,6 +291,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
         });
 
         username=findViewById(R.id.profileusernametext);
+        if(usernamestring != null){
+            username.setText(usernamestring);
+        }
 
         profilephoto = findViewById(R.id.profilephotophoto);
         profilephoto.setOnClickListener(new View.OnClickListener() {
@@ -374,7 +392,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
         adapter = new GuestGridProfilAdapter();
         recyclerView.setAdapter(adapter);
-        recyclerView.setOnScrollListener(onScrollListener);
+        recyclerView.addOnScrollListener(onScrollListener);
         adapter.setContext(list,Glide.with(this),this);
         ListObject object2 = new ListObject();
         object2.setType("load");
@@ -395,14 +413,20 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
         if(!this.isFinishing()&&!this.isDestroyed()){
             //get
-            if(user!=null){
-                getUser(user.getObjectId(),null,false);
+            if(usernamestr!=null){
+                getUser(null,usernamestr.toLowerCase(),false);
             }
             else{
-                if(getIntent().getStringExtra("username")!=null){
-                    getUser(null,getIntent().getStringExtra("username").toLowerCase(),false);
+                if(user!=null){
+                    getUser(user.getObjectId(),null,false);
+                }
+                else{
+                    if(getIntent().getStringExtra("username")!=null){
+                        getUser(null,getIntent().getStringExtra("username").toLowerCase(),false);
+                    }
                 }
             }
+
         }
     }
 
@@ -414,20 +438,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             listPostLayout.setVisibility(View.INVISIBLE);
         }
         else{
-            if(getIntent()!=null){
-                if(getIntent().getBooleanExtra("notif",false)){
-                    if(this.isTaskRoot()){
-                        startActivity(new Intent(this,MainActivity.class));
-                        finish();
-                    }
-                    else{
-                        super.onBackPressed();
-                    }
-
-                }
-                else{
-                    super.onBackPressed();
-                }
+            if(this.isTaskRoot() || actionIntent){
+                startActivity(new Intent(this,MainActivity.class));
+                finish();
             }
             else{
                 super.onBackPressed();
@@ -1313,6 +1326,8 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     other.add(getString(R.string.block));
                     other.add(getString(R.string.sendmessage));
                 }
+                other.add(getString(R.string.copylink));
+                other.add(getString(R.string.share));
 
                 String[] popupMenu = other.toArray(new String[other.size()]);
 
@@ -1349,7 +1364,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                             });
 
                         }
-                        if (select.equals(getString(R.string.unblock))) {
+                        else if (select.equals(getString(R.string.unblock))) {
                             progressDialog.setMessage(getString(R.string.unblock));
                             progressDialog.show();
                             HashMap<String,String> params = new HashMap<>();
@@ -1375,8 +1390,20 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                             });
 
                         }
-                        if (select.equals(getString(R.string.sendmessage))) {
+                        else if (select.equals(getString(R.string.sendmessage))) {
                             startActivity(new Intent(GuestProfileActivity.this, DirectMessageActivity.class).putExtra("user",user));
+                        }
+                        else if(select.equals(getString(R.string.share))){
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, GenelUtil.getUrlOfObject(user));
+                            sendIntent.setType("text/plain");
+
+                            Intent shareIntent = Intent.createChooser(sendIntent, null);
+                            startActivity(shareIntent);
+                        }
+                        else if(select.equals(getString(R.string.copylink))){
+                            GenelUtil.copyText(GenelUtil.getUrlOfObject(user),GuestProfileActivity.this);
                         }
                     }
                 });
@@ -1391,244 +1418,12 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        Post post = list.get(position).getPost();
-        ProgressDialog progressDialog = new ProgressDialog(GuestProfileActivity.this);
-        progressDialog.setCancelable(false);
-        ArrayList<String> other = new ArrayList<>();
-        if(post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-            //Bu gönderi benim
-            if(post.getCommentable()){
-                other.add(getString(R.string.disablecomment));
-            }
-            if(!post.getCommentable()){
-                other.add(getString(R.string.enablecomment));
-            }
-            other.add(getString(R.string.delete));
-
-        }
-        if(post.getSaved()){
-            other.add(getString(R.string.unsavepost));
-        }
-        if(!post.getSaved()){
-            other.add(getString(R.string.savepost));
-        }
-        if(!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-            //Bu gönderi başkasına ait
-            other.add(getString(R.string.report));
-        }
-
-        String[] popupMenu = other.toArray(new String[other.size()]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(GuestProfileActivity.this);
-        builder.setCancelable(true);
-
-        builder.setItems(popupMenu, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String select = popupMenu[which];
-                if(select.equals(getString(R.string.disablecomment))){
-
-                    progressDialog.setMessage(getString(R.string.disablecomment));
-                    progressDialog.show();
-
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setCommentable(false);
-                                progressDialog.dismiss();
-                                commentNumber.setText(GuestProfileActivity.this.getString(R.string.disabledcomment));
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-                }
-                if(select.equals(getString(R.string.savepost))){
-                    //savePost
-
-                    progressDialog.setMessage(getString(R.string.savepost));
-                    progressDialog.show();
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("savePost", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setSaved(true);
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.postsaved));
-
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-                }
-                if(select.equals(getString(R.string.unsavepost))){
-                    //UnsavePost
-
-                    progressDialog.setMessage(getString(R.string.unsavepost));
-                    progressDialog.show();
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("unsavePost", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setSaved(false);
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.postunsaved));
-
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-                }
-                if(select.equals(getString(R.string.report))){
-
-                    progressDialog.setMessage(getString(R.string.report));
-                    progressDialog.show();
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("reportPost", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.reportsucces));
-                                progressDialog.dismiss();
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-
-                }
-                if(select.equals(getString(R.string.enablecomment))){
-
-                    progressDialog.setMessage(getString(R.string.enablecomment));
-                    progressDialog.show();
-
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setCommentable(true);
-                                progressDialog.dismiss();
-
-                                commentNumber.setText(GenelUtil.ConvertNumber((int)post.getCommentnumber(),GuestProfileActivity.this));
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-                }
-                if(select.equals(getString(R.string.delete))){
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(GuestProfileActivity.this);
-                    builder.setTitle(R.string.deletetitle);
-                    builder.setCancelable(true);
-                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                        @Override public void onClick(DialogInterface dialog, int which) {
-
-                            dialog.dismiss();
-
-                            progressDialog.setMessage(getString(R.string.delete));
-                            progressDialog.show();
-                            HashMap<String, Object> params = new HashMap<String, Object>();
-                            params.put("postID", post.getObjectId());
-                            ParseCloud.callFunctionInBackground("deletePost", params, new FunctionCallback<String>() {
-                                @Override
-                                public void done(String object, ParseException e) {
-                                    if(e==null&&object.equals("deleted")){
-                                        list.remove(position);
-                                        adapter.notifyItemRemoved(position);
-                                        adapter.notifyItemRangeChanged(position,list.size());
-                                        if(postAdapter!=null){
-                                            postAdapter.notifyItemRemoved(position);
-                                            postAdapter.notifyItemRangeChanged(position,list.size());
-                                        }
-                                        progressDialog.dismiss();
-
-                                    }
-                                    else{
-                                        progressDialog.dismiss();
-                                        GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
-                                    }
-                                }
-                            });
-
-
-                        }
-                    });
-                    builder.show();
-
-                }
-            }
-        });
-        builder.show();
+        GenelUtil.handlePostOptionsClick(this,position,list,adapter,commentNumber);
     }
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        if(clickType== HomeAdapter.TYPE_HASHTAG){
-            //hashtag
-            startActivity(new Intent(GuestProfileActivity.this, HashtagActivity.class).putExtra("hashtag",text.replace("#","")));
-
-        }
-        else if(clickType==HomeAdapter.TYPE_MENTION){
-            //mention
-            String username = text;
-
-            username = username.replace("@","").trim();
-
-
-            if(!username.equals(ParseUser.getCurrentUser().getUsername())){
-                startActivity(new Intent(GuestProfileActivity.this, GuestProfileActivity.class).putExtra("username",username));
-            }
-
-        }
-        else if(clickType==HomeAdapter.TYPE_LINK){
-            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-            String url = text;
-            if(!url.startsWith("http")){
-                url = "http://"+url;
-            }
-            if(GenelUtil.getNightMode()){
-                builder.setToolbarColor(Color.parseColor("#303030"));
-            }
-            else{
-                builder.setToolbarColor(Color.parseColor("#ffffff"));
-            }
-            CustomTabsIntent customTabsIntent = builder.build();
-            customTabsIntent.launchUrl(GuestProfileActivity.this, Uri.parse(url));
-        }
+        GenelUtil.handleLinkClicks(this,text,clickType);
     }
 
     @Override

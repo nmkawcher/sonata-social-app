@@ -27,9 +27,7 @@
         <attr name="hyperlinkColor" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="ExpandableTextView">
-        <attr name="trimLength" format="integer"/>
-    </declare-styleable>
+
     <attr name="siyahyazı" format="color"/>
 
     <attr name="beyazbackground" format="color"/>
@@ -39,6 +37,8 @@
     <attr name="recyclerbackground" format="color"/>
 
     <attr name="toolbarcolor" format="color"/>
+
+    <attr name="mesajownerbackground" format="color"/>
 
     <attr name="ayracrenk" format="color"/>
 

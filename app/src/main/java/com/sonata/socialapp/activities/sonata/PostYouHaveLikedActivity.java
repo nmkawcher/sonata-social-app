@@ -1,7 +1,6 @@
 package com.sonata.socialapp.activities.sonata;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
@@ -13,38 +12,29 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
-import com.sonata.socialapp.utils.adapters.HomeAdapter;
 import com.sonata.socialapp.utils.adapters.SafPostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
@@ -56,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.jzvd.Jzvd;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class PostYouHaveLikedActivity extends AppCompatActivity implements RecyclerViewClick {
 
@@ -483,240 +472,12 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        Post post = list.get(position).getPost();
-        ProgressDialog progressDialog = new ProgressDialog(PostYouHaveLikedActivity.this);
-        progressDialog.setCancelable(false);
-        ArrayList<String> other = new ArrayList<>();
-        if(post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-            //Bu gönderi benim
-            if(post.getCommentable()){
-                other.add(getString(R.string.disablecomment));
-            }
-            if(!post.getCommentable()){
-                other.add(getString(R.string.enablecomment));
-            }
-            other.add(getString(R.string.delete));
-
-        }
-        if(post.getSaved()){
-            other.add(getString(R.string.unsavepost));
-        }
-        if(!post.getSaved()){
-            other.add(getString(R.string.savepost));
-        }
-        if(!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-            //Bu gönderi başkasına ait
-            other.add(getString(R.string.report));
-        }
-
-        String[] popupMenu = other.toArray(new String[other.size()]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostYouHaveLikedActivity.this);
-        builder.setCancelable(true);
-
-        builder.setItems(popupMenu, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String select = popupMenu[which];
-                if(select.equals(getString(R.string.disablecomment))){
-
-                    progressDialog.setMessage(getString(R.string.disablecomment));
-                    progressDialog.show();
-
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setCommentable(false);
-                                progressDialog.dismiss();
-                                commentNumber.setText(PostYouHaveLikedActivity.this.getString(R.string.disabledcomment));
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-                }
-                if(select.equals(getString(R.string.savepost))){
-                    //savePost
-
-                    progressDialog.setMessage(getString(R.string.savepost));
-                    progressDialog.show();
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("savePost", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setSaved(true);
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.postsaved));
-
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-                }
-                if(select.equals(getString(R.string.unsavepost))){
-                    //UnsavePost
-
-                    progressDialog.setMessage(getString(R.string.unsavepost));
-                    progressDialog.show();
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("unsavePost", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setSaved(false);
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.postunsaved));
-
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-                }
-                if(select.equals(getString(R.string.report))){
-
-                    progressDialog.setMessage(getString(R.string.report));
-                    progressDialog.show();
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("reportPost", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.reportsucces));
-                                progressDialog.dismiss();
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-
-                }
-                if(select.equals(getString(R.string.enablecomment))){
-
-                    progressDialog.setMessage(getString(R.string.enablecomment));
-                    progressDialog.show();
-
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("postID", post.getObjectId());
-                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
-                        @Override
-                        public void done(String object, ParseException e) {
-                            if(e==null){
-                                post.setCommentable(true);
-                                progressDialog.dismiss();
-
-                                commentNumber.setText(GenelUtil.ConvertNumber((int)post.getCommentnumber(),PostYouHaveLikedActivity.this));
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.error));
-                            }
-                        }
-                    });
-
-                }
-                if(select.equals(getString(R.string.delete))){
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(PostYouHaveLikedActivity.this);
-                    builder.setTitle(R.string.deletetitle);
-                    builder.setCancelable(true);
-                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                        @Override public void onClick(DialogInterface dialog, int which) {
-
-                            dialog.dismiss();
-
-                            progressDialog.setMessage(getString(R.string.delete));
-                            progressDialog.show();
-                            HashMap<String, Object> params = new HashMap<String, Object>();
-                            params.put("postID", post.getObjectId());
-                            ParseCloud.callFunctionInBackground("deletePost", params, new FunctionCallback<String>() {
-                                @Override
-                                public void done(String object, ParseException e) {
-                                    if(e==null&&object.equals("deleted")){
-                                        list.remove(position);
-                                        adapter.notifyItemRemoved(position);
-                                        adapter.notifyItemRangeChanged(position,list.size());
-                                        progressDialog.dismiss();
-
-                                    }
-                                    else{
-                                        progressDialog.dismiss();
-                                        GenelUtil.ToastLong(PostYouHaveLikedActivity.this,getString(R.string.error));
-                                    }
-                                }
-                            });
-
-
-                        }
-                    });
-                    builder.show();
-
-                }
-            }
-        });
-        builder.show();
+        GenelUtil.handlePostOptionsClick(this,position,list,adapter,commentNumber);
     }
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        if(clickType== HomeAdapter.TYPE_HASHTAG){
-            //hashtag
-            startActivity(new Intent(PostYouHaveLikedActivity.this, HashtagActivity.class).putExtra("hashtag",text.replace("#","")));
-
-        }
-        else if(clickType==HomeAdapter.TYPE_MENTION){
-            //mention
-            String username = text;
-
-            username = username.replace("@","").trim();
-
-
-            if(!username.equals(ParseUser.getCurrentUser().getUsername())){
-                startActivity(new Intent(PostYouHaveLikedActivity.this, GuestProfileActivity.class).putExtra("username",username));
-            }
-
-        }
-        else if(clickType==HomeAdapter.TYPE_LINK){
-            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-            String url = text;
-            if(!url.startsWith("http")){
-                url = "http://"+url;
-            }
-            if(GenelUtil.getNightMode()){
-                builder.setToolbarColor(Color.parseColor("#303030"));
-            }
-            else{
-                builder.setToolbarColor(Color.parseColor("#ffffff"));
-            }
-            CustomTabsIntent customTabsIntent = builder.build();
-            customTabsIntent.launchUrl(PostYouHaveLikedActivity.this, Uri.parse(url));
-        }
+        GenelUtil.handleLinkClicks(this,text,clickType);
     }
 
     @Override

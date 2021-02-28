@@ -6,6 +6,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -23,10 +25,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
@@ -35,11 +40,19 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
+import com.sonata.socialapp.activities.sonata.CommentActivity;
+import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
+import com.sonata.socialapp.activities.sonata.HashtagActivity;
 import com.sonata.socialapp.utils.classes.Comment;
+import com.sonata.socialapp.utils.classes.ListObject;
+import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.listeners.OnDismissListener;
@@ -75,106 +88,519 @@ public class GenelUtil {
     private static long a;
     public static final int ACCOUNT_LIMIT = 5;
 
+    public static int TYPE_POST = 123;
+    public static int TYPE_COMMENT = 124;
 
+    public static String appUrl = "sonatasocialapp.com";
 
-
-    public static void updateUser(JSONObject user,Context context){
-        SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
-        String userArrayStr = pref.getString("accounts","");
-
-        try {
-            if(userArrayStr != null && userArrayStr.length()>0){
-                Log.e("deneme","string not null");
-                JSONObject jsonObject = new JSONObject(userArrayStr);
-                JSONArray array = jsonObject.getJSONArray("users");
-
-
-
-                    JSONObject jsonObject2 = new JSONObject();
-                    JSONArray newArr = new JSONArray();
-                    newArr.put(user);
-
-                    for(int i=0;i<array.length();i++){
-                        JSONObject us = array.getJSONObject(i);
-                        if(!us.get("id").equals(user.get("id"))){
-                            newArr.put(us);
-                        }
-                    }
-
-                    jsonObject2.put("users",newArr);
-                    SharedPreferences.Editor editor = pref.edit();
-
-                    editor.putString("accounts",jsonObject2.toString());
-                    editor.apply();
-
-
-            }
-            else{
-                Log.e("deneme","string null yada uzunluk 0");
-                JSONObject jsonObject = new JSONObject();
-                JSONArray array = new JSONArray();
-                array.put(user);
-                jsonObject.put("users",array);
-                SharedPreferences.Editor editor = pref.edit();
-
-                editor.putString("accounts",jsonObject.toString());
-                editor.apply();
-            }
-
-        } catch (JSONException e) {
-            Log.e("saveUser",e.toString());
-            e.printStackTrace();
+    public static String getUrlOfObject(ParseObject object){
+        if(object.getClassName().equals("_User")){
+            return "https://www.sonatasocialapp.com/user/"+((ParseUser)object).getUsername();
         }
+        else if(object.getClassName().equals("Post")){
+            return "https://www.sonatasocialapp.com/post/"+object.getObjectId();
+        }
+        return "";
+    }
 
+    public static void handlePostOptionsClick(Context context, int position, List<ListObject> list, RecyclerView.Adapter adapter, TextView commentNumber){
+        Post post = list.get(position).getPost();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
+        ArrayList<String> other = new ArrayList<>();
+        if(post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+            //Bu gönderi benim
+            if(post.getCommentable()){
+                other.add(context.getString(R.string.disablecomment));
+            }
+            if(!post.getCommentable()){
+                other.add(context.getString(R.string.enablecomment));
+            }
+            other.add(context.getString(R.string.delete));
+
+        }
+        if(post.getSaved()){
+            other.add(context.getString(R.string.unsavepost));
+        }
+        if(!post.getSaved()){
+            other.add(context.getString(R.string.savepost));
+        }
+        if(!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+            //Bu gönderi başkasına ait
+            other.add(context.getString(R.string.report));
+        }
+        other.add(context.getString(R.string.copylink));
+        other.add(context.getString(R.string.share));
+
+        String[] popupMenu = other.toArray(new String[other.size()]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(true);
+
+        builder.setItems(popupMenu, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String select = popupMenu[which];
+                if(select.equals(context.getString(R.string.disablecomment))){
+
+                    progressDialog.setMessage(context.getString(R.string.disablecomment));
+                    progressDialog.show();
+
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setCommentable(false);
+                                progressDialog.dismiss();
+                                commentNumber.setText(context.getString(R.string.disabledcomment));
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+                }
+                else if(select.equals(context.getString(R.string.savepost))){
+                    //savePost
+
+                    progressDialog.setMessage(context.getString(R.string.savepost));
+                    progressDialog.show();
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("savePost", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setSaved(true);
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.postsaved));
+
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+                }
+                else if(select.equals(context.getString(R.string.unsavepost))){
+                    //UnsavePost
+
+                    progressDialog.setMessage(context.getString(R.string.unsavepost));
+                    progressDialog.show();
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("unsavePost", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setSaved(false);
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.postunsaved));
+
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+                }
+                else if(select.equals(context.getString(R.string.report))){
+
+                    progressDialog.setMessage(context.getString(R.string.report));
+                    progressDialog.show();
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("reportPost", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                GenelUtil.ToastLong(context,context.getString(R.string.reportsucces));
+                                progressDialog.dismiss();
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+
+                }
+                else if(select.equals(context.getString(R.string.enablecomment))){
+
+                    progressDialog.setMessage(context.getString(R.string.enablecomment));
+                    progressDialog.show();
+
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setCommentable(true);
+                                progressDialog.dismiss();
+
+                                commentNumber.setText(GenelUtil.ConvertNumber((int)post.getCommentnumber(),context));
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+                }
+                else if(select.equals(context.getString(R.string.delete))){
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(R.string.deletetitle);
+                    builder.setCancelable(true);
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+
+                            progressDialog.setMessage(context.getString(R.string.delete));
+                            progressDialog.show();
+                            HashMap<String, Object> params = new HashMap<String, Object>();
+                            params.put("postID", post.getObjectId());
+                            ParseCloud.callFunctionInBackground("deletePost", params, new FunctionCallback<String>() {
+                                @Override
+                                public void done(String object, ParseException e) {
+                                    if(e==null&&object.equals("deleted")){
+                                        list.remove(position);
+                                        adapter.notifyItemRemoved(position);
+                                        adapter.notifyItemRangeChanged(position,list.size());
+                                        progressDialog.dismiss();
+
+                                    }
+                                    else{
+                                        progressDialog.dismiss();
+                                        GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                    }
+                                }
+                            });
+
+
+                        }
+                    });
+                    builder.show();
+
+                }
+                else if(select.equals(context.getString(R.string.share))){
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getUrlOfObject(post));
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    context.startActivity(shareIntent);
+                }
+                else if(select.equals(context.getString(R.string.copylink))){
+                    copyText(getUrlOfObject(post),context);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    public static void handlePostOptionsClickInComments(Activity context, Post post, TextView commentNumber){
+
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
+        ArrayList<String> other = new ArrayList<>();
+        if(post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+            //Bu gönderi benim
+            if(post.getCommentable()){
+                other.add(context.getString(R.string.disablecomment));
+            }
+            if(!post.getCommentable()){
+                other.add(context.getString(R.string.enablecomment));
+            }
+            other.add(context.getString(R.string.delete));
+
+        }
+        if(post.getSaved()){
+            other.add(context.getString(R.string.unsavepost));
+        }
+        if(!post.getSaved()){
+            other.add(context.getString(R.string.savepost));
+        }
+        if(!post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+            //Bu gönderi başkasına ait
+            other.add(context.getString(R.string.report));
+        }
+        other.add(context.getString(R.string.copylink));
+        other.add(context.getString(R.string.share));
+
+        String[] popupMenu = other.toArray(new String[other.size()]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(true);
+
+        builder.setItems(popupMenu, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String select = popupMenu[which];
+                if(select.equals(context.getString(R.string.disablecomment))){
+
+                    progressDialog.setMessage(context.getString(R.string.disablecomment));
+                    progressDialog.show();
+
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setCommentable(false);
+                                progressDialog.dismiss();
+                                commentNumber.setText(context.getString(R.string.disabledcomment));
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+                }
+                else if(select.equals(context.getString(R.string.savepost))){
+                    //savePost
+
+                    progressDialog.setMessage(context.getString(R.string.savepost));
+                    progressDialog.show();
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("savePost", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setSaved(true);
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.postsaved));
+
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+                }
+                else if(select.equals(context.getString(R.string.unsavepost))){
+                    //UnsavePost
+
+                    progressDialog.setMessage(context.getString(R.string.unsavepost));
+                    progressDialog.show();
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("unsavePost", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setSaved(false);
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.postunsaved));
+
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+                }
+                else if(select.equals(context.getString(R.string.report))){
+
+                    progressDialog.setMessage(context.getString(R.string.report));
+                    progressDialog.show();
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("reportPost", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                GenelUtil.ToastLong(context,context.getString(R.string.reportsucces));
+                                progressDialog.dismiss();
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+
+                }
+                else if(select.equals(context.getString(R.string.enablecomment))){
+
+                    progressDialog.setMessage(context.getString(R.string.enablecomment));
+                    progressDialog.show();
+
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("postID", post.getObjectId());
+                    ParseCloud.callFunctionInBackground("enableDisableComment", params, new FunctionCallback<String>() {
+                        @Override
+                        public void done(String object, ParseException e) {
+                            if(e==null){
+                                post.setCommentable(true);
+                                progressDialog.dismiss();
+
+                                commentNumber.setText(GenelUtil.ConvertNumber((int)post.getCommentnumber(),context));
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                            }
+                        }
+                    });
+
+                }
+                else if(select.equals(context.getString(R.string.delete))){
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(R.string.deletetitle);
+                    builder.setCancelable(true);
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+
+                            progressDialog.setMessage(context.getString(R.string.delete));
+                            progressDialog.show();
+                            HashMap<String, Object> params = new HashMap<String, Object>();
+                            params.put("postID", post.getObjectId());
+                            ParseCloud.callFunctionInBackground("deletePost", params, new FunctionCallback<String>() {
+                                @Override
+                                public void done(String object, ParseException e) {
+                                    if(e==null&&object.equals("deleted")){
+                                        post.setIsDeleted(true);
+                                        context.finish();
+
+                                    }
+                                    else{
+                                        progressDialog.dismiss();
+                                        GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                    }
+                                }
+                            });
+
+
+                        }
+                    });
+                    builder.show();
+
+                }
+                else if(select.equals(context.getString(R.string.share))){
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getUrlOfObject(post));
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    context.startActivity(shareIntent);
+                }
+                else if(select.equals(context.getString(R.string.copylink))){
+                    copyText(getUrlOfObject(post),context);
+                }
+            }
+        });
+        builder.show();
     }
 
 
-    public static void updateUser2(JSONObject user,Context context){
-        SharedPreferences pref = context.getSharedPreferences("savedAccounts", 0);
-        String userArrayStr = pref.getString("accounts","");
+    public static void handleLinkClicks(Context context, String text,int clickType){
+        if(clickType== MyApp.TYPE_HASHTAG){
+            //hashtag
+            context.startActivity(new Intent(context, HashtagActivity.class).putExtra("hashtag",text.replace("#","")));
 
-        try {
-            if(userArrayStr != null && userArrayStr.length()>0){
-                Log.e("deneme","string not null");
-                JSONObject jsonObject = new JSONObject(userArrayStr);
-                JSONArray array = jsonObject.getJSONArray("users");
+        }
+        else if(clickType==MyApp.TYPE_MENTION){
+            //mention
+            String username = text;
+
+            username = username.replace("@","").trim();
 
 
+            if(!username.equals(ParseUser.getCurrentUser().getUsername())){
+                context.startActivity(new Intent(context, GuestProfileActivity.class).putExtra("username",username));
+            }
 
-                JSONObject jsonObject2 = new JSONObject();
-                JSONArray newArr = new JSONArray();
-                newArr.put(user);
-
-                for(int i=0;i<array.length();i++){
-                    JSONObject us = array.getJSONObject(i);
-                    if(!us.get("id").equals(user.get("id"))){
-                        newArr.put(us);
+        }
+        else if(clickType==MyApp.TYPE_LINK){
+            if(text.contains(appUrl)){
+                String newS = text.substring(text.indexOf(appUrl)+appUrl.length());
+                if(newS.startsWith("/")){
+                    newS = newS.substring(1);
+                }
+                Log.e("String deneme", newS);
+                Log.e("String deneme", newS.indexOf("anan")+"");
+                if(newS.startsWith("post/")){
+                    newS = newS.replace("post/","");
+                    context.startActivity(new Intent(context, CommentActivity.class).putExtra("id",newS));
+                }
+                else if(newS.startsWith("user/")){
+                    newS = newS.replace("user/","");
+                    if(!newS.equals(ParseUser.getCurrentUser().getUsername())){
+                        context.startActivity(new Intent(context, GuestProfileActivity.class).putExtra("username",newS));
                     }
                 }
-
-                jsonObject2.put("users",newArr);
-                SharedPreferences.Editor editor = pref.edit();
-
-                editor.putString("accounts",jsonObject2.toString());
-                editor.apply();
-
-
+                else{
+                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                    String url = text;
+                    if(!url.startsWith("http")){
+                        url = "http://"+url;
+                    }
+                    if(GenelUtil.getNightMode()){
+                        builder.setToolbarColor(Color.parseColor("#303030"));
+                    }
+                    else{
+                        builder.setToolbarColor(Color.parseColor("#ffffff"));
+                    }
+                    CustomTabsIntent customTabsIntent = builder.build();
+                    customTabsIntent.launchUrl(context, Uri.parse(url));
+                }
             }
             else{
-                Log.e("deneme","string null yada uzunluk 0");
-                JSONObject jsonObject = new JSONObject();
-                JSONArray array = new JSONArray();
-                array.put(user);
-                jsonObject.put("users",array);
-                SharedPreferences.Editor editor = pref.edit();
-
-                editor.putString("accounts",jsonObject.toString());
-                editor.apply();
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                String url = text;
+                if(!url.startsWith("http")){
+                    url = "http://"+url;
+                }
+                if(GenelUtil.getNightMode()){
+                    builder.setToolbarColor(Color.parseColor("#303030"));
+                }
+                else{
+                    builder.setToolbarColor(Color.parseColor("#ffffff"));
+                }
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(context, Uri.parse(url));
             }
-
-        } catch (JSONException e) {
-            Log.e("saveUser",e.toString());
-            e.printStackTrace();
         }
 
     }
@@ -355,31 +781,6 @@ public class GenelUtil {
         return !activity.isFinishing() && !activity.isDestroyed();
     }
 
-    public static Drawable getVideoDrawable(RecyclerView recyclerView,int i,int id){
-        View child = recyclerView.getChildAt(i);
-        if(child!=null){
-            ImageView view = (ImageView) child.findViewById(id);
-            return view!=null?view.getDrawable():null;
-        }
-        else{
-            return null;
-        }
-    }
-
-
-    public static byte[] getBytesFromDrawable(Drawable drawable){
-
-        try{
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Bitmap bm = ((BitmapDrawable) drawable).getBitmap();
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            return baos.toByteArray();
-        }catch (Exception e){
-            return new byte[0];
-        }
-
-    }
-
 
 
     public static byte[] getBytesFromBitmap(Bitmap bm){
@@ -393,47 +794,6 @@ public class GenelUtil {
         }
 
     }
-
-    public static String getBase64FromDrawable(Drawable drawable){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Bitmap bm = ((BitmapDrawable) drawable).getBitmap();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        return Base64.encodeToString(imageBytes, android.util.Base64.DEFAULT);
-    }
-
-
-    public static long getProgress(String message,int toplamsure) {
-        Pattern pattern = Pattern.compile("time=([\\d\\w:]+)");
-        if (message.contains("speed")&&message.contains("time=")) {
-            Matcher matcher = pattern.matcher(message);
-            matcher.find();
-            String tempTime="";
-            try{
-                tempTime = String.valueOf(matcher.group(1));
-            }catch (Exception e){return 0;}
-            String[] arrayTime = new String[0];
-            try{
-                arrayTime = tempTime.split(":");
-            }catch (Exception e){return 0;}
-
-            long currentTime =
-                    TimeUnit.HOURS.toSeconds(Long.parseLong(arrayTime[0]))
-                            + TimeUnit.MINUTES.toSeconds(Long.parseLong(arrayTime[1]))
-                            + Long.parseLong(arrayTime[2]);
-            if(toplamsure==0){
-                return 0;
-            }
-            long percent = 100 * currentTime/toplamsure;
-
-            Log.d("TAG", "currentTime -> " + currentTime + "s % -> " + percent);
-
-            return percent;
-        }
-        return 0;
-    }
-
-
 
     public static boolean clickable(long sure){
         if (SystemClock.elapsedRealtime() - a < sure){
@@ -485,114 +845,20 @@ public class GenelUtil {
 
 
 
-
-    public static String getPathFromUri(final Uri uri,final Context context) {
-
-        final boolean isKitKat = true;
-
-        // DocumentProvider
-        if (DocumentsContract.isDocumentUri(context, uri)) {
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-
-                // TODO handle non-primary volumes
-            }
-            // DownloadsProvider
-            else if (isDownloadsDocument(uri)) {
-
-                final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                return getDataColumn(context, contentUri, null, null);
-            }
-            // MediaProvider
-            else if (isMediaDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                Uri contentUri = null;
-                if ("image".equals(type)) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-
-                final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
-                        split[1]
-                };
-
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-            }
-        }
-        // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(uri.getScheme())) {
-
-            // Return the remote address
-            if (isGooglePhotosUri(uri))
-                return uri.getLastPathSegment();
-
-            return getDataColumn(context, uri, null, null);
-        }
-        // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-        return null;
-    }
-
-    public static String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
-
-        Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {
-                column
-        };
-
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
-                    null);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-        return null;
-    }
-
     public static void copy(Uri uri, File dst, Context context, ProgressDialog progressDialog) throws IOException {
         InputStream in = context.getContentResolver().openInputStream(uri);
         try {
-            OutputStream out = new FileOutputStream(dst);
-            try {
+            try (OutputStream out = new FileOutputStream(dst)) {
                 // Transfer bytes from in to out
                 byte[] buf = new byte[1024];
                 int len;
+                assert in != null;
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 progressDialog.dismiss();
-                ToastLong(context.getString(R.string.unsupportedvideo),context);
-            }
-            finally {
-                out.close();
+                ToastLong(context.getString(R.string.unsupportedvideo), context);
             }
         }catch (Exception e){
             progressDialog.dismiss();
@@ -603,43 +869,6 @@ public class GenelUtil {
             in.close();
         }
     }
-
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-    }
-
-
-
-
 
     public static SonataUser getCurrentUser(){
         if(ParseUser.getCurrentUser()==null){
@@ -720,9 +949,6 @@ public class GenelUtil {
         Toast.makeText(context,message, Toast.LENGTH_LONG).show();
     }
 
-    public static void ToastShort (Context context, String message){
-        Toast.makeText(context,message, Toast.LENGTH_SHORT).show();
-    }
 
     public static void showKeyboard(Activity activity){
         try{
@@ -735,18 +961,21 @@ public class GenelUtil {
     }
 
     public static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
+        try{
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            //Find the currently focused view, so we can grab the correct window token from it.
+            View view = activity.getCurrentFocus();
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (view == null) {
+                view = new View(activity);
+            }
+            assert imm != null;
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } catch (Exception ignored){
+
         }
-        assert imm != null;
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
     }
-
-
 
     public static void showImage(List<String> images, List<HashMap> items, ImageView imageView, int pos, RecyclerView.Adapter adapter){
 
@@ -828,14 +1057,14 @@ public class GenelUtil {
     }
 
     public static void copyText(String text,Context context){
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(context.getString(R.string.app_name), text);
         try{
+            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(context.getString(R.string.app_name), text);
             clipboard.setPrimaryClip(clip);
+            ToastLong(context,context.getString(R.string.linkcopied));
         }catch (Exception e){
             GenelUtil.ToastLong(getApplicationContext(),getApplicationContext().getString(R.string.error));
         }
-
     }
 
     public static String ConvertNumber(int number, Context context){
@@ -911,19 +1140,5 @@ public class GenelUtil {
         }
 
     }
-
-
-    /*public static String getRealPathFromURI (Uri contentUri,Activity activity) {
-        String path = null;
-        String[] proj = { MediaStore.MediaColumns.DATA };
-        Cursor cursor = activity.getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor.moveToFirst()) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            path = cursor.getString(column_index);
-        }
-        cursor.close();
-        return path;
-    }*/
-
 
 }

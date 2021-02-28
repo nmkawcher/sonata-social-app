@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ParseCloud.callFunctionInBackground("refreshOwnProfile", params, new FunctionCallback<HashMap>() {
             @Override
             public void done(HashMap object, ParseException e) {
+                if(!GenelUtil.isAlive(MainActivity.this)) return;
                 if(e==null){
                     if(Objects.requireNonNull(GenelUtil.getCurrentUser()).getNotifCount()>0){
                         addBadgeAt(2,(int)GenelUtil.getCurrentUser().getNotifCount());
@@ -264,11 +265,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
 
+
+
     }
 
 
 
-    private Badge addBadgeAt(int position, int number) {
+    private void addBadgeAt(int position, int number) {
         // add badge
         if (badgeView == null){
             badgeView = new QBadgeView(this);
@@ -285,7 +288,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     }
                 });
 
-        return badgeView;
+
+    }
+
+    public void startExploreTab(){
+        if(getSupportFragmentManager().findFragmentById(R.id.homeframediscover)==null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.homeframediscover,new DiscoverFragment()).commit();
+
+        }
     }
 
     public void startActivityResult(){
@@ -397,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
         }
         else{
-            super.onBackPressed();
+            finish();
         }
     }
 

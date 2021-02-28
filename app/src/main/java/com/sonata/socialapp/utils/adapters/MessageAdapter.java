@@ -19,6 +19,7 @@ import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.SonataUser;
+import com.tylersuehr.socialtextview.SocialTextView;
 
 import java.util.List;
 
@@ -35,20 +36,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private RequestManager glide;
     private SonataUser user;
     private String owner;
-    private String key;
+    private MessageClick messageClick;
     public void setContext(List<Message> list
             ,RequestManager glide
             ,SonataUser user
-            ,String owner){
+            ,String owner
+            ,MessageClick messageClick){
         this.list=list;
         this.glide=glide;
         this.user=user;
         this.owner=owner;
+        this.messageClick = messageClick;
     }
 
-    public void setkey(String key){
-        this.key = key;
-    }
+
+
 
     @Override
     public long getItemId(int position) {
@@ -114,7 +116,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
-    private void saveMessage(Message message, TextView progresstext,RelativeLayout mainlayout,int position,TextView text){
+    private void saveMessage(Message message, TextView progresstext,RelativeLayout mainlayout,int position,SocialTextView text){
         progresstext.setTextColor(Color.parseColor("#999999"));
         progresstext.setVisibility(View.VISIBLE);
         progresstext.setText(progresstext.getContext().getString(R.string.sending));
@@ -125,7 +127,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     progresstext.setVisibility(View.GONE);
                     mainlayout.setOnClickListener(null);
                     //notifyItemChanged(position);
-                    text.setText(message.getMessage());
+                    text.setLinkText(message.getMessage());
                 }
                 else{
                     Log.e("MessageSaveError",e.getMessage());
@@ -134,7 +136,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
         });
     }
-    private void setRetryClick(Message message, TextView progresstext,RelativeLayout mainlayout,int position,TextView text){
+    private void setRetryClick(Message message, TextView progresstext,RelativeLayout mainlayout,int position,SocialTextView text){
         progresstext.setTextColor(Color.parseColor("#ff0000"));
         progresstext.setVisibility(View.VISIBLE);
         progresstext.setText(progresstext.getContext().getString(R.string.messagesenderror));
@@ -154,7 +156,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         if(getItemViewType(holder.getAdapterPosition())!=VIEW_TYPE_LOAD){
             Message message = list.get(holder.getAdapterPosition());
-            holder.text.setText(message.getMessage());
+            holder.text.setLinkText(message.getMessage());
 
             if(message.getOwner().equals(owner)){
                 //Ben gönderdim
@@ -196,11 +198,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profilephoto;
-        TextView text,progresstext;
+        TextView progresstext;
         RelativeLayout mainLayout;
+        SocialTextView text;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -209,9 +212,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             profilephoto = itemView.findViewById(R.id.mesaggeProfilePhoto);
             text = itemView.findViewById(R.id.messageText);
 
+
+            if(text != null){
+                text.setOnLinkClickListener(new SocialTextView.OnLinkClickListener() {
+                    @Override
+                    public void onLinkClicked(int linkType, String matchedText) {
+                        messageClick.onTextClick(getAdapterPosition(),linkType,matchedText);
+                    }
+                });
+            }
+
         }
     }
 
+
+    public static interface MessageClick {
+        void onTextClick(int position,int clickType,String text);
+    }
 
 
 

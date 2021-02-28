@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class).putExtra("deplinkintent",getIntent().getStringExtra("deplinkintent")));
                 progressDialog.dismiss();
                 finish();
             }
@@ -164,6 +165,23 @@ public class LoginActivity extends AppCompatActivity {
                                 if(user!=null){
                                     GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),LoginActivity.this);
                                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                    if(getIntent() != null && getIntent().getStringExtra("deplinkintent") != null){
+                                        String text = getIntent().getStringExtra("deplinkintent");
+                                        String newS = text.substring(text.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
+                                        if(newS.startsWith("/")){
+                                            newS = newS.substring(1);
+                                        }
+                                        if(newS.startsWith("post/")){
+                                            newS = newS.replace("post/","");
+                                            startActivity(new Intent(LoginActivity.this, CommentActivity.class).putExtra("id",newS));
+                                        }
+                                        else if(newS.startsWith("user/")){
+                                            newS = newS.replace("user/","");
+                                            if(!newS.equals(ParseUser.getCurrentUser().getUsername())){
+                                                startActivity(new Intent(LoginActivity.this, GuestProfileActivity.class).putExtra("username",newS));
+                                            }
+                                        }
+                                    }
                                     progressDialog.dismiss();
                                     finish();
                                 }

@@ -34,10 +34,8 @@ import com.parse.ParseFile;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.activities.sonata.UploadActivity;
 import com.sonata.socialapp.socialview.SocialAutoCompleteTextView;
 import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.VideoUtils.VideoCompress;
 import com.sonata.socialapp.utils.adapters.UploadPostAdapter;
 import com.sonata.socialapp.utils.classes.Group;
 import com.sonata.socialapp.utils.classes.UploadObject;
@@ -393,7 +391,7 @@ public class GroupUploadActivity extends AppCompatActivity implements UploadPost
 
 
 
-                        VideoCompress.compressVideoMedium(GroupUploadActivity.this.getCacheDir() + File.separator + "copiedvideo.mp4", GroupUploadActivity.this.getCacheDir() + File.separator + "video.mp4", new VideoCompress.CompressListener() {
+                        /*VideoCompress.compressVideoMedium(GroupUploadActivity.this.getCacheDir() + File.separator + "copiedvideo.mp4", GroupUploadActivity.this.getCacheDir() + File.separator + "video.mp4", new VideoCompress.CompressListener() {
                             @Override
                             public void onStart() {
 
@@ -516,16 +514,10 @@ public class GroupUploadActivity extends AppCompatActivity implements UploadPost
                                     progressDialog.setMessage(getString(R.string.preparingvideo)+"("+Math.round(percent)+"%)");
                                 }
                             }
-                        });
-
-
+                        });*/
                     }
 
                 });
-
-
-
-
 
 
     }
