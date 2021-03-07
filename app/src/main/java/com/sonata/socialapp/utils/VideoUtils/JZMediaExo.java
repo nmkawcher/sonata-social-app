@@ -55,9 +55,7 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
 
     @Override
     public void start() {
-        if(simpleExoPlayer!=null) {
-            simpleExoPlayer.setPlayWhenReady(true);
-        }
+        simpleExoPlayer.setPlayWhenReady(true);
     }
 
     @Override
@@ -75,11 +73,11 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
             TrackSelection.Factory videoTrackSelectionFactory =
                     new AdaptiveTrackSelection.Factory();
             TrackSelector trackSelector =
-                    new DefaultTrackSelector(context,videoTrackSelectionFactory);
+                    new DefaultTrackSelector(context, videoTrackSelectionFactory);
 
             LoadControl loadControl = new DefaultLoadControl.Builder()
                     .setAllocator(new DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE))
-                    .setBufferDurationsMs( 360000, 600000, 1000, 5000)
+                    .setBufferDurationsMs(360000, 600000, 1000, 5000)
                     .setPrioritizeTimeOverSizeThresholds(false)
                     .setTargetBufferBytes(C.LENGTH_UNSET)
                     .createDefaultLoadControl();
@@ -93,7 +91,7 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
                     .setTrackSelector(trackSelector)
                     .setLoadControl(loadControl)
                     .setBandwidthMeter(bandwidthMeter)
-                    .build() ;
+                    .build();
             // Produces DataSource instances through which media data is loaded.
             DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context,
                     Util.getUserAgent(context, context.getResources().getString(R.string.app_name)));
@@ -111,37 +109,34 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
                 videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
                         .createMediaSource(Uri.parse(currUrl));
             }
-            if(simpleExoPlayer!=null) {
-                simpleExoPlayer.addVideoListener(this);
+            simpleExoPlayer.addVideoListener(this);
 
-                Log.e(TAG, "URL Link = " + currUrl);
+            Log.e(TAG, "URL Link = " + currUrl);
 
-                simpleExoPlayer.addListener(this);
-                boolean isLoop = jzvd.jzDataSource.looping;
-                if (isLoop) {
-                    simpleExoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
-                } else {
-                    simpleExoPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
-                }
-                simpleExoPlayer.prepare(videoSource);
-                simpleExoPlayer.setPlayWhenReady(true);
-                callback = new onBufferingUpdate();
+            simpleExoPlayer.addListener(this);
+            boolean isLoop = jzvd.jzDataSource.looping;
+            if (isLoop) {
+                simpleExoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+            } else {
+                simpleExoPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
+            }
+            simpleExoPlayer.prepare(videoSource);
+            simpleExoPlayer.setPlayWhenReady(true);
+            callback = new onBufferingUpdate();
 
-                if (jzvd.textureView != null) {
-                    SurfaceTexture surfaceTexture = jzvd.textureView.getSurfaceTexture();
-                    if (surfaceTexture != null) {
-                        simpleExoPlayer.setVideoSurface(new Surface(surfaceTexture));
-                    }
+            if (jzvd.textureView != null) {
+                SurfaceTexture surfaceTexture = jzvd.textureView.getSurfaceTexture();
+                if (surfaceTexture != null) {
+                    simpleExoPlayer.setVideoSurface(new Surface(surfaceTexture));
                 }
             }
-
         });
 
     }
 
     @Override
     public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
-        handler.post(() -> jzvd.onVideoSizeChanged(width, height));
+        handler.post(() -> jzvd.onVideoSizeChanged((int) (width * pixelWidthHeightRatio), height));
     }
 
     @Override
@@ -151,17 +146,12 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
 
     @Override
     public void pause() {
-        if(simpleExoPlayer!=null) {
-            simpleExoPlayer.setPlayWhenReady(false);
-        }
+        simpleExoPlayer.setPlayWhenReady(false);
     }
 
     @Override
     public boolean isPlaying() {
-        if(simpleExoPlayer!=null) {
-            return simpleExoPlayer.getPlayWhenReady();
-        }
-        return false;
+        return simpleExoPlayer.getPlayWhenReady();
     }
 
     @Override
@@ -171,7 +161,7 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
         }
         if (time != previousSeek) {
             if (time >= simpleExoPlayer.getBufferedPosition()) {
-
+                jzvd.onStatePreparingPlaying();
             }
             simpleExoPlayer.seekTo(time);
             previousSeek = time;
@@ -211,18 +201,14 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
 
     @Override
     public void setVolume(float leftVolume, float rightVolume) {
-        if(simpleExoPlayer!=null){
-            simpleExoPlayer.setVolume(leftVolume);
-            simpleExoPlayer.setVolume(rightVolume);
-        }
+        simpleExoPlayer.setVolume(leftVolume);
+        simpleExoPlayer.setVolume(rightVolume);
     }
 
     @Override
     public void setSpeed(float speed) {
         PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
-        if(simpleExoPlayer!=null) {
-            simpleExoPlayer.setPlaybackParameters(playbackParameters);
-        }
+        simpleExoPlayer.setPlaybackParameters(playbackParameters);
     }
 
     @Override
@@ -255,7 +241,7 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
                 }
                 break;
                 case Player.STATE_BUFFERING: {
-
+                    jzvd.onStatePreparingPlaying();
                     handler.post(callback);
                 }
                 break;
@@ -309,8 +295,6 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
     public void setSurface(Surface surface) {
         if (simpleExoPlayer != null) {
             simpleExoPlayer.setVideoSurface(surface);
-        } else {
-            Log.e("AGVideo", "simpleExoPlayer为空");
         }
     }
 
