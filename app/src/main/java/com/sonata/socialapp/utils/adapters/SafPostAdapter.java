@@ -44,6 +44,7 @@ import com.sonata.socialapp.utils.VideoUtils.VideoPlayer;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
+import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.tylersuehr.socialtextview.SocialTextView;
@@ -67,6 +68,7 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
     private List<ListObject> list;
     private RequestManager glide;
+    private BlockedAdapterClick click;
 
     private boolean finish = false;
     public void setFinish(boolean finish){
@@ -82,6 +84,15 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
     }
 
+    public void setContext(List<ListObject> list
+            , RequestManager glide, RecyclerViewClick recyclerViewClick,BlockedAdapterClick click){
+        this.recyclerViewClick=recyclerViewClick;
+        this.list=list;
+        this.glide=glide;
+        this.click = click;
+
+    }
+
     private static final int POST_TYPE_TEXT = 1;
     private static final int POST_TYPE_IMAGE = 27;
     private static final int POST_TYPE_IMAGE1 = 2589;
@@ -93,6 +104,8 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
     private static final int POST_TYPE_LOAD = 6;
     private static final int POST_TYPE_AD = 7;
     private static final int POST_TYPE_TOP = 8;
+    private static final int TYPE_USER = 888;
+    private static final int TYPE_SUGGEST = 889;
 
     public static final int TYPE_HASHTAG = 1;
     public static final int TYPE_LINK = 16;
@@ -110,7 +123,6 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
             case "text":
                 return POST_TYPE_TEXT;
             case "image":
-                Log.e("Image TYPE DETERMİ :" ,list.get(i).getPost().getImageCount()+"");
                 if(list.get(i).getPost().getImageCount()==1){
                     return POST_TYPE_IMAGE;
                 }
@@ -126,6 +138,10 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
                 else if(list.get(i).getPost().getImageCount()==0){
                     return POST_TYPE_IMAGE;
                 }
+            case "user":
+                return TYPE_USER;
+            case "suggest":
+                return TYPE_SUGGEST;
             case "video":
                 return POST_TYPE_VIDEO;
             case "link":
@@ -180,7 +196,13 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
 
 
+        if (holder.profilephoto2 != null) {
+            glide.clear(holder.profilephoto2);
+            holder.profilephoto2.setImageDrawable(null);
+            holder.profilephoto2.setImageBitmap(null);
 
+
+        }
 
 
         if (holder.profilephoto != null) {
@@ -256,6 +278,14 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_load,viewGroup,false);
             return new ViewHolder(view);
         }
+        else if(i==TYPE_USER){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.block_account_layout,viewGroup,false);
+            return new ViewHolder(view);
+        }
+        else if(i==TYPE_SUGGEST){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.suggest_text_layout,viewGroup,false);
+            return new ViewHolder(view);
+        }
         else{
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty_view_real,viewGroup,false);
             return new ViewHolder(view);
@@ -267,7 +297,7 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull SafPostAdapter.ViewHolder holder, int positiona) {
         int viewType = getItemViewType(holder.getAdapterPosition());
-        if(viewType!=POST_TYPE_TOP&&viewType!=POST_TYPE_LOAD&&viewType!=POST_TYPE_AD&&viewType!=POST_TYPE_EMPTY){
+        if(viewType!=TYPE_SUGGEST&&viewType!=TYPE_USER&&viewType!=POST_TYPE_TOP&&viewType!=POST_TYPE_LOAD&&viewType!=POST_TYPE_AD&&viewType!=POST_TYPE_EMPTY){
 
             if(list.get(holder.getAdapterPosition()).getPost().getIsDeleted()){
                 if (holder.postimage != null) {
@@ -751,8 +781,9 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
 
 
-                        JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
+                        //JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
                         //JZDataSource jzDataSource = new JZDataSource(MediaLoader.getInstance(holder.itemView.getContext()).getProxyUrl(url));
+                        JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
 
                         jzDataSource.looping=true;
 
@@ -767,6 +798,53 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
             }
 
+        }
+        else if(viewType==TYPE_USER){
+            SonataUser user = list.get(holder.getAdapterPosition()).getUser();
+            if(user.getObjectId().equals(GenelUtil.getCurrentUser().getObjectId())){
+                holder.buttonLay.setVisibility(View.INVISIBLE);
+            }
+            else{
+                holder.buttonLay.setVisibility(View.VISIBLE);
+            }
+            if(user.getHasPp()){
+                glide.load(user.getPPAdapter())
+                        .placeholder(new ColorDrawable(ContextCompat.getColor(holder.profilephoto2.getContext(), R.color.placeholder_gray)))
+                        .into(holder.profilephoto2);
+            }
+            else{
+                glide.load(holder.profilephoto2.getContext().getResources().getDrawable(R.drawable.emptypp,null)).into(holder.profilephoto2);
+            }
+
+            holder.name2.setText(user.getName());
+            holder.username2.setText("@"+user.getUsername());
+
+
+            if(user.getBlock()){
+                holder.buttonText.setText(holder.itemView.getContext().getString(R.string.unblock));
+                holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+                holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_engel));
+            }
+            else{
+                if(user.getFollow()){
+                    holder.buttonText.setText(holder.itemView.getContext().getString(R.string.unfollow));
+                    holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+                    holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_dolu));
+                }
+                else{
+                    if(user.getFollowRequest()){
+                        holder.buttonText.setText(holder.itemView.getContext().getString(R.string.requestsent));
+                        holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+                        holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_dolu));
+                    }
+                    else{
+                        holder.buttonText.setText(holder.itemView.getContext().getString(R.string.follow));
+                        holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.blue));
+                        holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background));
+                    }
+
+                }
+            }
         }
         else if(viewType==POST_TYPE_AD){
             if(finish){
@@ -883,10 +961,21 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
 
 
+        ImageView profilephoto2;
+        TextView name2,username2,buttonText;
+        RelativeLayout button;
+        RoundKornerRelativeLayout buttonLay;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
+            button = itemView.findViewById(R.id.blockButton);
+            buttonText = itemView.findViewById(R.id.followButtonText);
+            buttonLay = itemView.findViewById(R.id.folreqacceptlayout);
+            profilephoto2 = itemView.findViewById(R.id.followreqlayoutpp);
+            name2 = itemView.findViewById(R.id.followreqname);
+            username2 = itemView.findViewById(R.id.followrequsername);
+            //-----------------------------------------
             videoPlayer = itemView.findViewById(R.id.masterExoPlayer);
             nsfwIcon = itemView.findViewById(R.id.postImageNsfwIcon);
             adView = itemView.findViewById(R.id.ad_view);
@@ -924,6 +1013,47 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
             textLayout = itemView.findViewById(R.id.textLayout);
 
 
+            if(profilephoto2!=null){
+                profilephoto2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(click != null){
+                            click.goToProfileClick(getAdapterPosition());
+                        }
+                    }
+                });
+            }
+            if(name2!=null){
+                name2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(click != null){
+                            click.goToProfileClick(getAdapterPosition());
+                        }
+                    }
+                });
+            }
+            if(username2!=null){
+                username2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(click != null){
+                            click.goToProfileClick(getAdapterPosition());
+                        }
+                    }
+                });
+            }
+
+            if(button!=null&&buttonText!=null&&buttonLay!=null){
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(click != null){
+                            click.buttonClick(getAdapterPosition(),buttonText,buttonLay);
+                        }
+                    }
+                });
+            }
 
 
             if(options!=null){

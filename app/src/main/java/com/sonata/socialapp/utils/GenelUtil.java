@@ -4,22 +4,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.SystemClock;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -30,15 +23,10 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -56,28 +44,21 @@ import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.listeners.OnDismissListener;
-import com.tylersuehr.socialtextview.SocialTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.parse.Parse.getApplicationContext;
 
@@ -92,6 +73,8 @@ public class GenelUtil {
     public static int TYPE_COMMENT = 124;
 
     public static String appUrl = "sonatasocialapp.com";
+
+
 
     public static String getUrlOfObject(ParseObject object){
         if(object.getClassName().equals("_User")){
@@ -897,7 +880,7 @@ public class GenelUtil {
                 // Night mode is active, we're using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
-                return pref.getBoolean("nightMode",false);
+                return pref.getBoolean("nightMode",true);
         }
     }
 
@@ -912,7 +895,7 @@ public class GenelUtil {
                 // Night mode is active, we're using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
-                return pref.getBoolean("nightMode",false);
+                return pref.getBoolean("nightMode",true);
         }
 
     }

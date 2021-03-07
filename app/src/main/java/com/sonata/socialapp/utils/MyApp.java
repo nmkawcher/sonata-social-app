@@ -6,6 +6,9 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.google.android.exoplayer2.database.ExoDatabaseProvider;
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor;
+import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -25,12 +28,15 @@ import com.zxy.tiny.Tiny;
 public class MyApp extends Application {
 
     public static boolean ses = false;
+    public static SimpleCache simpleCache;
+    Context context;
 
     public static String whereAmI= "";
 
     public static final int TYPE_HASHTAG = 1;
     public static final int TYPE_LINK = 8;
     public static final int TYPE_MENTION = 2;
+
 
     @Override
     public void onCreate() {
@@ -42,7 +48,15 @@ public class MyApp extends Application {
             LeakCanary.install(this);
         }*/
 
-        if(GenelUtil.getNightModeApp(getApplicationContext())){
+        context = this;
+        LeastRecentlyUsedCacheEvictor leastRecentlyUsedCacheEvictor = new LeastRecentlyUsedCacheEvictor(90 * 1024 * 1024);
+        ExoDatabaseProvider databaseProvider = new ExoDatabaseProvider(this);
+
+        if (simpleCache == null) {
+            simpleCache = new SimpleCache(getCacheDir(), leastRecentlyUsedCacheEvictor, databaseProvider);
+        }
+
+        if(GenelUtil.getNightModeApp(this)){
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_YES);
         }
@@ -70,7 +84,6 @@ public class MyApp extends Application {
                 .enableLocalDataStore()
                 .server("https://loadbalancer.sonatasocialapp.com/parse/")
                 .build());
-
 
     }
 

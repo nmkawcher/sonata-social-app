@@ -22,9 +22,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -33,11 +37,14 @@ import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
+import com.sonata.socialapp.activities.sonata.AdvancedSettingsActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
 import com.sonata.socialapp.activities.sonata.MainActivity;
@@ -49,9 +56,12 @@ import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.SafPostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
+import com.sonata.socialapp.utils.classes.SonataUser;
+import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,11 +70,11 @@ import java.util.Objects;
 import cn.jzvd.Jzvd;
 
 
-public class HomeFragment extends Fragment implements RecyclerViewClick {
+public class HomeFragment extends Fragment implements RecyclerViewClick, BlockedAdapterClick {
 
 
     private List<ListObject> list;
-    private List<UnifiedNativeAd> listreklam;
+    private List<NativeAd> listreklam;
     private RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
@@ -77,6 +87,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
     private ProgressBar progressBar;
     private RelativeLayout search,upload;
     private int loadCheck = 0;
+    Spinner spinner;
+    AdapterView.OnItemSelectedListener onItemSelectedListener;
+    int spinnerPosition;
 
 
 
@@ -114,6 +127,15 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
         recyclerView = view.findViewById(R.id.mainrecyclerview);
 
 
+        spinner = view.findViewById(R.id.settingsaccountypespinner);
+        List<String> listspinner = new ArrayList<>();
+
+        listspinner.add(getString(R.string.suggestions));
+        listspinner.add(getString(R.string.followings));
+
+        ArrayAdapter<String> adapterspinner = new ArrayAdapter<String>(getContext(),R.layout.spinner_item_home,listspinner);
+        spinner.setAdapter(adapterspinner);
+
 
 
 
@@ -121,7 +143,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter=new SafPostAdapter();
-        adapter.setContext(list,Glide.with(getActivity()),this);
+        adapter.setContext(list,Glide.with(getActivity()),this,this);
         adapter.setHasStableIds(true);
 
 
@@ -193,8 +215,35 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
         });
 
 
+        onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.e(TAG, "onItemSelected: "+listspinner.get(position));
+                spinner.setEnabled(false);
+                if(position == 1){
+                    list.clear();
+                    adapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.VISIBLE);
+                    get(null,true);
+                }
+                else if(position == 0){
+                    list.clear();
+                    adapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.VISIBLE);
+                    //get(null,true);
+                    spinner.setEnabled(true);
+                }
+            }
 
-        get(null,false);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+
+        spinner.setOnItemSelectedListener(onItemSelectedListener);
+        spinner.setEnabled(false);
+
         //((MainActivity) Objects.requireNonNull(getActivity())).startExploreTab();
 
 
@@ -231,6 +280,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
 
                     getAds((List<Post>) objects.get("posts")
+                            ,objects.get("users") != null ? (List<SonataUser>) objects.get("users") : new ArrayList<>()
                             ,(boolean) objects.get("hasmore")
                             ,(Date) objects.get("date")
                             ,isRefresh);
@@ -240,6 +290,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
                 }
                 else{
+                    spinner.setEnabled(true);
                     Log.e("done","doneGetError "+e.getCode());
 
                     if(e.getCode()==ParseException.CONNECTION_FAILED){
@@ -296,10 +347,11 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
 
 
-    private void initList(List<Post> objects,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
+    private void initList(List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,List<NativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(getActive()){
+            Collections.shuffle(users);
             Log.e("done","InitListActive");
             postson =!hasmore;
             this.date = date;
@@ -307,10 +359,13 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                 loading =false;
                 if(list!=null){
                     if(list.size()==0){
-                        ListObject post = new ListObject();
-                        post.setType("boş");
-                        list.add(post);
-                        adapter.notifyItemInserted(0);
+                        if(users.size()<=0){
+                            ListObject post = new ListObject();
+                            post.setType("boş");
+                            list.add(post);
+                            adapter.notifyItemInserted(0);
+                        }
+
                     }
                     else{
                         if(list.get(list.size()-1).getType().equals("load")){
@@ -321,11 +376,29 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
                     }
                 }
+                if(users.size()>0){
+                    ListObject postas = new ListObject();
+                    postas.setType("suggest");
+                    list.add(postas);
+                    for(int i=0;i<users.size();i++){
 
+                        ListObject post = new ListObject();
+                        post.setType("user");
+                        post.setUser(users.get(i));
+                        post.getUser().setFollowRequest(post.getUser().getFollowRequest2());
+                        post.getUser().setBlock(post.getUser().getBlock2());
+                        post.getUser().setFollow(post.getUser().getFollow2());
+                        list.add(post);
+
+                    }
+                }
+
+                adapter.notifyItemRangeInserted(0, list.size());
                 swipeRefreshLayout.setRefreshing(false);
                 Log.e("done","adapterNotified");
 
                 progressBar.setVisibility(View.INVISIBLE);
+                spinner.setEnabled(true);
 
             }
             else{
@@ -363,15 +436,32 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                 loading =false;
                 progressBar.setVisibility(View.INVISIBLE);
                 swipeRefreshLayout.setRefreshing(false);
-                if(hasmore){
 
+                if(users.size()>0){
+                    ListObject postas = new ListObject();
+                    postas.setType("suggest");
+                    list.add(postas);
+                    for(int i=0;i<users.size();i++){
+
+                        ListObject post = new ListObject();
+                        post.setType("user");
+                        post.setUser(users.get(i));
+                        post.getUser().setFollowRequest(post.getUser().getFollowRequest2());
+                        post.getUser().setBlock(post.getUser().getBlock2());
+                        post.getUser().setFollow(post.getUser().getFollow2());
+                        list.add(post);
+
+                    }
+                }
+                if(hasmore){
                     ListObject load = new ListObject();
                     load.setType("load");
                     list.add(load);
                 }
 
-                adapter.notifyItemRangeInserted(an, list.size()-an);
 
+                adapter.notifyItemRangeInserted(an, list.size()-an);
+                spinner.setEnabled(true);
                 //adapter.notifyDataSetChanged();
                 Log.e("done","adapterNotified");
 
@@ -384,7 +474,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
     }
 
-    private void getAds(List<Post> objects,boolean hasmore,Date date,boolean isRefresh){
+    private void getAds(List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,boolean isRefresh){
         Log.e("done","doneGetAds");
 
         if(getActive()){
@@ -416,70 +506,49 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                         list.clear();
                         adapter.notifyDataSetChanged();
                     }
-                    initList(objects,hasmore,date,new ArrayList<>());
+                    initList(objects,users,hasmore,date,new ArrayList<>());
                 }
                 else{
                     int finalC = c;
                     final boolean[] isfinish = {false};
-                    List<UnifiedNativeAd> tempList = new ArrayList<>();
-                    AdLoader adLoader = new AdLoader.Builder(getContext(), getString(R.string.adId))
-                            .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    List<NativeAd> tempList = new ArrayList<>();
+                    AdLoader adLoader2 = null;
+                    AdLoader finalAdLoader = adLoader2;
+                    adLoader2 = new AdLoader.Builder(getContext(), "ca-app-pub-3940256099942544/2247696110")
+                            .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
                                 @Override
-                                public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                                    loadCheck++;
+                                public void onNativeAdLoaded(NativeAd NativeAd) {
+                                    // Show the ad.
                                     if(getActive()){
-                                        Log.e("done","AdLoadDoneActive");
-
-                                        Log.e("Ad Load Done #","True");
-                                        listreklam.add(unifiedNativeAd);
-                                        tempList.add(unifiedNativeAd);
-
+                                        listreklam.add(NativeAd);
+                                        tempList.add(NativeAd);
                                     }
                                     else{
-                                        unifiedNativeAd.destroy();
+                                        NativeAd.destroy();
                                     }
-                                    if(loadCheck == finalC){
-                                        isfinish[0] = true;
-                                        Log.e("Ad Load Done #","False");
-                                        if(getActive()){
-                                            if(isRefresh){
-                                                //refreshSetting();
-                                                list.clear();
-                                                adapter.notifyDataSetChanged();
+                                    if (!finalAdLoader.isLoading()) {
+                                        if(isRefresh){
+                                            //refreshSetting();
+                                            list.clear();
+                                            adapter.notifyDataSetChanged();
 
-                                            }
-                                            loadCheck=0;
-                                            initList(objects,hasmore,date,tempList);
                                         }
-
+                                        loadCheck=0;
+                                        initList(objects,users,hasmore,date,tempList);
                                     }
+
+
                                 }
                             })
                             .withAdListener(new AdListener() {
                                 @Override
                                 public void onAdFailedToLoad(LoadAdError adError) {
-                                    loadCheck++;
-                                    Log.e("adError: ",""+adError.getCode());
-                                    Log.e("adError: ",""+adError.getCause());
-
-
-                                    if(loadCheck==finalC){
-                                        if(!isfinish[0]){
-                                            isfinish[0] = true;
-                                            Log.e("adError !isLoading: ",""+adError.getCode());
-                                            if(isRefresh){
-                                                //refreshSetting();
-                                                list.clear();
-                                                adapter.notifyDataSetChanged();
-
-                                            }
-                                            loadCheck=0;
-                                            initList(objects,hasmore,date,tempList);
-                                        }
-
-                                    }
+                                    // Handle the failure by logging, altering the UI, and so on.
                                 }
                             }).build();
+                    adLoader2.loadAds(new AdRequest.Builder().build(), c);
+
+
                     Log.e("Delay Öncesi zaman : ",System.currentTimeMillis()+"");
                     final Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(new Runnable() {
@@ -497,7 +566,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
 
                                         }
                                         loadCheck=0;
-                                        initList(objects,hasmore,date,new ArrayList<>());
+                                        initList(objects,users,hasmore,date,new ArrayList<>());
                                     }
                                 }
 
@@ -505,7 +574,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
                         }
                     }, Math.max(finalC * 4000, 7000));
 
-                    adLoader.loadAds(new AdRequest.Builder().build(), finalC);
                 }
 
             }
@@ -647,7 +715,175 @@ public class HomeFragment extends Fragment implements RecyclerViewClick {
     }
 
 
+    @Override
+    public void goToProfileClick(int position) {
+        SonataUser user = list.get(position).getUser();
+        if(GenelUtil.clickable(700)){
+            if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                startActivity(new Intent(getActivity(), GuestProfileActivity.class).putExtra("user",user));
+            }
+        }
+    }
+
+    @Override
+    public void buttonClick(int position, TextView buttonText, RoundKornerRelativeLayout buttonLay) {
+        Log.e("Click","Block button Click");
+        SonataUser user = list.get(position).getUser();
+        if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+            if(buttonText.getText().toString().equals(buttonText.getContext().getString(R.string.follow))){
+                if(user.getPrivate()){
+                    //Takip İsteği gönder
+                    buttonText.setText(getString(R.string.loading));
+                    HashMap<String,String> params = new HashMap<>();
+                    params.put("userID",user.getObjectId());
+                    ParseCloud.callFunctionInBackground("sendFollowRequest", params, new FunctionCallback<Object>() {
+                        @Override
+                        public void done(Object object, ParseException e) {
+
+                            if(e==null){
+                                buttonLay.setBackground(getResources().getDrawable(R.drawable.button_background_dolu));
+                                user.setFollowRequest(true);
+                                buttonText.setText(getString(R.string.requestsent));
+                                buttonText.setTextColor(Color.WHITE);
+                            }
+                            else{
+                                buttonText.setText(getString(R.string.follow));
+                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                            }
 
 
+                        }
+                    });
+                }
+                else{
+                    //takip et
+                    buttonText.setText(getString(R.string.loading));
+                    HashMap<String,String> params = new HashMap<>();
+                    params.put("userID",user.getObjectId());
+                    ParseCloud.callFunctionInBackground("follow", params, new FunctionCallback<Object>() {
+                        @Override
+                        public void done(Object object, ParseException e) {
+                            if(e==null){
+                                user.setFollow(true);
+                                buttonText.setTextColor(getResources().getColor(R.color.white));
 
+                                buttonLay.setBackground(getResources().getDrawable(R.drawable.button_background_dolu));
+                                buttonText.setText(getString(R.string.unfollow));
+                            }
+                            else{
+                                buttonText.setText(getString(R.string.follow));
+                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                            }
+
+
+                        }
+                    });
+
+                }
+            }
+            if(buttonText.getText().toString().equals(buttonText.getContext().getString(R.string.unfollow))){
+                if(user.getPrivate()){
+                    //takipten çık ve profili gizle
+                    buttonText.setText(buttonText.getContext().getString(R.string.loading));
+                    HashMap<String,String> params = new HashMap<>();
+                    params.put("userID",user.getObjectId());
+                    ParseCloud.callFunctionInBackground("unfollow", params, new FunctionCallback<Object>() {
+                        @Override
+                        public void done(Object object, ParseException e) {
+                            if(e==null){
+                                user.setFollow(false);
+                                buttonText.setText(buttonText.getContext().getString(R.string.follow));
+                                buttonText.setTextColor(getResources().getColor(R.color.blue));
+                                buttonLay.setBackground(getResources().getDrawable(R.drawable.button_background));
+
+
+                            }
+                            else{
+                                buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
+                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                            }
+
+
+                        }
+                    });
+                }
+                else{
+                    //takipten çık
+                    buttonText.setText(buttonText.getContext().getString(R.string.loading));
+                    HashMap<String,String> params = new HashMap<>();
+                    params.put("userID",user.getObjectId());
+                    ParseCloud.callFunctionInBackground("unfollow", params, new FunctionCallback<Object>() {
+                        @Override
+                        public void done(Object object, ParseException e) {
+                            if(e==null){
+                                user.setFollow(false);
+                                buttonText.setText(buttonText.getContext().getString(R.string.follow));
+                                buttonText.setTextColor(getResources().getColor(R.color.blue));
+                                buttonLay.setBackground(getResources().getDrawable(R.drawable.button_background));
+
+                            }
+                            else{
+                                buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
+                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                            }
+
+
+                        }
+                    });
+                }
+            }
+            if(buttonText.getText().toString().equals(getString(R.string.unblock))){
+
+
+                buttonText.setText(getString(R.string.loading));
+
+                HashMap<String,String> params = new HashMap<>();
+                params.put("userID",user.getObjectId());
+                ParseCloud.callFunctionInBackground("unblock", params, new FunctionCallback<Object>() {
+                    @Override
+                    public void done(Object object, ParseException e) {
+                        if(e==null){
+
+                            user.setBlock(false);
+                            buttonText.setText(buttonText.getContext().getString(R.string.follow));
+                            buttonText.setTextColor(getResources().getColor(R.color.blue));
+                            buttonLay.setBackground(buttonLay.getContext().getResources().getDrawable(R.drawable.button_background));
+
+                        }
+                        else{
+                            buttonText.setText(getString(R.string.accept));
+                            GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                        }
+                    }
+                });
+
+            }
+            if(buttonText.getText().toString().equals(buttonText.getContext().getString(R.string.requestsent))){
+                //isteği geri çek
+                buttonText.setText(buttonText.getContext().getString(R.string.loading));
+                HashMap<String,String> params = new HashMap<>();
+                params.put("userID",user.getObjectId());
+                ParseCloud.callFunctionInBackground("removeFollowRequest", params, new FunctionCallback<Object>() {
+                    @Override
+                    public void done(Object object, ParseException e) {
+                        if(e==null){
+                            user.setFollowRequest(false);
+                            buttonText.setText(buttonText.getContext().getString(R.string.follow));
+                            buttonText.setTextColor(getResources().getColor(R.color.blue));
+                            buttonLay.setBackground(getResources().getDrawable(R.drawable.button_background));
+                        }
+                        else{
+                            buttonText.setText(buttonText.getContext().getString(R.string.requestsent));
+                            GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                        }
+
+
+                    }
+                });
+
+            }
+        }
+
+
+    }
 }

@@ -293,7 +293,6 @@
                             android:textColor="?attr/siyahyazı"
                             android:maxLines="1"
                             android:textStyle="bold"
-                            android:text="@string/tab_home"
                             android:gravity="left|center_vertical"
                             android:maxLength="25"
                             android:ellipsize="end"

@@ -30,9 +30,9 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.google.android.gms.ads.formats.NativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.ParseFile;
 import com.sonata.socialapp.R;
@@ -788,7 +788,7 @@ public class ProfilAdapter extends RecyclerView.Adapter<ProfilAdapter.ViewHolder
                 holder.adView.setStoreView(holder.adView.findViewById(R.id.ad_store));
                 holder.adView.setAdvertiserView(holder.adView.findViewById(R.id.ad_advertiser));
 
-                UnifiedNativeAd nativeAd = list.get(holder.getAdapterPosition()).getAd();
+                NativeAd nativeAd = list.get(holder.getAdapterPosition()).getAd();
                 ((TextView) holder.adView.getHeadlineView()).setText(nativeAd.getHeadline());
                 ((TextView) holder.adView.getBodyView()).setText(nativeAd.getBody());
                 ((Button) holder.adView.getCallToActionView()).setText(nativeAd.getCallToAction());
@@ -877,7 +877,7 @@ public class ProfilAdapter extends RecyclerView.Adapter<ProfilAdapter.ViewHolder
         AspectRatioLayout ratiolayout,linkimagelayout;
         SocialTextView postdesc;
         RoundKornerRelativeLayout reloadlayout,pplayout;
-        UnifiedNativeAdView adView;
+        NativeAdView adView;
 
         private long mLastClickTime = 0;
         VideoPlayer videoPlayer;

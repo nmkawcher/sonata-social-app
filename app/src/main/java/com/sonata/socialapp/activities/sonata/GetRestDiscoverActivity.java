@@ -81,9 +81,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_rest_discover);
         if(getIntent() == null) return;
-        post = getIntent().getParcelableExtra("post");
-        if(post == null) return;
-        kategori = post.getUser() != null ? post.getUser().getContent() : new ArrayList<>();
+
         back = findViewById(R.id.backbuttonbutton);
         back.setOnClickListener(view -> onBackPressed());
 
@@ -228,6 +226,9 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                         }
                     }
                     list.add(posto);
+                    ListObject object2 = new ListObject();
+                    object2.setType("load");
+                    list.add(object2);
                     adapter.notifyDataSetChanged();
                     getReqs(null,false,kategori);
                 }
@@ -240,6 +241,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         super.onPause();
         Jzvd.releaseAllVideos();
     }
+
 
 
 

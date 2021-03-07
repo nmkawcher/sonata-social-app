@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                String url = "https://cdn-sn-1-i.sonatasocialapp.com/user-agreement.html";
+                String url = "https://www.sonatasocialapp.com/user-agreement.html";
 
                 if(GenelUtil.getNightMode()){
                     builder.setToolbarColor(Color.parseColor("#303030"));
@@ -82,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                String url = "https://cdn-sn-1-i.sonatasocialapp.com/b0de9d742124c27da0a82cd2a59fb3d4_privacy-policy.html";
+                String url = "https://www.sonatasocialapp.com/privacy-policy.html";
 
                 if(GenelUtil.getNightMode()){
                     builder.setToolbarColor(Color.parseColor("#303030"));

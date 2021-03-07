@@ -1,6 +1,7 @@
 package com.sonata.socialapp.utils.classes;
 
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.nativead.NativeAd;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -8,7 +9,7 @@ import java.util.Comparator;
 public class ListObject implements Serializable {
 
     private String type;
-    private UnifiedNativeAd ad;
+    private NativeAd ad;
 
     private Chat chat;
 
@@ -50,11 +51,11 @@ public class ListObject implements Serializable {
         this.type = type;
     }
 
-    public UnifiedNativeAd getAd() {
+    public NativeAd getAd() {
         return ad;
     }
 
-    public void setAd(UnifiedNativeAd ad) {
+    public void setAd(NativeAd ad) {
         this.ad = ad;
     }
 

@@ -145,13 +145,12 @@ public class FcmService extends FirebaseMessagingService {
                                         .setSmallIcon(R.drawable.ic_new_notification_icon)
                                         .setColor(getResources().getColor(R.color.notif))
                                         .setLargeIcon(bitmap)//a resource for your custom small icon
-                                        .setContentTitle(getString(R.string.app_name)+" - "+title) //the "title" value you sent in your notification
+                                        .setContentTitle(title) //the "title" value you sent in your notification
                                         .setContentText(addition+ remoteMessage.getData().get("desc")) //ditto
                                         .setAutoCancel(true)
                                         .setContentIntent(pendingIntent)//dismisses the notification on click
-                                        .setSound(defaultSoundUri)
-                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(addition+ remoteMessage.getData().get("name") + " " + title));
-                                notificationManager.notify(getUniqueNumberFromString("i" + remoteMessage.getData().get("username")), notificationBuilder.build());
+                                        .setSound(defaultSoundUri);
+                                notificationManager.notify(getUniqueNumberFromString("youmaylt"), notificationBuilder.build());
                                 break;
                             }
                             case "followedyou": {

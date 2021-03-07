@@ -13,8 +13,8 @@ android {
         applicationId "com.sonata.socialapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2
-        versionName "1.0.100"
+        versionCode 8
+        versionName "1.0.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -96,7 +96,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
 
     implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
-    implementation 'com.google.android.gms:play-services-ads:19.6.0'
+    implementation 'com.google.android.gms:play-services-ads:19.7.0'
     implementation 'com.google.firebase:firebase-perf:19.0.10'
 
 
@@ -125,18 +125,13 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 
 
-    implementation 'cn.jzvd:jiaozivideoplayer:7.4.2'
+    implementation 'cn.jzvd:jiaozivideoplayer:7.6.0'
 
 
     implementation 'com.github.yccheok:Matisse:2.1'
 
 
     implementation 'com.github.yangjie10930:EpMedia:v1.0.1'
-
-    //implementation 'com.vincan:medialoader:1.0.0'
-    //implementation 'com.github.dueeeke:dk-tablayout:1.0.2'
-
-    //implementation 'com.github.tgio:rncryptor-native:0.0.9'
 
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
 

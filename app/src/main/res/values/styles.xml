@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="ThemeDay" parent="Theme.AppCompat.Light.NoActionBar">
@@ -70,8 +70,9 @@
         <item name="mesajownerbackground">@color/mesajownergunduz</item>
 
 
-
-
+        <item name="android:statusBarColor">@color/toolbarcolorgunduz</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:navigationBarColor">@color/toolbarcolorgunduz</item>
 
 
     </style>
@@ -142,6 +143,12 @@
         <item name="icmessage">@drawable/ic_message_night</item>
 
         <item name="mesajownerbackground">@color/mesajownergece</item>
+
+        <item name="android:statusBarColor">@color/toolbarcolorgece</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
+        <item name="android:navigationBarColor">@color/toolbarcolorgece</item>
+
 
 
     </style>

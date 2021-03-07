@@ -3,6 +3,7 @@ package com.sonata.socialapp.activities.sonata;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -39,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
     RelativeLayout back,opensource,logout,blockedAccounts,pendingRequests
             ,likedPosts,yourComments,savedPosts,savedComments, advancedSettings;
 
-    Switch nightMode;
+    SwitchCompat nightMode;
 
 
     ProgressDialog progressDialog;

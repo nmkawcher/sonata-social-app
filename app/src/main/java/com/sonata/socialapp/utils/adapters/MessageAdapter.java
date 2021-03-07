@@ -146,6 +146,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 if(message.getObjectId() == null){
                     saveMessage(message,progresstext,mainlayout,position,text);
                 }
+                else{
+                    progresstext.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -181,7 +184,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 }
                 else{
                     holder.profilephoto.setVisibility(View.VISIBLE);
-                    glide.load(user.getPPAdapter()).into(holder.profilephoto);
+                    if(user.getHasPp()){
+                        glide.load(user.getPPAdapter()).into(holder.profilephoto);
+                    }
+                    else{
+                        glide.load(R.drawable.emptypp).into(holder.profilephoto);
+                    }
                 }
 
             }
