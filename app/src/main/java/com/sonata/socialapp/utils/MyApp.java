@@ -82,7 +82,7 @@ public class MyApp extends Application {
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("fDVnuSxHVTycjWW2J3ZG9WHukxewXxZq")
                 .enableLocalDataStore()
-                .server("https://loadbalancer.sonatasocialapp.com/parse/")
+                .server("http://167.86.118.172:1337/parse/")
                 .build());
 
     }

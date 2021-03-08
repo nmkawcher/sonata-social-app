@@ -59,7 +59,7 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
 
     private TextView followReqText;
     private RelativeLayout followReqLayout;
-    private RelativeLayout followreqs,messages;
+    private RelativeLayout followreqs;
 
     @Override
     public void onDestroy() {
@@ -115,20 +115,7 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
         else{
             followReqLayout.setVisibility(View.GONE);
         }
-        messages = view.findViewById(R.id.messageButton);
-        addBadgeToMessages((int) GenelUtil.getCurrentUser().getMessageCount());
-        messages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MessagesActivity.class));
-                if(badgeView!=null){
-                    badgeView.hide(true);
-                    badgeView=null;
 
-                    ParseCloud.callFunctionInBackground("notifResetMessages",new HashMap<>());
-                }
-            }
-        });
 
         recyclerView = view.findViewById(R.id.notifrecyclerview);
         swipeRefreshLayout = view.findViewById(R.id.nSwipeRefresh);
@@ -229,19 +216,7 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
         }
     }
 
-    QBadgeView badgeView = null;
-    public void addBadgeToMessages(int i){
-        if(messages!=null && i > 0){
-            if (badgeView == null){
-                badgeView = new QBadgeView(getContext());
-            }
 
-            badgeView.setBadgeNumber(i)
-                    .setBadgeGravity(Gravity.TOP|Gravity.END)
-                    //.setGravityOffset(-15, -15, true)
-                    .bindTarget(messages);
-        }
-    }
 
     public void notifyAdapter(){
         if(GenelUtil.getCurrentUser().getPrivate()){

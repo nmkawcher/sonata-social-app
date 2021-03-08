@@ -154,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         addBadgeAt(2,(int)GenelUtil.getCurrentUser().getNotifCount());
                     }
 
-                    if(getSupportFragmentManager().findFragmentById(R.id.homeframenotif)!=null){
-                        NotifFragment notifFragment = (NotifFragment) getSupportFragmentManager().findFragmentById(R.id.homeframenotif);
+                    if(getSupportFragmentManager().findFragmentById(R.id.homeframehome)!=null){
+                        HomeFragment notifFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.homeframehome);
                         assert notifFragment != null;
                         notifFragment.addBadgeToMessages((int) GenelUtil.getCurrentUser().getMessageCount());
                     }

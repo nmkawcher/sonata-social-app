@@ -3,6 +3,7 @@ package com.sonata.socialapp.fragments;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.os.ConfigurationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +51,7 @@ import com.sonata.socialapp.activities.sonata.AdvancedSettingsActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
 import com.sonata.socialapp.activities.sonata.MainActivity;
+import com.sonata.socialapp.activities.sonata.MessagesActivity;
 import com.sonata.socialapp.activities.sonata.SearchActivity;
 import com.sonata.socialapp.activities.sonata.StartActivity;
 import com.sonata.socialapp.utils.GenelUtil;
@@ -68,13 +72,14 @@ import java.util.List;
 import java.util.Objects;
 
 import cn.jzvd.Jzvd;
+import q.rorbin.badgeview.QBadgeView;
 
 
 public class HomeFragment extends Fragment implements RecyclerViewClick, BlockedAdapterClick {
 
 
     private List<ListObject> list;
-    private List<NativeAd> listreklam;
+    private List<UnifiedNativeAd> listreklam;
     private RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
@@ -85,11 +90,12 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     private SwipeRefreshLayout swipeRefreshLayout;
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener;
     private ProgressBar progressBar;
-    private RelativeLayout search,upload;
+    private RelativeLayout search,upload,messages;
     private int loadCheck = 0;
     Spinner spinner;
     AdapterView.OnItemSelectedListener onItemSelectedListener;
     int spinnerPosition;
+    RoundKornerRelativeLayout messageLayout;
 
 
 
@@ -127,6 +133,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         recyclerView = view.findViewById(R.id.mainrecyclerview);
 
 
+        seenList = new ArrayList<>();
         spinner = view.findViewById(R.id.settingsaccountypespinner);
         List<String> listspinner = new ArrayList<>();
 
@@ -187,7 +194,13 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
                     if(linearLayoutManager.findLastVisibleItemPosition()>(list.size()-4)&&!loading&&!postson){
                         loading=true;
-                        get(date,false);
+                        if(spinner.getSelectedItemPosition() == 1){
+                            get(date,false);
+                        }
+                        else if(spinner.getSelectedItemPosition() == 0){
+                            getInteresting(false);
+                        }
+                        spinner.setEnabled(false);
                     }
 
 
@@ -200,6 +213,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
         search = view.findViewById(R.id.homesearchripple);
         upload = view.findViewById(R.id.homeaddripple);
+        messages = view.findViewById(R.id.homemessageripple);
+        messageLayout = view.findViewById(R.id.homemessageimage);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,6 +226,18 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
             @Override
             public void onClick(View v) {
                 ((MainActivity) Objects.requireNonNull(getActivity())).startActivityResult();
+            }
+        });
+
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), MessagesActivity.class));
+                if(badgeView!=null){
+                    badgeView.hide(true);
+                    badgeView=null;
+                    ParseCloud.callFunctionInBackground("notifResetMessages",new HashMap<>());
+                }
             }
         });
 
@@ -230,8 +257,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                     list.clear();
                     adapter.notifyDataSetChanged();
                     progressBar.setVisibility(View.VISIBLE);
-                    //get(null,true);
-                    spinner.setEnabled(true);
+                    getInteresting(false);
+                    //spinner.setEnabled(true);
                 }
             }
 
@@ -259,7 +286,19 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     }
 
 
+    QBadgeView badgeView = null;
+    public void addBadgeToMessages(int i){
+        if(messages!=null && i > 0){
+            if (badgeView == null){
+                badgeView = new QBadgeView(getContext());
+            }
 
+            badgeView.setBadgeNumber(i)
+                    .setBadgeGravity(Gravity.TOP|Gravity.END)
+                    .setGravityOffset(-3, -3, true)
+                    .bindTarget(messages);
+        }
+    }
 
 
 
@@ -314,6 +353,62 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
     }
 
+    List<String> seenList;
+    private void getInteresting(boolean isRefresh){
+
+        HashMap<String, Object> params = new HashMap<>();
+        if(date!=null){
+            params.put("date", date);
+        }
+        params.put("seenList",seenList);
+        params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
+        ParseCloud.callFunctionInBackground("getHomeDiscoverObjects", params, (FunctionCallback<HashMap>) (objects, e) -> {
+            Log.e("done","doneGet");
+            if(getActive()){
+                if(e==null){
+                    Log.e("done","doneGetErrorNull");
+
+
+                    List<Post> tList = (List<Post>) objects.get("posts");
+                    for (int i = 0; i < tList.size(); i++){
+                        seenList.add(tList.get(i).getObjectId());
+                    }
+                    Collections.shuffle(tList);
+                    getAds(tList
+                            ,objects.get("users") != null ? (List<SonataUser>) objects.get("users") : new ArrayList<>()
+                            ,true
+                            ,(Date) objects.get("date")
+                            ,isRefresh);
+
+                    //initList(objects);
+
+
+                }
+                else{
+                    spinner.setEnabled(true);
+                    Log.e("done","doneGetError "+e.getCode());
+
+                    if(e.getCode()==ParseException.CONNECTION_FAILED){
+                        get(date,isRefresh);
+                    }
+                    else if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
+                        GenelUtil.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
+                        ParseUser.logOut();
+                        startActivity(new Intent(getActivity(), StartActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        getActivity().finish();
+
+                    }
+                    Log.e("error code",""+e.getCode());
+                    Log.e("error message", Objects.requireNonNull(e.getMessage()));
+
+                }
+            }
+        });
+
+
+
+    }
+
 
     public void Refresh(){
         if(linearLayoutManager!=null){
@@ -332,7 +427,13 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         if(!loading){
             loading=true;
             postson=false;
-            get(null,true);
+            if(spinner.getSelectedItemPosition()==1){
+                get(null,true);
+            }
+            else if(spinner.getSelectedItemPosition()==0){
+                getInteresting(true);
+            }
+            spinner.setEnabled(false);
         }
     }
 
@@ -347,7 +448,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
 
 
-    private void initList(List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,List<NativeAd> listreklam) {
+    private void initList(List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(getActive()){
@@ -511,44 +612,66 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                 else{
                     int finalC = c;
                     final boolean[] isfinish = {false};
-                    List<NativeAd> tempList = new ArrayList<>();
-                    AdLoader adLoader2 = null;
-                    AdLoader finalAdLoader = adLoader2;
-                    adLoader2 = new AdLoader.Builder(getContext(), "ca-app-pub-3940256099942544/2247696110")
-                            .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    List<UnifiedNativeAd> tempList = new ArrayList<>();
+
+                    AdLoader adLoader = new AdLoader.Builder(getContext(), getString(R.string.adId))
+                            .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                                 @Override
-                                public void onNativeAdLoaded(NativeAd NativeAd) {
-                                    // Show the ad.
+                                public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                                    loadCheck++;
                                     if(getActive()){
-                                        listreklam.add(NativeAd);
-                                        tempList.add(NativeAd);
+                                        Log.e("done","AdLoadDoneActive");
+
+                                        Log.e("Ad Load Done #","True");
+                                        listreklam.add(unifiedNativeAd);
+                                        tempList.add(unifiedNativeAd);
+
                                     }
                                     else{
-                                        NativeAd.destroy();
+                                        unifiedNativeAd.destroy();
                                     }
-                                    if (!finalAdLoader.isLoading()) {
-                                        if(isRefresh){
-                                            //refreshSetting();
-                                            list.clear();
-                                            adapter.notifyDataSetChanged();
+                                    if(loadCheck == finalC){
+                                        isfinish[0] = true;
+                                        Log.e("Ad Load Done #","False");
+                                        if(getActive()){
+                                            if(isRefresh){
+                                                //refreshSetting();
+                                                list.clear();
+                                                adapter.notifyDataSetChanged();
 
+                                            }
+                                            loadCheck=0;
+                                            initList(objects,users,hasmore,date,tempList);
                                         }
-                                        loadCheck=0;
-                                        initList(objects,users,hasmore,date,tempList);
+
                                     }
-
-
                                 }
                             })
                             .withAdListener(new AdListener() {
                                 @Override
                                 public void onAdFailedToLoad(LoadAdError adError) {
-                                    // Handle the failure by logging, altering the UI, and so on.
+                                    loadCheck++;
+                                    Log.e("adError: ",""+adError.getCode());
+                                    Log.e("adError: ",""+adError.getCause());
+
+
+                                    if(loadCheck==finalC){
+                                        if(!isfinish[0]){
+                                            isfinish[0] = true;
+                                            Log.e("adError !isLoading: ",""+adError.getCode());
+                                            if(isRefresh){
+                                                //refreshSetting();
+                                                list.clear();
+                                                adapter.notifyDataSetChanged();
+
+                                            }
+                                            loadCheck=0;
+                                            initList(objects,users,hasmore,date,tempList);
+                                        }
+
+                                    }
                                 }
                             }).build();
-                    adLoader2.loadAds(new AdRequest.Builder().build(), c);
-
-
                     Log.e("Delay Öncesi zaman : ",System.currentTimeMillis()+"");
                     final Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(new Runnable() {
@@ -574,6 +697,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                         }
                     }, Math.max(finalC * 4000, 7000));
 
+                    adLoader.loadAds(new AdRequest.Builder().build(), finalC);
                 }
 
             }

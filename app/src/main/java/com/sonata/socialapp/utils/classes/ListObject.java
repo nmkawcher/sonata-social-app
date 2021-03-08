@@ -9,7 +9,7 @@ import java.util.Comparator;
 public class ListObject implements Serializable {
 
     private String type;
-    private NativeAd ad;
+    private UnifiedNativeAd ad;
 
     private Chat chat;
 
@@ -51,11 +51,11 @@ public class ListObject implements Serializable {
         this.type = type;
     }
 
-    public NativeAd getAd() {
+    public UnifiedNativeAd getAd() {
         return ad;
     }
 
-    public void setAd(NativeAd ad) {
+    public void setAd(UnifiedNativeAd ad) {
         this.ad = ad;
     }
 

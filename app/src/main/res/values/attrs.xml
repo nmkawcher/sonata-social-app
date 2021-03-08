@@ -89,6 +89,6 @@
 
     <attr name="icarrowdown" format="integer"/>
     <attr name="icmessage" format="integer"/>
-
+    <attr name="icsend" format="integer"/>
 
 </resources>

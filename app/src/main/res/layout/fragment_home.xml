@@ -126,7 +126,6 @@
 
                         </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
-
                         <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
                             android:layout_width="34dp"
                             android:layout_height="34dp"
@@ -134,7 +133,7 @@
                             android:layout_centerVertical="true"
                             android:padding="1dp"
                             android:background="@drawable/search_backgroud"
-                            android:layout_alignParentEnd="true"
+                            android:layout_toStartOf="@+id/homemessageimage"
                             android:layout_marginEnd="8dp"
                             android:id="@+id/homeaddimage">
                             <RelativeLayout
@@ -147,6 +146,30 @@
                                     android:padding="2dp"
                                     android:layout_height="match_parent"
                                     android:src="?attr/icadd"/>
+                            </RelativeLayout>
+
+                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            app:corner_radius="10dp"
+                            android:layout_centerVertical="true"
+                            android:padding="1dp"
+                            android:background="@drawable/search_backgroud"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="8dp"
+                            android:id="@+id/homemessageimage">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:id="@+id/homemessageripple"
+                                android:layout_height="match_parent"
+                                android:background="?attr/selectableItemBackground">
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:padding="4dp"
+                                    android:layout_height="match_parent"
+                                    android:src="?attr/icsend"/>
                             </RelativeLayout>
 
                         </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>

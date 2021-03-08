@@ -117,6 +117,7 @@
                         android:layout_width="50dp"
                         android:id="@+id/messagebutton"
                         android:layout_marginEnd="5dp"
+                        android:visibility="invisible"
                         android:layout_alignParentEnd="true"
                         android:layout_height="50dp">
                         <RelativeLayout

@@ -66,6 +66,7 @@
         <item name="icarrowdown">@drawable/ic_arrow_down_day</item>
 
         <item name="icmessage">@drawable/ic_message_day</item>
+        <item name="icsend">@drawable/ic_send_day</item>
 
         <item name="mesajownerbackground">@color/mesajownergunduz</item>
 
@@ -141,7 +142,7 @@
         <item name="icarrowdown">@drawable/ic_arrow_down_night</item>
 
         <item name="icmessage">@drawable/ic_message_night</item>
-
+        <item name="icsend">@drawable/ic_send</item>
         <item name="mesajownerbackground">@color/mesajownergece</item>
 
         <item name="android:statusBarColor">@color/toolbarcolorgece</item>
