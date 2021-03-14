@@ -87,7 +87,12 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
         to = user.getObjectId();
         if(user == null) return;
         topUsername.setText("@"+user.getUsername());
-
+        topUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onProfileClick(0);
+            }
+        });
         send = findViewById(R.id.sendbutton);
         back = findViewById(R.id.backbuttonbutton);
         back.setOnClickListener(new View.OnClickListener() {
@@ -458,5 +463,12 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     @Override
     public void onTextClick(int position, int clickType, String text) {
         GenelUtil.handleLinkClicks(this,text,clickType);
+    }
+
+    @Override
+    public void onProfileClick(int position) {
+        if(user!=null){
+            startActivity(new Intent(this,GuestProfileActivity.class).putExtra("user",user));
+        }
     }
 }

@@ -25,6 +25,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.sonata.socialapp.R;
@@ -32,13 +33,16 @@ import com.sonata.socialapp.activities.sonata.GetRestDiscoverActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
 import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.DiscoverGridProfilAdapter;
 import com.sonata.socialapp.utils.adapters.SafPostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
+import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.GridClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
+import com.vincan.medialoader.DownloadManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,6 +103,38 @@ public class DiscoverFragment extends Fragment implements GridClick {
         swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
 
+        RecyclerView.OnScrollListener listener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int llm = ((GridLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                for(int a = llm; a < Math.min(llm+15,list.size()); a++){
+                    try{
+                        Post post = list.get(a).getPost();
+
+                        if(post != null ){
+
+                            if(post.getType().equals("video")){
+                                HashMap<String,Object> mediaObject = post.getMediaList().get(0);
+
+                                ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
+                                String thumburl = thumb.getUrl();
+                                Glide.with(getActivity()).load(thumburl).preload();
+                            }
+                            else{
+                                HashMap<String,Object> mediaObject = post.getMediaList().get(0);
+                                ParseFile parseFile = (ParseFile) mediaObject.get("media");
+                                String url = parseFile.getUrl();
+                                Glide.with(getActivity()).load(url).preload();
+                            }
+                        }
+                    } catch (Exception ignored){}
+
+                }
+            }
+        };
+
+        recyclerView.addOnScrollListener(listener);
 
 
         if(getActivity() != null && GenelUtil.isAlive(getActivity()) && !this.isDetached()){

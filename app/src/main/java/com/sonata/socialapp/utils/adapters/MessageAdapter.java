@@ -229,13 +229,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     }
                 });
             }
-
+            if(profilephoto != null){
+                profilephoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        messageClick.onProfileClick(getAdapterPosition());
+                    }
+                });
+            }
         }
     }
 
 
     public static interface MessageClick {
         void onTextClick(int position,int clickType,String text);
+        void onProfileClick(int position);
     }
 
 

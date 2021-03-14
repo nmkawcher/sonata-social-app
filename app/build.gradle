@@ -135,6 +135,9 @@ dependencies {
 
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
 
+    implementation 'com.vincan:medialoader:1.0.0'
+
+
 }
 
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'

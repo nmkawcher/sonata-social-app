@@ -45,6 +45,7 @@ import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.AdvancedSettingsActivity;
@@ -63,6 +64,7 @@ import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
+import com.vincan.medialoader.DownloadManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -183,6 +185,38 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                         if(!recyclerView.canScrollVertically(-1)){
                             Jzvd.releaseAllVideos();
                         }
+                    }
+                    int llm = linearLayoutManager.findLastVisibleItemPosition();
+                    for(int a = llm; a < Math.min(llm+5,list.size()); a++){
+                        try{
+                            Post post = list.get(a).getPost();
+
+                            if(post != null ){
+                                SonataUser user = post.getUser();
+                                if(user != null){
+                                    String url = user.getPPAdapter();
+                                    Glide.with(getActivity()).load(url).preload();
+                                }
+                                if(post.getType().equals("video")){
+                                    HashMap<String,Object> mediaObject = post.getMediaList().get(0);
+                                    ParseFile parseFile = (ParseFile) mediaObject.get("media");
+                                    String url = parseFile.getUrl();
+                                    DownloadManager.getInstance(getActivity()).enqueue(new DownloadManager.Request(MyApp.getProxy(getActivity()).getProxyUrl(url)));
+                                    ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
+                                    String thumburl = thumb.getUrl();
+                                    Glide.with(getActivity()).load(thumburl).preload();
+                                }
+                                else{
+                                    for (int im = 0; im < post.getImageCount(); im++){
+                                        HashMap<String,Object> mediaObject = post.getMediaList().get(im);
+                                        ParseFile parseFile = (ParseFile) mediaObject.get("media");
+                                        String url = parseFile.getUrl();
+                                        Glide.with(getActivity()).load(url).preload();
+                                    }
+                                }
+                            }
+                        } catch (Exception ignored){}
+
                     }
                 }
             }
