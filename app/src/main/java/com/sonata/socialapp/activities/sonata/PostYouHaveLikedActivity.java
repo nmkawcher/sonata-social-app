@@ -42,6 +42,7 @@ import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
+import com.vincan.medialoader.MediaLoader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -149,7 +150,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                                 HashMap<String,Object> mediaObject = post.getMediaList().get(0);
                                 ParseFile parseFile = (ParseFile) mediaObject.get("media");
                                 String url = parseFile.getUrl();
-                                DownloadManager.getInstance(PostYouHaveLikedActivity.this).enqueue(new DownloadManager.Request(MyApp.getProxy(PostYouHaveLikedActivity.this).getProxyUrl(url)));
+                                DownloadManager.getInstance(PostYouHaveLikedActivity.this).enqueue(new DownloadManager.Request(MediaLoader.getInstance(PostYouHaveLikedActivity.this).getProxyUrl(url)));
                                 ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
                                 String thumburl = thumb.getUrl();
                                 Glide.with(PostYouHaveLikedActivity.this).load(thumburl).preload();

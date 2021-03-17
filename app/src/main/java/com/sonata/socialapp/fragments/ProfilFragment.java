@@ -1,10 +1,7 @@
 package com.sonata.socialapp.fragments;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -38,14 +33,12 @@ import com.sonata.socialapp.activities.sonata.EditProfileActivity;
 import com.sonata.socialapp.activities.sonata.FollowersActivity;
 import com.sonata.socialapp.activities.sonata.FollowingsActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
-import com.sonata.socialapp.activities.sonata.HashtagActivity;
 import com.sonata.socialapp.activities.sonata.LoginActivity;
 import com.sonata.socialapp.activities.sonata.MainActivity;
 import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.GridProfilAdapter;
-import com.sonata.socialapp.utils.adapters.ProfilAdapter;
+import com.sonata.socialapp.utils.adapters.SafPostAdapter;
 import com.sonata.socialapp.utils.classes.BottomSheetDialog;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
@@ -53,6 +46,7 @@ import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.AccountManagerClicks;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
+import com.vincan.medialoader.MediaLoader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,7 +77,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     private TextView name,bio,followers,followerstext,followingtext,followings,username;
 
 
-    private ProfilAdapter postAdapter;
+    private SafPostAdapter postAdapter;
     private RecyclerView.OnScrollListener postOnScrollListener;
     private RecyclerView postRecyclerView;
 
@@ -688,7 +682,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         }
         else{
             if(postAdapter == null){
-                postAdapter = new ProfilAdapter();
+                postAdapter = new SafPostAdapter();
                 postAdapter.setContext(list,Glide.with(getActivity()),this,user);
                 LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
                 linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -722,7 +716,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                                         HashMap<String,Object> mediaObject = post.getMediaList().get(0);
                                         ParseFile parseFile = (ParseFile) mediaObject.get("media");
                                         String url = parseFile.getUrl();
-                                        DownloadManager.getInstance(getActivity()).enqueue(new DownloadManager.Request(MyApp.getProxy(getActivity()).getProxyUrl(url)));
+                                        DownloadManager.getInstance(getActivity()).enqueue(new DownloadManager.Request(MediaLoader.getInstance(getActivity()).getProxyUrl(url)));
                                         ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
                                         String thumburl = thumb.getUrl();
                                         Glide.with(getActivity()).load(thumburl).preload();

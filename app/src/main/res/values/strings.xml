@@ -63,6 +63,7 @@
     <string name="accsw">Switched to %1$s account</string>
     <string name="videosure">Video can\'t be longer than 60 seconds</string>
 
+    <string name="newlikenotiftext">%1$s and %2$s others liked your post</string>
 
     <string name="videosure2">Video is too long to process</string>
 
@@ -184,7 +185,7 @@
     <string name="invalidemail">Invalid e-mail</string>
     <string name="invalidchars">Invalid characters</string>
 
-    <string name="invalidsessiontoken">Oturum süresi bitti veya geçersiz. Lütfen tekrar giriş yapın.</string>
+    <string name="invalidsessiontoken">Session is expired or invalid. Please login again.</string>
 
     <string name="emailfieldcantbeempty">E-mail field can\'t be empty</string>
     <string name="namecantbeempty">Name field can\'t be empty</string>

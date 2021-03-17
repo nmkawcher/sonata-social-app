@@ -42,6 +42,7 @@ import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
+import com.vincan.medialoader.MediaLoader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -142,7 +143,7 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                                 HashMap<String,Object> mediaObject = post.getMediaList().get(0);
                                 ParseFile parseFile = (ParseFile) mediaObject.get("media");
                                 String url = parseFile.getUrl();
-                                DownloadManager.getInstance(SavedPostsActivity.this).enqueue(new DownloadManager.Request(MyApp.getProxy(SavedPostsActivity.this).getProxyUrl(url)));
+                                DownloadManager.getInstance(SavedPostsActivity.this).enqueue(new DownloadManager.Request(MediaLoader.getInstance(SavedPostsActivity.this).getProxyUrl(url)));
                                 ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
                                 String thumburl = thumb.getUrl();
                                 Glide.with(SavedPostsActivity.this).load(thumburl).preload();

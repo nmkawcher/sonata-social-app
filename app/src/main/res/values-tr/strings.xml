@@ -262,4 +262,6 @@
     <string name="sendyouamessage">sana bir mesaj gönderdi</string>
     <string name="you">Sen:</string>
     <string name="share">Paylaş</string>
+    <string name="invalidsessiontoken">Oturum süresi bitti veya geçersiz. Lütfen tekrar giriş yapın.</string>
+    <string name="newlikenotiftext">%1$s ve %2$s diğer kişi gönderini beğendi</string>
 </resources>

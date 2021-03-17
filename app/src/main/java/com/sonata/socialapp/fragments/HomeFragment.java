@@ -58,6 +58,7 @@ import com.sonata.socialapp.activities.sonata.StartActivity;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
+import com.sonata.socialapp.utils.VideoUtils.VideoUtils;
 import com.sonata.socialapp.utils.adapters.SafPostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
@@ -65,6 +66,9 @@ import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
+import com.vincan.medialoader.MediaLoader;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,6 +76,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import cn.jzvd.Jzvd;
 import q.rorbin.badgeview.QBadgeView;
@@ -98,7 +103,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     AdapterView.OnItemSelectedListener onItemSelectedListener;
     int spinnerPosition;
     RoundKornerRelativeLayout messageLayout;
-
+    List<String> seenList;
 
 
     @Override
@@ -107,20 +112,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         for(int i = 0;i<listreklam.size();i++){
             listreklam.get(i).destroy();
         }
-        adapter.notifyDataSetChanged();
-        recyclerView.removeOnScrollListener(onScrollListener);
-        onScrollListener=null;
-        list=null;
-        listreklam=null;
 
-        recyclerView=null;
-        linearLayoutManager=null;
-        adapter=null;
-        date=null;
-        swipeRefreshLayout.setOnRefreshListener(null);
-        swipeRefreshLayout=null;
-        onRefreshListener=null;
-        progressBar=null;
         super.onDestroy();
     }
 
@@ -135,7 +127,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         recyclerView = view.findViewById(R.id.mainrecyclerview);
 
 
-        seenList = new ArrayList<>();
+        seenList = GenelUtil.getSeenList(getActivity());
         spinner = view.findViewById(R.id.settingsaccountypespinner);
         List<String> listspinner = new ArrayList<>();
 
@@ -201,7 +193,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                                     HashMap<String,Object> mediaObject = post.getMediaList().get(0);
                                     ParseFile parseFile = (ParseFile) mediaObject.get("media");
                                     String url = parseFile.getUrl();
-                                    DownloadManager.getInstance(getActivity()).enqueue(new DownloadManager.Request(MyApp.getProxy(getActivity()).getProxyUrl(url)));
+                                    Log.e("MediaLoaderURL:",MediaLoader.getInstance(getActivity()).getProxyUrl(url));
+                                    DownloadManager.getInstance(getActivity()).enqueue(new DownloadManager.Request(MediaLoader.getInstance(getActivity()).getProxyUrl(url)));
+                                    //VideoUtils.preLoadVideos(getActivity(),((llm+a)%10),MyApp.getProxy(getActivity()).getProxyUrl(url));
                                     ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
                                     String thumburl = thumb.getUrl();
                                     Glide.with(getActivity()).load(thumburl).preload();
@@ -217,6 +211,17 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                             }
                         } catch (Exception ignored){}
 
+                    }
+                    for(int a = Math.max(llm-5,0); a < llm; a++){
+                        try{
+                            Post post = list.get(a).getPost();
+
+                            if(post != null ){
+                                if(!seenList.contains(post.getObjectId())){
+                                    seenList.add(post.getObjectId());
+                                }
+                            }
+                        } catch (Exception ignored){}
                     }
                 }
             }
@@ -387,7 +392,14 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
     }
 
-    List<String> seenList;
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(seenList!=null){
+            GenelUtil.setSeenList(getActivity(),seenList);
+        }
+    }
+
     private void getInteresting(boolean isRefresh){
 
         HashMap<String, Object> params = new HashMap<>();
@@ -404,9 +416,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
 
                     List<Post> tList = (List<Post>) objects.get("posts");
-                    for (int i = 0; i < tList.size(); i++){
-                        seenList.add(tList.get(i).getObjectId());
-                    }
+
                     Collections.shuffle(tList);
                     getAds(tList
                             ,objects.get("users") != null ? (List<SonataUser>) objects.get("users") : new ArrayList<>()
@@ -645,7 +655,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                 }
                 else{
                     int finalC = c;
-                    final boolean[] isfinish = {false};
+                    AtomicBoolean isfinish = new AtomicBoolean(false);
                     List<UnifiedNativeAd> tempList = new ArrayList<>();
 
                     AdLoader adLoader = new AdLoader.Builder(getContext(), getString(R.string.adId))
@@ -665,7 +675,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                                         unifiedNativeAd.destroy();
                                     }
                                     if(loadCheck == finalC){
-                                        isfinish[0] = true;
+                                        isfinish.set(true);
                                         Log.e("Ad Load Done #","False");
                                         if(getActive()){
                                             if(isRefresh){
@@ -690,8 +700,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
 
                                     if(loadCheck==finalC){
-                                        if(!isfinish[0]){
-                                            isfinish[0] = true;
+                                        if(!isfinish.get()){
+                                            isfinish.set(true);
                                             Log.e("adError !isLoading: ",""+adError.getCode());
                                             if(isRefresh){
                                                 //refreshSetting();
@@ -711,8 +721,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(!isfinish[0]){
-                                isfinish[0] = true;
+                            if(!isfinish.get()){
+                                isfinish.set(true);
                                 Log.e("Delay Öncesi zaman : ",System.currentTimeMillis()+"");
                                 if(getActivity()!=null){
                                     if(GenelUtil.isAlive(getActivity())){

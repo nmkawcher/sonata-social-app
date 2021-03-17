@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Base64;
 import android.util.Log;
@@ -49,6 +50,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,7 +58,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,6 +80,55 @@ public class GenelUtil {
     public static String appUrl = "sonatasocialapp.com";
 
 
+
+
+
+    public static List<String> getSeenList(Context context){
+
+        SharedPreferences pref = context.getSharedPreferences("seenList", 0);
+        String userArrayStr = pref.getString("list","");
+        if(userArrayStr != null && userArrayStr.length()>0){
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(userArrayStr);
+                String ls = jsonObject.getString("seenList");
+                return new ArrayList<String>(Arrays.asList(ls.replace("[","").replace("]","").split(", ")));
+                /*List<String> res = new ArrayList<>();
+                for(int i = 0; i < tmpArray.length(); i++){
+                    res.add(tmpArray.getString(i));
+                }
+                return res;*/
+
+            } catch (Exception e) {
+                //ToastLong(e.getMessage(),context);
+                e.printStackTrace();
+                Log.e("SeenList",e.getMessage());
+            }
+            return new ArrayList<>();
+        }
+        else{
+            return new ArrayList<>();
+        }
+    }
+
+    public static void setSeenList(Context context,List<String> array){
+
+        SharedPreferences pref = context.getSharedPreferences("seenList", 0);
+
+
+        try {
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("seenList",array.subList(Math.max(array.size()-1000,0),array.size()));
+            SharedPreferences.Editor editor = pref.edit();
+
+            editor.putString("list",jsonObject2.toString());
+            editor.apply();
+        } catch (JSONException e) {
+            Log.e("saveUser",e.toString());
+            e.printStackTrace();
+        }
+
+    }
 
     public static String getUrlOfObject(ParseObject object){
         if(object.getClassName().equals("_User")){

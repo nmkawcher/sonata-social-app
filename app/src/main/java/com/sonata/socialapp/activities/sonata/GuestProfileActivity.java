@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +14,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -38,13 +36,14 @@ import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.BlockedPersonAdapter;
 import com.sonata.socialapp.utils.adapters.GuestGridProfilAdapter;
-import com.sonata.socialapp.utils.adapters.GuestProfilAdapter;
+import com.sonata.socialapp.utils.adapters.SafPostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
+import com.vincan.medialoader.MediaLoader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,7 +89,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
     private boolean postson=false;
     private boolean loading=true;
     RecyclerView.OnScrollListener onScrollListener,postOnScrollListener;
-    GuestProfilAdapter postAdapter;
+    SafPostAdapter postAdapter;
     GuestGridProfilAdapter adapter;
     String usernamestring;
     RelativeLayout loadingLayout,listPostLayout;
@@ -1465,9 +1464,9 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
     public void onOpenComments(int position) {
         if(listPostLayout.getVisibility()==View.INVISIBLE){
             if(postAdapter == null){
-                postAdapter = new GuestProfilAdapter();
-                postAdapter.setContext(list,Glide.with(GuestProfileActivity.this),GuestProfileActivity.this);
-                postAdapter.setUser(user);
+                postAdapter = new SafPostAdapter();
+                postAdapter.setContext(list,Glide.with(GuestProfileActivity.this),GuestProfileActivity.this,user);
+
                 LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
                 linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
                 postRecyclerView.setLayoutManager(linearLayoutManager);
@@ -1500,7 +1499,8 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                         HashMap<String,Object> mediaObject = post.getMediaList().get(0);
                                         ParseFile parseFile = (ParseFile) mediaObject.get("media");
                                         String url = parseFile.getUrl();
-                                        DownloadManager.getInstance(GuestProfileActivity.this).enqueue(new DownloadManager.Request(MyApp.getProxy(GuestProfileActivity.this).getProxyUrl(url)));
+                                        DownloadManager.getInstance(GuestProfileActivity.this)
+                                                .enqueue(new DownloadManager.Request(MediaLoader.getInstance(GuestProfileActivity.this).getProxyUrl(url)));
                                         ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
                                         String thumburl = thumb.getUrl();
                                         Glide.with(GuestProfileActivity.this).load(thumburl).preload();

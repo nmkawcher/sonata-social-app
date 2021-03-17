@@ -63,6 +63,7 @@ import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.CommentAdapterClick;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import com.vincan.medialoader.DownloadManager;
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
 
@@ -475,6 +476,33 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             Jzvd.releaseAllVideos();
                         }
                     }
+                }
+
+                int llm = linearLayoutManager.findFirstVisibleItemPosition();
+                for(int a = llm; a < Math.min(llm+15,list.size()); a++){
+                    try{
+                        ParseObject obj = list.get(a);
+                        if(obj.getClassName().equals("Comment")){
+                            Comment post = (Comment) obj;
+                            if(post != null ){
+                                SonataUser user = post.getUser();
+                                if(user != null){
+                                    String url = user.getPPAdapter();
+                                    Glide.with(CommentActivity.this).load(url).preload();
+                                }
+                                if(post.getType().equals("image")){
+                                    HashMap<String,Object> mediaObject = post.getMediaList().get(0);
+                                    ParseFile parseFile = (ParseFile) mediaObject.get("media");
+                                    String url = parseFile.getUrl();
+                                    Glide.with(CommentActivity.this).load(url).preload();
+                                }
+
+                            }
+                        }
+
+
+                    } catch (Exception ignored){}
+
                 }
 
 

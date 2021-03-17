@@ -1,25 +1,55 @@
 package com.sonata.socialapp.utils.VideoUtils;
 
+import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 
+import com.google.android.exoplayer2.offline.Downloader;
+import com.google.android.exoplayer2.upstream.cache.CacheUtil;
+import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.interfaces.VideoCompressListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import VideoHandle.EpEditor;
 import VideoHandle.OnEditorListener;
+import cn.jzvd.Jzvd;
+import cn.jzvd.JzvdStd;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
+import static com.google.protobuf.CodedOutputStream.DEFAULT_BUFFER_SIZE;
 
 
 public class VideoUtils {
 
     private static int aa;
+    static List<String> urlList = null;
+
+    public static List<String> getUrlList(){
+        if(urlList == null){
+            urlList = new ArrayList<>();
+        }
+        return urlList;
+    }
 
 
 
@@ -69,90 +99,9 @@ public class VideoUtils {
     }
 
 
+    public static void preLoadVideo(String url2, Context context, int sira){
 
-    /*public static void compressVideo(String path, String resol,long time,Context context, VideoCompressListener listener){
-
-
-        Observable.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-
-                try {
-                    int rc = FFmpeg.execute("-y -i "+ path +" -vcodec libx264 -vf scale="+resol+":-2 -crf 28 -movflags +faststart -acodec copy "+ context.getCacheDir()+File.separator+"compressedvideo.mp4");
-                    return rc == RETURN_CODE_SUCCESS;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-
-                }
-
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean result) throws Throwable {
-                        //Use result for something
-                        if (!result) {
-                            //hata
-                            listener.OnError("error while compressing");
-                        } else {
-                            //success
-                            listener.onSuccess(new File(context.getCacheDir()+File.separator+"compressedvideo.mp4"));
-                        }
-
-                    }
-                });
-        Config.enableStatisticsCallback(new StatisticsCallback() {
-            public void apply(Statistics newStatistics) {
-                listener.onProgress((int)((newStatistics.getTime()*100)/time));
-            }
-        });
-
-    }*/
-
-
-
-
-    /*public static void compressVideo(String path, String resol,long sure,Context context, VideoCompressListener listener){
-        WeakReference<Context> contextWeakReference = new WeakReference<>(context);
-
-        String[] command = {"-y", "-i", path,"-vcodec", "libx264","-vf", "scale="+resol+":-2","-crf", "28","-movflags", "+faststart","-acodec","copy", contextWeakReference.get().getCacheDir()+File.separator+"video.mp4"};
-
-        FFmpeg.getInstance(contextWeakReference.get()).execute(command, new FFcommandExecuteResponseHandler() {
-            @Override
-            public void onSuccess(String message) {
-                if(contextWeakReference.get()!=null){
-                    listener.onSuccess(new File(contextWeakReference.get().getCacheDir()+File.separator+"video.mp4"));
-                }
-
-            }
-
-            @Override
-            public void onProgress(String message) {
-                long a = GenelUtil.getProgress(message,(int)sure/1000);
-                if(a>0){
-                    listener.onProgress((int)a);
-                }
-            }
-
-            @Override
-            public void onFailure(String message) {
-                listener.OnError(message);
-            }
-
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }*/
-
+    }
 
 
 }

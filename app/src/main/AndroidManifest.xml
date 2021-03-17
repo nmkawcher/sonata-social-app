@@ -25,15 +25,21 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
-        <activity android:name=".activities.sonata.DirectMessageActivity"
+        <activity
+            android:name=".activities.sonata.DirectMessageActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
-        <activity android:name=".activities.sonata.NewMessageActivity"
+
+        <activity
+            android:name=".activities.sonata.NewMessageActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
-        <activity android:name=".activities.sonata.MessagesActivity"
+
+        <activity
+            android:name=".activities.sonata.MessagesActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
+
         <activity
             android:name=".activities.sonata.ChangePasswordActivity"
             android:screenOrientation="portrait"

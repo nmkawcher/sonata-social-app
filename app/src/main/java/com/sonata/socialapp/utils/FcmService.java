@@ -146,7 +146,7 @@ public class FcmService extends FirebaseMessagingService {
                                         .setColor(getResources().getColor(R.color.notif))
                                         .setLargeIcon(bitmap)//a resource for your custom small icon
                                         .setContentTitle(title) //the "title" value you sent in your notification
-                                        .setContentText(addition+ remoteMessage.getData().get("desc")) //ditto
+                                        .setContentText(remoteMessage.getData().get("desc")) //ditto
                                         .setAutoCancel(true)
                                         .setContentIntent(pendingIntent)//dismisses the notification on click
                                         .setSound(defaultSoundUri);
@@ -285,6 +285,7 @@ public class FcmService extends FirebaseMessagingService {
                                 break;
                             }
                             case "likedpost": {
+                                Log.e("Notif","Recieved");
                                 notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

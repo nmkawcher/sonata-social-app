@@ -44,6 +44,7 @@ import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
+import com.vincan.medialoader.MediaLoader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,7 +89,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         back = findViewById(R.id.backbuttonbutton);
         back.setOnClickListener(view -> onBackPressed());
 
-        seenList = new ArrayList<>();
+        seenList = GenelUtil.getSeenList(this);
         recyclerView = findViewById(R.id.folreqrecyclerview);
         swipeRefreshLayout = findViewById(R.id.folreqSwipeRefreshLayout);
         onScrollListener = new RecyclerView.OnScrollListener() {
@@ -118,7 +119,8 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                                 HashMap<String,Object> mediaObject = post.getMediaList().get(0);
                                 ParseFile parseFile = (ParseFile) mediaObject.get("media");
                                 String url = parseFile.getUrl();
-                                DownloadManager.getInstance(GetRestDiscoverActivity.this).enqueue(new DownloadManager.Request(MyApp.getProxy(GetRestDiscoverActivity.this).getProxyUrl(url)));
+                                DownloadManager.getInstance(GetRestDiscoverActivity.this)
+                                        .enqueue(new DownloadManager.Request(MediaLoader.getInstance(GetRestDiscoverActivity.this).getProxyUrl(url)));
                                 ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
                                 String thumburl = thumb.getUrl();
                                 Glide.with(GetRestDiscoverActivity.this).load(thumburl).preload();
@@ -135,7 +137,17 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                     } catch (Exception ignored){}
 
                 }
+                for(int a = Math.max(llm-5,0); a < llm; a++){
+                    try{
+                        Post post = list.get(a).getPost();
 
+                        if(post != null ){
+                            if(!seenList.contains(post.getObjectId())){
+                                seenList.add(post.getObjectId());
+                            }
+                        }
+                    } catch (Exception ignored){}
+                }
             }
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -274,6 +286,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
     protected void onPause() {
         super.onPause();
         Jzvd.releaseAllVideos();
+        GenelUtil.setSeenList(this,seenList);
     }
 
 
@@ -296,12 +309,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                         Log.e("hashmap ",objects.toString());
                         List<Post> tpL = (List<Post>) objects.get("posts");
                         if(tpL != null){
-                            for(int ii = 0; ii < tpL.size(); ii++){
-                                String id = tpL.get(ii).getObjectId();
-                                if(!seenList.contains(id) && id != null){
-                                    seenList.add(id);
-                                }
-                            }
+
 
                             if(isRefresh){
                                 listreklam.clear();

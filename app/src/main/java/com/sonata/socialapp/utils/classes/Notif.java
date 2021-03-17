@@ -18,6 +18,9 @@ public class Notif extends ParseObject {
         return getString("type");
     }
 
+    public long getCount(){
+        return getLong("count");
+    }
     public ParseFile getMedia(){
         return getParseFile("mainmedia");
     }

@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.parse.ParseUser;
 import com.sonata.socialapp.R;
+import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.Notif;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.NotifRecyclerView;
@@ -138,9 +140,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         +holder.itemView.getContext().getString(R.string.followedyou));
             }
             else if(notif.getType().equals("likedpost")){
-                holder.notifname.setText(user.getName()
-                        +" (@"+user.getUsername()+") "
-                        +holder.itemView.getContext().getString(R.string.likedyourpost));
+                if(notif.getCount()<=0){
+                    holder.notifname.setText(user.getName()
+                            +" (@"+user.getUsername()+") "
+                            +holder.itemView.getContext().getString(R.string.likedyourpost));
+                }
+                else{
+                    String text = String.format(holder.itemView.getContext().getString(R.string.newlikenotiftext), user.getName() +" (@"+user.getUsername()+") ",notif.getCount()+"");
+                    holder.notifname.setText(text);
+                }
+
             }
             else if(notif.getType().equals("mentionpost")){
                 holder.notifname.setText(user.getName()

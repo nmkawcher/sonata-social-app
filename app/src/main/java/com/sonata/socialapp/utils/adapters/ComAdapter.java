@@ -41,6 +41,7 @@ import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.CommentAdapterClick;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.tylersuehr.socialtextview.SocialTextView;
+import com.vincan.medialoader.MediaLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -761,7 +762,8 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
 
 
 
-                        JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
+                        //JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
+                        JZDataSource jzDataSource = new JZDataSource(MediaLoader.getInstance(holder.itemView.getContext()).getProxyUrl(url));
                         jzDataSource.looping=true;
 
                         glide.load(thumburl).thumbnail(glide.load(thumburl2)).addListener(new RequestListener<Drawable>() {

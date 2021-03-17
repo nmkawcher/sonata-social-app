@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.sonata.socialapp.utils.VideoUtils.MyOwnFileNameGenerator;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.Group;
@@ -22,14 +23,14 @@ import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.zxy.tiny.Tiny;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MyApp extends Application {
 
     public static boolean ses = false;
-    public static SimpleCache simpleCache;
-    Context context;
+
 
     public static String whereAmI= "";
 
@@ -37,6 +38,7 @@ public class MyApp extends Application {
     public static final int TYPE_LINK = 8;
     public static final int TYPE_MENTION = 2;
 
+    public static MyOwnFileNameGenerator fileNameGenerator;
 
     @Override
     public void onCreate() {
@@ -47,14 +49,6 @@ public class MyApp extends Application {
         else{
             LeakCanary.install(this);
         }*/
-
-        context = this;
-        LeastRecentlyUsedCacheEvictor leastRecentlyUsedCacheEvictor = new LeastRecentlyUsedCacheEvictor(90 * 1024 * 1024);
-        ExoDatabaseProvider databaseProvider = new ExoDatabaseProvider(this);
-
-        if (simpleCache == null) {
-            simpleCache = new SimpleCache(getCacheDir(), leastRecentlyUsedCacheEvictor, databaseProvider);
-        }
 
         if(GenelUtil.getNightModeApp(this)){
             AppCompatDelegate.setDefaultNightMode(
@@ -82,20 +76,20 @@ public class MyApp extends Application {
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("fDVnuSxHVTycjWW2J3ZG9WHukxewXxZq")
                 .enableLocalDataStore()
-                .server("http://167.86.118.172:1337/parse/")
+                .server("https://loadbalancer.sonatasocialapp.com/parse/")
                 .build());
 
     }
 
-    private HttpProxyCacheServer proxy;
 
-    public static HttpProxyCacheServer getProxy(Context context) {
-        MyApp app = (MyApp) context.getApplicationContext();
-        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
-    }
 
-    private HttpProxyCacheServer newProxy() {
-        return new HttpProxyCacheServer(this);
+
+
+    public static MyOwnFileNameGenerator getFileNameGenerator(){
+        if(fileNameGenerator == null){
+            fileNameGenerator = new MyOwnFileNameGenerator();
+        }
+        return fileNameGenerator;
     }
 
 

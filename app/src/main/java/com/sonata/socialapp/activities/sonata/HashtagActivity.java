@@ -42,6 +42,7 @@ import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
+import com.vincan.medialoader.MediaLoader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -147,7 +148,8 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
                                 HashMap<String,Object> mediaObject = post.getMediaList().get(0);
                                 ParseFile parseFile = (ParseFile) mediaObject.get("media");
                                 String url = parseFile.getUrl();
-                                DownloadManager.getInstance(HashtagActivity.this).enqueue(new DownloadManager.Request(MyApp.getProxy(HashtagActivity.this).getProxyUrl(url)));
+                                DownloadManager.getInstance(HashtagActivity.this)
+                                        .enqueue(new DownloadManager.Request(MediaLoader.getInstance(HashtagActivity.this).getProxyUrl(url)));
                                 ParseFile thumb = (ParseFile) mediaObject.get("thumbnail");
                                 String thumburl = thumb.getUrl();
                                 Glide.with(HashtagActivity.this).load(thumburl).preload();

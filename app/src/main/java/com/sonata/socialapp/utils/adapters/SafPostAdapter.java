@@ -48,6 +48,7 @@ import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.tylersuehr.socialtextview.SocialTextView;
+import com.vincan.medialoader.MediaLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +71,7 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
     private RequestManager glide;
     private BlockedAdapterClick click;
 
+    SonataUser user;
     private boolean finish = false;
     public void setFinish(boolean finish){
         this.finish=finish;
@@ -81,6 +83,14 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
         this.recyclerViewClick=recyclerViewClick;
         this.list=list;
         this.glide=glide;
+
+    }
+    public void setContext(List<ListObject> list
+            , RequestManager glide, RecyclerViewClick recyclerViewClick,SonataUser user){
+        this.recyclerViewClick=recyclerViewClick;
+        this.list=list;
+        this.glide=glide;
+        this.user = user;
 
     }
 
@@ -335,7 +345,7 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
             }
             else{
                 Post post = list.get(holder.getAdapterPosition()).getPost();
-                SonataUser user = post.getUser();
+                SonataUser user = this.user != null ? this.user: post.getUser();
 
                 holder.postdate.setText(DateUtils.getRelativeTimeSpanString(post.getCreatedAt().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
                 holder.postdesc.setLinkText("");
@@ -782,8 +792,8 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
 
                         //JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
-                        //JZDataSource jzDataSource = new JZDataSource(MediaLoader.getInstance(holder.itemView.getContext()).getProxyUrl(url));
-                        JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
+                        JZDataSource jzDataSource = new JZDataSource(MediaLoader.getInstance(holder.itemView.getContext()).getProxyUrl(url));
+                        //JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
 
                         jzDataSource.looping=true;
 

@@ -44,6 +44,7 @@ import com.sonata.socialapp.utils.interfaces.GroupRecyclerViewClick;
 import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.tylersuehr.socialtextview.SocialTextView;
+import com.vincan.medialoader.MediaLoader;
 
 import java.util.List;
 
@@ -688,7 +689,7 @@ public class GroupSafPostAdapter extends RecyclerView.Adapter<GroupSafPostAdapte
 
 
 
-                    JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
+                    JZDataSource jzDataSource = new JZDataSource(MediaLoader.getInstance(holder.itemView.getContext()).getProxyUrl(url));
                     jzDataSource.looping=true;
 
                     glide.load(thumburl).addListener(new RequestListener<Drawable>() {
