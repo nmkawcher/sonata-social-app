@@ -607,14 +607,10 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                 adapter.notifyItemRangeInserted(an, list.size()-an);
                 spinner.setEnabled(true);
                 //adapter.notifyDataSetChanged();
-                Log.e("done","adapterNotified");
 
             }
         }
-        else{
-            Log.e("done","InitListNotActive");
 
-        }
 
     }
 
