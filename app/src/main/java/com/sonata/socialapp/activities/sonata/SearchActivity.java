@@ -461,120 +461,24 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
         }
 
     }
-    int loadCheck = 0;
     private void getAds(List<Post> objects,boolean hasmore,Date date,String searchString){
         Log.e("done","doneGetAds");
 
         if(GenelUtil.isAlive(SearchActivity.this)){
-            Log.e("done","doneGetAdsActive");
-
-
-
-            int l = objects.size();
-            int c = 0;
-            if(l>1&&l<=11){
-                c=1;
-            }
-            if(l>11&&l<=21){
-                c=2;
-            }
-            if(l>21&&l<=31){
-                c=3;
-            }
-            if(l>31&&l<=41){
-                c=4;
-            }
-            if(l>41){
-                c=5;
-            }
-            Log.e("Ad Count",""+c);
-            if(c<=0){
-
-                initList(objects,hasmore,date,new ArrayList<>(),false);
-            }
-            else{
-                int finalC = c;
-                final boolean[] isfinish = {false};
-                List<UnifiedNativeAd> tempList = new ArrayList<>();
-                AdLoader adLoader = new AdLoader.Builder(SearchActivity.this, getString(R.string.adId))
-                        .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-                            @Override
-                            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                                loadCheck++;
-                                if(GenelUtil.isAlive(SearchActivity.this)){
-                                    Log.e("done","AdLoadDoneActive");
-
-                                    Log.e("Ad Load Done #","True");
-                                    listreklam.add(unifiedNativeAd);
-                                    tempList.add(unifiedNativeAd);
-
-                                }
-                                else{
-                                    unifiedNativeAd.destroy();
-                                }
-                                if(loadCheck == finalC){
-                                    isfinish[0] = true;
-                                    Log.e("Ad Load Done #","False");
-                                    if(GenelUtil.isAlive(SearchActivity.this)){
-
-                                        loadCheck=0;
-                                        initList(objects,hasmore,date,tempList,false);
-                                    }
-
-                                }
-                            }
-                        })
-                        .withAdListener(new AdListener() {
-                            @Override
-                            public void onAdFailedToLoad(LoadAdError adError) {
-                                if(GenelUtil.isAlive(SearchActivity.this)){
-                                    loadCheck++;
-                                    Log.e("adError: ",""+adError.getCode());
-                                    Log.e("adError: ",""+adError.getCause());
-
-
-                                    if(loadCheck==finalC){
-                                        if(!isfinish[0]){
-                                            isfinish[0] = true;
-                                            Log.e("adError !isLoading: ",""+adError.getCode());
-
-                                            loadCheck=0;
-                                            initList(objects,hasmore,date,tempList,false);
-                                        }
-
-                                    }
-                                }
-
-                            }
-                        }).build();
-                Log.e("Delay Öncesi zaman : ",System.currentTimeMillis()+"");
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(!isfinish[0]){
-                            isfinish[0] = true;
-                            Log.e("Delay Öncesi zaman : ",System.currentTimeMillis()+"");
-
-                            if(GenelUtil.isAlive(SearchActivity.this)){
-
-                                loadCheck=0;
-                                initList(objects,hasmore,date,new ArrayList<>(),false);
-                            }
-
-
+            GenelUtil.loadAds(objects.size(),SearchActivity.this, new com.sonata.socialapp.utils.interfaces.AdListener() {
+                @Override
+                public void done(List<UnifiedNativeAd> list) {
+                    if(GenelUtil.isAlive(SearchActivity.this)){
+                        listreklam.addAll(list);
+                        initList(objects,hasmore,date,list,false);
+                    }
+                    else{
+                        for(int i = 0; i < list.size(); i++){
+                            list.get(i).destroy();
                         }
                     }
-                }, Math.max(finalC * 6000, 12000));
-
-                adLoader.loadAds(new AdRequest.Builder().build(), finalC);
-            }
-
-
-
-
-
-
+                }
+            });
         }
         else{
             Log.e("done","doneGetNotActive");

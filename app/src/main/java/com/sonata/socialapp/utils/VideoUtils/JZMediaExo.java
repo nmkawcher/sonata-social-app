@@ -201,6 +201,7 @@ public class JZMediaExo extends JZMediaInterface implements Player.EventListener
 
     @Override
     public void setVolume(float leftVolume, float rightVolume) {
+        if(simpleExoPlayer==null) return;
         simpleExoPlayer.setVolume(leftVolume);
         simpleExoPlayer.setVolume(rightVolume);
     }

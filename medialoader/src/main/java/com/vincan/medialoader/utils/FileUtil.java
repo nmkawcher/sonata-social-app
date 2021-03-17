@@ -53,19 +53,24 @@ public final class FileUtil {
         File[] listFiles = dir.listFiles();
         if (listFiles != null) {
             lruListFiles = Arrays.asList(listFiles);
-            Collections.sort(lruListFiles, new Comparator<File>() {
-                @Override
-                public int compare(File lhs, File rhs) {
-                    try{
-                        long first = lhs.lastModified();
-                        long second = rhs.lastModified();
-                        return (first < second) ? -1 : ((first == second) ? 0 : 1);
-                    }catch (Exception e){
-                        return 1;
-                    }
+            try{
+                Collections.sort(lruListFiles, new Comparator<File>() {
+                    @Override
+                    public int compare(File lhs, File rhs) {
+                        try{
+                            long first = lhs.lastModified();
+                            long second = rhs.lastModified();
+                            return (first < second) ? -1 : ((first == second) ? 0 : 1);
+                        }catch (Exception e){
+                            return 1;
+                        }
 
-                }
-            });
+                    }
+                });
+            }catch (Exception ignored){
+
+            }
+
         }
         return lruListFiles;
     }

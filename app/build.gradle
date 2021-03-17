@@ -13,8 +13,8 @@ android {
         applicationId "com.sonata.socialapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 9
-        versionName "1.0.9"
+        versionCode 10
+        versionName "1.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -117,7 +117,7 @@ dependencies {
     implementation 'com.zxy.android:tiny:1.1.0'
 
 
-    implementation 'com.danikula:videocache:2.7.1'
+    //implementation 'com.danikula:videocache:2.7.1'
 
     implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
 

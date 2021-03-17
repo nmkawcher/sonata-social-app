@@ -56,8 +56,8 @@ public class DefaultUrlDataSource extends BaseUrlDataSource {
             long length = readSourceAvailableBytes(mUrlConnection, offset, mUrlConnection.getResponseCode());
             this.mUrlDataSourceInfo = new UrlDataSourceInfo(mUrlDataSourceInfo.url, length, mime);
             this.mUrlDataSourceInfoCache.put(mUrlDataSourceInfo.url, mUrlDataSourceInfo);
-        } catch (Exception e) {
-            throw new IOException("Error opening connection for " + mUrlDataSourceInfo.url + " with offset " + offset, e);
+        } catch (Exception ignored) {
+            //throw new IOException("Error opening connection for " + mUrlDataSourceInfo.url + " with offset " + offset, e);
         }
     }
 

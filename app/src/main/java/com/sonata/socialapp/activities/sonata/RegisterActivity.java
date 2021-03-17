@@ -10,8 +10,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +31,7 @@ import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -37,12 +40,14 @@ public class RegisterActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     TextView userAgreement, privacyPolicy;
     private long mLastClickTime = 0;
+    int random = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.ThemeDay);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        random = new Random().nextInt(10000);
         progressDialog=new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.register));

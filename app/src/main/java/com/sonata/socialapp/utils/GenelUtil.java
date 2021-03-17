@@ -13,6 +13,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Base64;
 import android.util.Log;
@@ -29,6 +31,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
@@ -43,6 +49,7 @@ import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
+import com.sonata.socialapp.utils.interfaces.AdListener;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.listeners.OnDismissListener;
 
@@ -64,6 +71,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.parse.Parse.getApplicationContext;
 
@@ -82,6 +90,77 @@ public class GenelUtil {
 
 
 
+    public static void loadAds(int l,Context context, AdListener listener){
+        int c = 0;
+        if(l>1&&l<=11){
+            c=1;
+        }
+        if(l>11&&l<=21){
+            c=2;
+        }
+        if(l>21&&l<=31){
+            c=3;
+        }
+        if(l>31&&l<=41){
+            c=4;
+        }
+        if(l>41){
+            c=5;
+        }
+        AtomicBoolean isfinish = new AtomicBoolean(false);
+        List<UnifiedNativeAd> tempList = new ArrayList<>();
+        final int[] loadCheck = {0};
+        int finalC = c;
+        if(c>0){
+            for(int i = 0; i < c; i++){
+                AdLoader adLoader = new AdLoader.Builder(context, context.getString(R.string.adId))
+                        .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                            @Override
+                            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                                loadCheck[0]++;
+                                tempList.add(unifiedNativeAd);
+                                if(loadCheck[0] == finalC){
+                                    isfinish.set(true);
+                                    listener.done(tempList);
+
+                                }
+                            }
+                        })
+                        .withAdListener(new com.google.android.gms.ads.AdListener() {
+                            @Override
+                            public void onAdFailedToLoad(LoadAdError adError) {
+                                Log.e("Ad Error Code:",adError.getCode()+"");
+                                Log.e("Ad Error Code:",adError.getMessage()+"");
+                                loadCheck[0]++;
+                                if(loadCheck[0] == finalC){
+                                    isfinish.set(true);
+                                    listener.done(tempList);
+
+                                }
+                            }
+                        }).build();
+
+
+                adLoader.loadAd(new AdRequest.Builder().build());
+            }
+
+            Log.e("Delay Öncesi zaman : ",System.currentTimeMillis()+"");
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isfinish.get()){
+                        isfinish.set(true);
+                        listener.done(tempList);
+                    }
+                }
+            }, Math.max(c * 4500, 7000));
+        }
+        else{
+            listener.done(new ArrayList<>());
+        }
+
+    }
 
     public static List<String> getSeenList(Context context){
 

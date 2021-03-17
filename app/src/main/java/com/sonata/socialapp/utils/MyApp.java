@@ -1,18 +1,12 @@
 package com.sonata.socialapp.utils;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.danikula.videocache.HttpProxyCacheServer;
-import com.google.android.exoplayer2.database.ExoDatabaseProvider;
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor;
-import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-import com.sonata.socialapp.utils.VideoUtils.MyOwnFileNameGenerator;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.Group;
@@ -22,9 +16,6 @@ import com.sonata.socialapp.utils.classes.Notif;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.zxy.tiny.Tiny;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MyApp extends Application {
@@ -38,7 +29,6 @@ public class MyApp extends Application {
     public static final int TYPE_LINK = 8;
     public static final int TYPE_MENTION = 2;
 
-    public static MyOwnFileNameGenerator fileNameGenerator;
 
     @Override
     public void onCreate() {
@@ -79,17 +69,6 @@ public class MyApp extends Application {
                 .server("https://loadbalancer.sonatasocialapp.com/parse/")
                 .build());
 
-    }
-
-
-
-
-
-    public static MyOwnFileNameGenerator getFileNameGenerator(){
-        if(fileNameGenerator == null){
-            fileNameGenerator = new MyOwnFileNameGenerator();
-        }
-        return fileNameGenerator;
     }
 
 
