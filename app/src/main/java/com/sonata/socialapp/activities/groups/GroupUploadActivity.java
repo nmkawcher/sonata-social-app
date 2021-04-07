@@ -39,13 +39,12 @@ import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.adapters.UploadPostAdapter;
 import com.sonata.socialapp.utils.classes.Group;
 import com.sonata.socialapp.utils.classes.UploadObject;
+import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.sonata.socialapp.utils.interfaces.UploadPostClick;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
-import com.zxy.tiny.Tiny;
-import com.zxy.tiny.callback.FileCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -206,8 +205,7 @@ public class GroupUploadActivity extends AppCompatActivity implements UploadPost
                         progressDialog.show();
                         progressDialog.setMessage(getString(R.string.preparingimage));
 
-                        Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-                        options.size=55;
+
 
                         List<Uri> uriList = new ArrayList<>();
                         for(int i = 0;i<list.size();i++){
@@ -215,7 +213,7 @@ public class GroupUploadActivity extends AppCompatActivity implements UploadPost
                                 uriList.add(list.get(i).getUri());
                             }
                         }
-                        compressImages(uriList,0,new ArrayList<File>(),options);
+                        compressImages(uriList,0,new ArrayList<File>());
 
 
                     }
@@ -236,30 +234,28 @@ public class GroupUploadActivity extends AppCompatActivity implements UploadPost
         });
     }
 
-    private void compressImages(List<Uri> uriList,int current,List<File> fileList,Tiny.FileCompressOptions options){
-        Tiny.getInstance().source(uriList.get(current)).asFile().withOptions(options).compress(new FileCallback() {
+    private void compressImages(List<Uri> uriList,int current,List<File> fileList){
+        GenelUtil.compressImage(this,uriList.get(current), 55, new FileCompressListener() {
             @Override
-            public void callback(boolean isSuccess, String outfile, Throwable t) {
-                //return the compressed file path
-                if(GenelUtil.isAlive(GroupUploadActivity.this)){
-                    if(!isSuccess){
-                        toast(getString(R.string.error)+t.getMessage());
-                        progressDialog.dismiss();
-                    }
-                    else{
-                        fileList.add(new File(outfile));
-                        if(current==uriList.size()-1){
-                            //Sıkıştırma bitmiş. Yüklemeye geç
-                            uploadImages(fileList,0,new ArrayList<ParseFile>());
+            public void done(File file) {
+                fileList.add(file);
+                if(current==uriList.size()-1){
+                    //Sıkıştırma bitmiş. Yüklemeye geç
+                    uploadImages(fileList,0,new ArrayList<ParseFile>());
 
-                        }
-                        else{
-                            compressImages(uriList,current+1,fileList,options);
-                        }
-                    }
+                }
+                else{
+                    compressImages(uriList,current+1,fileList);
                 }
             }
+
+            @Override
+            public void error(String message) {
+                toast(getString(R.string.error));
+                progressDialog.dismiss();
+            }
         });
+
 
     }
 

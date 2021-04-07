@@ -41,6 +41,7 @@
 -keep public class cn.jzvd.demo.CustomMedia.JZMediaSystemAssertFolder {*; }
 -keep public class com.sonata.socialapp.utils.VideoUtils.JZMediaExo {*; }
 
+
 -keep class tv.danmaku.ijk.media.player.** {*; }
 -dontwarn tv.danmaku.ijk.media.player.*
 -keep interface tv.danmaku.ijk.media.player.** { *; }

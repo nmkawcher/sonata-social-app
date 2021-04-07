@@ -43,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     int random = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.ThemeDay);
+        setTheme(R.style.ThemeDayForRed);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
@@ -143,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                                 if(user!=null){
                                                                     if(e==null){
                                                                         GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),RegisterActivity.this);
-                                                                        startActivity(new Intent(RegisterActivity.this,ChooseCategoryActivity.class));
+                                                                        startActivity(new Intent(RegisterActivity.this,ChooseCategoryActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                                                         if(getIntent() != null && getIntent().getStringExtra("deplinkintent") != null){
                                                                             String text = getIntent().getStringExtra("deplinkintent");
                                                                             String newS = text.substring(text.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());

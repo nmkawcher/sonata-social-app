@@ -17,6 +17,9 @@ import com.sonata.socialapp.utils.GenelUtil;
 
 public class GroupFragment extends Fragment {
 
+    public GroupFragment() {
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

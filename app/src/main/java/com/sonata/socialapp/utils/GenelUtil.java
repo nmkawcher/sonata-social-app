@@ -1,5 +1,6 @@
 package com.sonata.socialapp.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -9,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -16,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -27,10 +30,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.os.ConfigurationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.developers.imagezipper.ImageZipper;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
@@ -43,13 +48,17 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
+import com.sonata.socialapp.activities.sonata.DirectMessageActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
+import com.sonata.socialapp.activities.sonata.UploadActivity;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.ListObject;
+import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.AdListener;
+import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.listeners.OnDismissListener;
 
@@ -73,6 +82,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 import static com.parse.Parse.getApplicationContext;
 
 
@@ -88,25 +102,106 @@ public class GenelUtil {
     public static String appUrl = "sonatasocialapp.com";
 
 
+    public static void messageLongClick(Message message,Context context){
+        try{
+            ArrayList<String> other = new ArrayList<>();
+            other.add(context.getString(R.string.copytext));
 
+            String[] popupMenu = other.toArray(new String[other.size()]);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setCancelable(true);
+
+            builder.setItems(popupMenu, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String select = popupMenu[which];
+                    if(select.equals(context.getString(R.string.copytext))){
+                        copyText(message.getMessage(),context);
+                    }
+                }
+            });
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    DirectMessageActivity.isDialogShown = false;
+                }
+            }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    DirectMessageActivity.isDialogShown = false;
+                }
+            });
+            builder.show();
+            DirectMessageActivity.isDialogShown = true;
+        }catch (Exception ignored){}
+
+    }
+
+    public static void compressImage(Context context,Uri file,int maxsize, FileCompressListener listener){
+
+        final File[] imageZipperFile = {null};
+        Observable.fromCallable(() -> {
+            try {
+                Log.e("Uri To String:",file.toString());
+                File dst = new File(context.getCacheDir()+File.separator+"copiedimage"+(System.currentTimeMillis()%10));
+                copy(file,dst,context,null);
+                imageZipperFile[0] = new ImageZipper(context)
+                        .setQuality(70)
+                        .compressToFile(dst);
+                Log.e("filePath: ",imageZipperFile[0].getAbsolutePath());
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("GetLangErr",e.getMessage());
+                return false;
+            }
+
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((result) -> {
+                    if(result){
+                        listener.done(imageZipperFile[0]);
+                    }
+                    else{
+                        listener.error("error");
+                    }
+
+
+                });
+
+
+    }
+
+    public static String getCurrentCountryCode(Context context) {
+        try{
+            String[] langs = {"af-ZA", "am-ET", "ar-AE", "ar-BH", "ar-DZ", "ar-EG", "ar-IQ", "ar-JO", "ar-KW", "ar-LB", "ar-LY", "ar-MA", "arn-CL", "ar-OM", "ar-QA", "ar-SA", "ar-SY", "ar-TN", "ar-YE", "as-IN", "az-Cyrl-AZ", "az-Latn-AZ", "ba-RU", "be-BY", "bg-BG", "bn-BD", "bn-IN", "bo-CN", "br-FR", "bs-Cyrl-BA", "bs-Latn-BA", "ca-ES", "co-FR", "cs-CZ", "cy-GB", "da-DK", "de-AT", "de-CH", "de-DE", "de-LI", "de-LU", "dsb-DE", "dv-MV", "el-GR", "en-029", "en-AU", "en-BZ", "en-CA", "en-GB", "en-IE", "en-IN", "en-JM", "en-MY", "en-NZ", "en-PH", "en-SG", "en-TT", "en-US", "en-ZA", "en-ZW", "es-AR", "es-BO", "es-CL", "es-CO", "es-CR", "es-DO", "es-EC", "es-ES", "es-GT", "es-HN", "es-MX", "es-NI", "es-PA", "es-PE", "es-PR", "es-PY", "es-SV", "es-US", "es-UY", "es-VE", "et-EE", "eu-ES", "fa-IR", "fi-FI", "fil-PH", "fo-FO", "fr-BE", "fr-CA", "fr-CH", "fr-FR", "fr-LU", "fr-MC", "fy-NL", "ga-IE", "gd-GB", "gl-ES", "gsw-FR", "gu-IN", "ha-Latn-NG", "he-IL", "hi-IN", "hr-BA", "hr-HR", "hsb-DE", "hu-HU", "hy-AM", "id-ID","ig-NG", "ii-CN", "is-IS", "it-CH", "it-IT", "iu-Cans-CA", "iu-Latn-CA", "ja-JP", "ka-GE", "kk-KZ", "kl-GL", "km-KH", "kn-IN", "kok-IN", "ko-KR", "ky-KG", "lb-LU", "lo-LA", "lt-LT", "lv-LV", "mi-NZ", "mk-MK", "ml-IN", "mn-MN", "mn-Mong-CN", "moh-CA", "mr-IN", "ms-BN", "ms-MY", "mt-MT", "nb-NO", "ne-NP", "nl-BE", "nl-NL", "nn-NO", "nso-ZA", "oc-FR", "or-IN", "pa-IN", "pl-PL", "prs-AF", "ps-AF", "pt-BR", "pt-PT", "qut-GT", "quz-BO", "quz-EC", "quz-PE", "rm-CH", "ro-RO", "ru-RU", "rw-RW", "sah-RU", "sa-IN", "se-FI", "se-NO", "se-SE", "si-LK", "sk-SK", "sl-SI", "sma-NO", "sma-SE", "smj-NO", "smj-SE", "smn-FI", "sms-FI", "sq-AL", "sr-Cyrl-BA", "sr-Cyrl-CS", "sr-Cyrl-ME", "sr-Cyrl-RS", "sr-Latn-BA", "sr-Latn-CS", "sr-Latn-ME", "sr-Latn-RS", "sv-FI", "sv-SE", "sw-KE", "syr-SY", "ta-IN", "te-IN", "tg-Cyrl-TJ", "th-TH", "tk-TM", "tn-ZA", "tr-TR", "tt-RU", "tzm-Latn-DZ", "ug-CN", "uk-UA", "ur-PK", "uz-Cyrl-UZ", "uz-Latn-UZ", "vi-VN", "wo-SN", "xh-ZA", "yo-NG", "zh-CN", "zh-HK", "zh-MO", "zh-SG", "zh-TW", "zu-ZA"};
+
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            //Log.e("Code",telephonyManager.getSimCountryIso());
+            String code = telephonyManager.getSimCountryIso();
+            code = code.toUpperCase();
+            String returnCode = "";
+            for (String s : langs) {
+                if (s.endsWith(code)) {
+                    returnCode = s.substring(0, s.indexOf("-"));
+                    break;
+                }
+            }
+            //Log.e("Code",returnCode);
+            return returnCode.trim();
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("GetLangErr",e.getMessage());
+            return "en";
+        }
+
+    }
 
     public static void loadAds(int l,Context context, AdListener listener){
         int c = 0;
-        if(l>1&&l<=11){
-            c=1;
-        }
-        if(l>11&&l<=21){
-            c=2;
-        }
-        if(l>21&&l<=31){
-            c=3;
-        }
-        if(l>31&&l<=41){
-            c=4;
-        }
-        if(l>41){
-            c=5;
-        }
+        c = Math.min(Math.round((float)l/10),Math.round(((float)(l-1))/10));
+        Log.e("Count Ads:",c+"");
         AtomicBoolean isfinish = new AtomicBoolean(false);
         List<UnifiedNativeAd> tempList = new ArrayList<>();
         final int[] loadCheck = {0};
@@ -120,8 +215,10 @@ public class GenelUtil {
                                 loadCheck[0]++;
                                 tempList.add(unifiedNativeAd);
                                 if(loadCheck[0] == finalC){
-                                    isfinish.set(true);
-                                    listener.done(tempList);
+                                    if(!isfinish.get()){
+                                        isfinish.set(true);
+                                        listener.done(tempList);
+                                    }
 
                                 }
                             }
@@ -132,10 +229,12 @@ public class GenelUtil {
                                 Log.e("Ad Error Code:",adError.getCode()+"");
                                 Log.e("Ad Error Code:",adError.getMessage()+"");
                                 loadCheck[0]++;
-                                if(loadCheck[0] == finalC){
-                                    isfinish.set(true);
-                                    listener.done(tempList);
 
+                                if(loadCheck[0] == finalC){
+                                    if(!isfinish.get()){
+                                        isfinish.set(true);
+                                        listener.done(tempList);
+                                    }
                                 }
                             }
                         }).build();
@@ -197,7 +296,7 @@ public class GenelUtil {
 
         try {
             JSONObject jsonObject2 = new JSONObject();
-            jsonObject2.put("seenList",array.subList(Math.max(array.size()-1000,0),array.size()));
+            jsonObject2.put("seenList",array.subList(Math.max(array.size()-5000,0),array.size()));
             SharedPreferences.Editor editor = pref.edit();
 
             editor.putString("list",jsonObject2.toString());
@@ -894,6 +993,7 @@ public class GenelUtil {
 
 
     public static boolean isAlive(Activity activity){
+        if(activity == null) return false;
         return !activity.isFinishing() && !activity.isDestroyed();
     }
 
@@ -973,12 +1073,17 @@ public class GenelUtil {
                     out.write(buf, 0, len);
                 }
             } catch (Exception e) {
-                progressDialog.dismiss();
-                ToastLong(context.getString(R.string.unsupportedvideo), context);
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                    ToastLong(context.getString(R.string.unsupportedvideo),context);
+                }
             }
         }catch (Exception e){
-            progressDialog.dismiss();
-            ToastLong(context.getString(R.string.unsupportedvideo),context);
+            if(progressDialog!=null){
+                progressDialog.dismiss();
+                ToastLong(context.getString(R.string.unsupportedvideo),context);
+            }
+
         }
         finally {
             assert in != null;
@@ -1007,10 +1112,10 @@ public class GenelUtil {
         int currentNightMode = getApplicationContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
-                // Night mode is not active, we're using the light theme
+                // Night mode is not active, we"re using the light theme
                 return pref.getBoolean("nightMode",false);
             case Configuration.UI_MODE_NIGHT_YES:
-                // Night mode is active, we're using dark theme
+                // Night mode is active, we"re using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
                 return pref.getBoolean("nightMode",true);
@@ -1022,10 +1127,10 @@ public class GenelUtil {
         int currentNightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
-                // Night mode is not active, we're using the light theme
+                // Night mode is not active, we"re using the light theme
                 return pref.getBoolean("nightMode",false);
             case Configuration.UI_MODE_NIGHT_YES:
-                // Night mode is active, we're using dark theme
+                // Night mode is active, we"re using dark theme
                 return pref.getBoolean("nightMode",true);
             default:
                 return pref.getBoolean("nightMode",true);

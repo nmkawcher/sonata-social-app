@@ -55,6 +55,10 @@ import cn.jzvd.Jzvd;
 
 public class DiscoverFragment extends Fragment implements GridClick {
 
+    public DiscoverFragment() {
+
+    }
+
     private List<ListObject> list;
     private RecyclerView recyclerView;
     private DiscoverGridProfilAdapter adapter;
@@ -147,7 +151,7 @@ public class DiscoverFragment extends Fragment implements GridClick {
 
     private void getReqs(Date date,boolean isRefresh){
         HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
+        params.put("lang", GenelUtil.getCurrentCountryCode(getActivity()));
         ParseCloud.callFunctionInBackground("getDiscoverObjects", params, new FunctionCallback<HashMap>() {
             @Override
             public void done(HashMap  objects, ParseException e) {

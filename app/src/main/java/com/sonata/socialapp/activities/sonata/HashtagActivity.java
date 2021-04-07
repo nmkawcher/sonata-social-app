@@ -368,7 +368,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
-                            list.clear();
+                            HashtagActivity.this.list.clear();
                             adapter.notifyDataSetChanged();
 
                         }

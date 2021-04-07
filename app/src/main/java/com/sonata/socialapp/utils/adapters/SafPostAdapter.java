@@ -412,7 +412,7 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
                 if(!description.equals("")){
                     if(!holder.postdesc.getPostId().equals(post.getObjectId())){
                         holder.postdesc.setPostId(post.getObjectId());
-                        holder.postdesc.setMaxLines(3);
+                        holder.postdesc.setMaxLines(1);
                     }
                     holder.postdesc.setLinkText(description);
                     holder.postdesc.setVisibility(View.VISIBLE);
@@ -1090,9 +1090,9 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
                         }
                         else if(postdesc.getLineCount()<=postdesc.getMaxLines()){
-                            postdesc.setMaxLines(3);
+                            postdesc.setMaxLines(1);
                             postdesc.setEllipsize(null);
-                            if(postdesc.getLineCount()>3){
+                            if(postdesc.getLineCount()>1){
                                 if(readMore!=null){
                                     readMore.setVisibility(View.VISIBLE);
                                 }
@@ -1123,9 +1123,9 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
                         }
                         else if(postdesc.getLineCount()<=postdesc.getMaxLines()){
-                            postdesc.setMaxLines(3);
+                            postdesc.setMaxLines(1);
                             postdesc.setEllipsize(null);
-                            if(postdesc.getLineCount()>3){
+                            if(postdesc.getLineCount()>1){
                                 if(readMore!=null){
                                     readMore.setVisibility(View.VISIBLE);
                                 }

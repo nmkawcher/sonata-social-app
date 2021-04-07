@@ -61,11 +61,10 @@ import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.CommentAdapterClick;
+import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import com.vincan.medialoader.DownloadManager;
-import com.zxy.tiny.Tiny;
-import com.zxy.tiny.callback.FileCallback;
 
 
 import java.io.File;
@@ -1051,104 +1050,90 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
                         if(imagelayout.getVisibility()==View.VISIBLE){
                             alertDialog.setMessage(getString(R.string.preparingimage));
-                            Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-                            options.size=55;
-                            Tiny.getInstance().source(uri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
+
+                            GenelUtil.compressImage(CommentActivity.this,uri, 55, new FileCompressListener() {
                                 @Override
-                                public void callback(boolean isSuccess, String outfile, Throwable t) {
-                                    if(GenelUtil.isAlive(CommentActivity.this)){
-                                        if(!isSuccess){
-                                            alertDialog.dismiss();
-                                            GenelUtil.ToastLong(getString(R.string.error),getApplicationContext());
-                                        }
-                                        else{
+                                public void done(File file) {
+                                    ParseFile media = new ParseFile(file);
+                                    media.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            if(GenelUtil.isAlive(CommentActivity.this)){
+                                                HashMap<String, Object> params = new HashMap<String, Object>();
+                                                params.put("text", commenttext.getText().toString().trim());
+                                                params.put("post",post.getObjectId());
+                                                List<ParseFile> luna = new ArrayList<>();
+                                                luna.add(media);
+                                                params.put("medialist",luna);
+                                                //params.put("media",media);
+                                                ParseCloud.callFunctionInBackground("commentImage", params, new FunctionCallback<HashMap>() {
+                                                    @Override
+                                                    public void done(HashMap postID, ParseException e) {
+                                                        if(!CommentActivity.this.isFinishing()&&!CommentActivity.this.isDestroyed()){
+                                                            alertDialog.dismiss();
+                                                            if(e==null){
 
-                                            ParseFile media = new ParseFile(new File(outfile));
-                                            media.saveInBackground(new SaveCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if(GenelUtil.isAlive(CommentActivity.this)){
-                                                        HashMap<String, Object> params = new HashMap<String, Object>();
-                                                        params.put("text", commenttext.getText().toString().trim());
-                                                        params.put("post",post.getObjectId());
-                                                        List<ParseFile> luna = new ArrayList<>();
-                                                        luna.add(media);
-                                                        params.put("medialist",luna);
-                                                        //params.put("media",media);
-                                                        ParseCloud.callFunctionInBackground("commentImage", params, new FunctionCallback<HashMap>() {
-                                                            @Override
-                                                            public void done(HashMap postID, ParseException e) {
-                                                                if(!CommentActivity.this.isFinishing()&&!CommentActivity.this.isDestroyed()){
-                                                                    alertDialog.dismiss();
-                                                                    if(e==null){
+                                                                if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
+                                                                    list.remove(list.size()-1);
+                                                                }
+                                                                if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
+                                                                    list.remove(list.size()-1);
+                                                                }
+                                                                imageCancel.performClick();
+                                                                list.add((Comment) postID.get("comment"));
 
-                                                                        if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
-                                                                            list.remove(list.size()-1);
-                                                                        }
-                                                                        if(list.get(list.size()-1).getString("type").equals("seesimilar")||list.get(list.size()-1).getString("type").equals("load")||list.get(list.size()-1).getString("type").equals("boş")){
-                                                                            list.remove(list.size()-1);
-                                                                        }
-                                                                        imageCancel.performClick();
-                                                                        list.add((Comment) postID.get("comment"));
-
-                                                                        post.increment("commentnumber");
-                                                                        adapter.notifyDataSetChanged();
-                                                                        recyclerView.scrollToPosition(list.size()-1);
-                                                                        alertDialog.dismiss();
-                                                                        GenelUtil.hideKeyboard(CommentActivity.this);
-                                                                        commenttext.setText("");
-                                                                        commenttext.clearFocus();
+                                                                post.increment("commentnumber");
+                                                                adapter.notifyDataSetChanged();
+                                                                recyclerView.scrollToPosition(list.size()-1);
+                                                                alertDialog.dismiss();
+                                                                GenelUtil.hideKeyboard(CommentActivity.this);
+                                                                commenttext.setText("");
+                                                                commenttext.clearFocus();
 
 
+                                                            }
+                                                            else{
+                                                                if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
+                                                                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                                                    if (notificationManager != null) {
+                                                                        notificationManager.cancelAll();
+                                                                    }
+                                                                    ParseUser.logOut();
+                                                                    Intent intent = new Intent(CommentActivity.this, LoginActivity.class);
+                                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                }
+                                                                else{
+                                                                    if(e.getMessage().equals("CommentsDisabled")){
+                                                                        GenelUtil.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
                                                                     }
                                                                     else{
-                                                                        if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
-                                                                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                                                            if (notificationManager != null) {
-                                                                                notificationManager.cancelAll();
-                                                                            }
-                                                                            ParseUser.logOut();
-                                                                            Intent intent = new Intent(CommentActivity.this, LoginActivity.class);
-                                                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                            startActivity(intent);
-                                                                            finish();
-                                                                        }
-                                                                        else{
-                                                                            if(e.getMessage().equals("CommentsDisabled")){
-                                                                                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
-                                                                            }
-                                                                            else{
-                                                                                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
-                                                                            }
-                                                                        }
+                                                                        GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
                                                                     }
                                                                 }
                                                             }
-                                                        });
+                                                        }
                                                     }
-                                                }
-                                            }, new ProgressCallback() {
-                                                @Override
-                                                public void done(Integer percentDone) {
-                                                    if(GenelUtil.isAlive(CommentActivity.this)){
-                                                        alertDialog.setMessage(getString(R.string.uploading)+" ("+percentDone+"%)");
-                                                    }
-                                                }
-                                            });
-
-
+                                                });
+                                            }
                                         }
-                                    }
+                                    }, new ProgressCallback() {
+                                        @Override
+                                        public void done(Integer percentDone) {
+                                            if(GenelUtil.isAlive(CommentActivity.this)){
+                                                alertDialog.setMessage(getString(R.string.uploading)+" ("+percentDone+"%)");
+                                            }
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void error(String message) {
+                                    alertDialog.dismiss();
+                                    GenelUtil.ToastLong(getString(R.string.error),getApplicationContext());
                                 }
                             });
-
-
-
-
-
-
-
-
                         }
                         else{
 

@@ -154,6 +154,84 @@
 
     </style>
 
+
+    <style name="ThemeDayForRed" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="android:editTextColor">@color/siyahyazıgunduz</item>
+
+        <item name="android:textColor">#808283</item>
+
+        <item name="android:textColorHint">#808283</item>
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="toolbarcolor">@color/toolbarcolorgunduz</item>
+
+        <item name="siyahyazı">@color/siyahyazıgunduz</item>
+
+        <item name="recyclerbackground">@color/recyclerbackgroundgunduz</item>
+
+        <item name="ayracrenk">@color/ayracgunduz</item>
+
+        <item name="beyazbackground">@color/beyazbackgroundgunduz</item>
+
+        <item name="tersbeyazbackground">@color/tersbeyazbackgroundgunduz</item>
+
+        <item name="linkcercevecolor">@color/linkcercevegunduz</item>
+
+        <item name="icback">@drawable/ic_back</item>
+
+        <item name="icpin">@drawable/ic_pin</item>
+
+        <item name="icsettings">@drawable/ic_settings</item>
+
+        <item name="bottombartint">@drawable/bottom_bar_tint</item>
+
+        <item name="selectposttint">@drawable/select__post_tint</item>
+
+        <item name="selectbanner">@drawable/ic_select_banner_day</item>
+
+
+        <item name="postoptions">@drawable/ic_post_options</item>
+
+        <item name="icreload">@drawable/ic_reload</item>
+
+        <item name="tersicreload">@drawable/ic_reload_night</item>
+
+        <item name="iccancel2">@drawable/ic_cancel_2_day</item>
+
+        <item name="icsearch">@drawable/ic_search_day</item>
+
+        <item name="icadd">@drawable/ic_add_day</item>
+
+        <item name="date">@drawable/ic_date</item>
+
+        <item name="icmember">@drawable/ic_member_day</item>
+
+        <item name="icprivate">@drawable/ic_private_day</item>
+
+        <item name="icadmin">@drawable/ic_admin_day</item>
+
+        <item name="icarrowdown">@drawable/ic_arrow_down_day</item>
+
+        <item name="icmessage">@drawable/ic_message_day</item>
+        <item name="icsend">@drawable/ic_send_day</item>
+
+        <item name="mesajownerbackground">@color/mesajownergunduz</item>
+
+
+        <item name="android:statusBarColor">@color/colorRed</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:navigationBarColor">@color/white</item>
+
+
+    </style>
+
     <style name="AppTheme.Draggable" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowContentOverlay">@null</item>

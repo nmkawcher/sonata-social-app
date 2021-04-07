@@ -44,7 +44,9 @@ import q.rorbin.badgeview.QBadgeView;
 
 public class NotifFragment extends Fragment implements NotifRecyclerView {
 
+    public NotifFragment() {
 
+    }
     List<Notif> list;
     RecyclerView recyclerView;
     private boolean postson=false;

@@ -15,7 +15,6 @@ import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.Notif;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
-import com.zxy.tiny.Tiny;
 
 
 public class MyApp extends Application {
@@ -49,7 +48,6 @@ public class MyApp extends Application {
                     AppCompatDelegate.MODE_NIGHT_NO);
         }
 
-        Tiny.getInstance().init(this);
 
 
 
@@ -70,6 +68,8 @@ public class MyApp extends Application {
                 .build());
 
     }
+
+
 
 
 }

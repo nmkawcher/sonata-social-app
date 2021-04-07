@@ -49,14 +49,13 @@ import com.sonata.socialapp.utils.adapters.MentionAdapter;
 import com.sonata.socialapp.utils.adapters.UploadPostAdapter;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.classes.UploadObject;
+import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.sonata.socialapp.utils.interfaces.UploadPostClick;
 import com.sonata.socialapp.utils.interfaces.VideoCompressListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
-import com.zxy.tiny.Tiny;
-import com.zxy.tiny.callback.FileCallback;
 
 
 import java.io.File;
@@ -76,9 +75,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
     Uri uri;
     List<UploadObject> list;
     RecyclerView recyclerView;
-    private LinearLayoutManager linearLayoutManager;
     UploadPostAdapter adapter;
-    private boolean loading=true;
     private long mLastClickTime = 0;
     private final int imagerequestcode = 13271;
     private final int videorequestcode = 24381;
@@ -385,8 +382,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                         progressDialog.show();
                         progressDialog.setMessage(getString(R.string.preparingimage));
 
-                        Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-                        options.size=155;
+
 
                         List<Uri> uriList = new ArrayList<>();
                         for(int i = 0;i<list.size();i++){
@@ -394,7 +390,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                 uriList.add(list.get(i).getUri());
                             }
                         }
-                        compressImages(uriList,0,new ArrayList<File>(),options);
+                        compressImages(uriList,0,new ArrayList<File>());
 
 
                     }
@@ -415,30 +411,28 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
         });
     }
 
-    private void compressImages(List<Uri> uriList,int current,List<File> fileList,Tiny.FileCompressOptions options){
-        Tiny.getInstance().source(uriList.get(current)).asFile().withOptions(options).compress(new FileCallback() {
+    private void compressImages(List<Uri> uriList,int current,List<File> fileList){
+        GenelUtil.compressImage(this,uriList.get(current), 155, new FileCompressListener() {
             @Override
-            public void callback(boolean isSuccess, String outfile, Throwable t) {
-                //return the compressed file path
-                if(GenelUtil.isAlive(UploadActivity.this)){
-                    if(!isSuccess){
-                        Log.e("TAG", "callback: ", t);
-                        toast(getString(R.string.error));
-                        progressDialog.dismiss();
-                    }
-                    else{
-                        fileList.add(new File(outfile));
-                        if(current==uriList.size()-1){
-                            //Sıkıştırma bitmiş. Yüklemeye geç
-                            uploadImages(fileList,0,new ArrayList<ParseFile>());
-                        }
-                        else{
-                            compressImages(uriList,current+1,fileList,options);
-                        }
-                    }
+            public void done(File file) {
+                fileList.add(file);
+                if(current==uriList.size()-1){
+                    //Sıkıştırma bitmiş. Yüklemeye geç
+                    uploadImages(fileList,0,new ArrayList<ParseFile>());
+                }
+                else{
+                    compressImages(uriList,current+1,fileList);
                 }
             }
+
+            @Override
+            public void error(String message) {
+                Log.e("TAG", "callback: "+ message);
+                toast(getString(R.string.error));
+                progressDialog.dismiss();
+            }
         });
+
 
     }
 

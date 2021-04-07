@@ -7,215 +7,155 @@
     tools:context=".fragments.HomeFragment">
 
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/z_toolbar"
         android:layout_width="match_parent"
-        android:id="@+id/profile_main_layout"
-        android:layout_height="match_parent"
-        tools:context=".fragments.ProfilFragment">
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="?attr/toolbarcolor"
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
+        app:contentInsetStart="10dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_alignParentStart="true"
+                android:textColor="?attr/siyahyazı"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:text="@string/tab_home"
+                android:gravity="start"
+                android:layout_centerVertical="true"
+                android:id="@+id/profileusernametext"
+                />
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
+
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
                 android:layout_width="match_parent"
-                android:background="?attr/recyclerbackground"
-
-                android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
+                android:layout_height="34dp"
+                android:layout_marginStart="20dp"
+                app:corner_radius="10dp"
+                android:layout_centerVertical="true"
+                android:padding="1dp"
+                android:background="@drawable/search_backgroud"
+                android:layout_toStartOf="@+id/homeaddimage"
+                android:layout_marginEnd="8dp"
+                android:layout_toEndOf="@id/profileusernametext">
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_marginTop="50dp"
-                    android:background="?attr/recyclerbackground"
-                    android:layout_height="40dp">
-
-                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="5dp"
-                        android:id="@+id/settingsaccountypespinner"/>
-
-
-
-
-
-
-
-                </RelativeLayout>
-
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/z_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:elevation="4dp"
-                    android:layout_alignParentTop="true"
-                    android:background="?attr/toolbarcolor"
-
-                    app:contentInsetStart="10dp"
-                    app:layout_collapseMode="pin">
-
+                    android:id="@+id/homesearchripple"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:padding="5dp"
+                            android:src="@drawable/ic_search_in_bar"
+                            android:id="@+id/searchicon"/>
                         <TextView
-                            android:layout_marginStart="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="19sp"
-                            android:layout_alignParentStart="true"
-                            android:textColor="?attr/siyahyazı"
-                            android:maxLines="1"
-                            android:textStyle="bold"
-                            android:text="@string/tab_home"
-                            android:gravity="start"
+                            android:layout_toEndOf="@id/searchicon"
                             android:layout_centerVertical="true"
-                            android:id="@+id/profileusernametext"
-                            />
-
-
-                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="34dp"
-                            android:layout_marginStart="20dp"
-                            app:corner_radius="10dp"
-                            android:layout_centerVertical="true"
-                            android:padding="1dp"
-                            android:background="@drawable/search_backgroud"
-                            android:layout_toStartOf="@+id/homeaddimage"
-                            android:layout_marginEnd="8dp"
-                            android:layout_toEndOf="@id/profileusernametext">
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:id="@+id/homesearchripple"
-                                android:layout_height="match_parent"
-                                android:background="?attr/selectableItemBackground">
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <ImageView
-                                        android:layout_width="34dp"
-                                        android:layout_height="34dp"
-                                        android:layout_marginStart="5dp"
-                                        android:layout_alignParentStart="true"
-                                        android:layout_centerVertical="true"
-                                        android:padding="5dp"
-                                        android:src="@drawable/ic_search_in_bar"
-                                        android:id="@+id/searchicon"/>
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_toEndOf="@id/searchicon"
-                                        android:layout_centerVertical="true"
-                                        android:layout_marginStart="10dp"
-                                        android:text="@string/search"/>
-                                </RelativeLayout>
-                            </RelativeLayout>
-
-                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
-
-                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            app:corner_radius="10dp"
-                            android:layout_centerVertical="true"
-                            android:padding="1dp"
-                            android:background="@drawable/search_backgroud"
-                            android:layout_toStartOf="@+id/homemessageimage"
-                            android:layout_marginEnd="8dp"
-                            android:id="@+id/homeaddimage">
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:id="@+id/homeaddripple"
-                                android:layout_height="match_parent"
-                                android:background="?attr/selectableItemBackground">
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:padding="2dp"
-                                    android:layout_height="match_parent"
-                                    android:src="?attr/icadd"/>
-                            </RelativeLayout>
-
-                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
-
-                        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            app:corner_radius="10dp"
-                            android:layout_centerVertical="true"
-                            android:padding="1dp"
-                            android:background="@drawable/search_backgroud"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="8dp"
-                            android:id="@+id/homemessageimage">
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:id="@+id/homemessageripple"
-                                android:layout_height="match_parent"
-                                android:background="?attr/selectableItemBackground">
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:padding="4dp"
-                                    android:layout_height="match_parent"
-                                    android:src="?attr/icsend"/>
-                            </RelativeLayout>
-
-                        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
-
+                            android:layout_marginStart="10dp"
+                            android:text="@string/search"/>
                     </RelativeLayout>
+                </RelativeLayout>
 
-                </androidx.appcompat.widget.Toolbar>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                app:corner_radius="10dp"
+                android:layout_centerVertical="true"
+                android:padding="1dp"
+                android:background="@drawable/search_backgroud"
+                android:layout_toStartOf="@+id/homemessageimage"
+                android:layout_marginEnd="8dp"
+                android:id="@+id/homeaddimage">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/homeaddripple"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="2dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icadd"/>
+                </RelativeLayout>
 
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
-        </com.google.android.material.appbar.AppBarLayout>
+            <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                app:corner_radius="10dp"
+                android:layout_centerVertical="true"
+                android:padding="1dp"
+                android:background="@drawable/search_backgroud"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:id="@+id/homemessageimage">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/homemessageripple"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:padding="4dp"
+                        android:layout_height="match_parent"
+                        android:src="?attr/icsend"/>
+                </RelativeLayout>
 
+            </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/homeFragmentSwipeRefreshLayout"
+        android:layout_below="@+id/z_toolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/homeFragmentSwipeRefreshLayout"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_below="@+id/z_toolbar">
+            android:background="?attr/recyclerbackground"
+            android:paddingTop="6dp"
+            android:clipToPadding="false"
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:background="?attr/recyclerbackground"
-                android:paddingTop="6dp"
-                android:clipToPadding="false"
+            android:id="@+id/mainrecyclerview"
+            android:layout_height="match_parent"/>
 
-                android:id="@+id/mainrecyclerview"
-                android:layout_height="match_parent"/>
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/homeprogressbar"
-            android:layout_gravity="center"
-            android:indeterminate="true"/>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/homeprogressbar"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"/>
 
-
-
-
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </RelativeLayout>

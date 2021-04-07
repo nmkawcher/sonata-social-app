@@ -356,7 +356,7 @@ public class SavedPostsActivity extends AppCompatActivity implements RecyclerVie
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
-                            list.clear();
+                            SavedPostsActivity.this.list.clear();
                             adapter.notifyDataSetChanged();
 
                         }

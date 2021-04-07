@@ -228,6 +228,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         messageClick.onTextClick(getAdapterPosition(),linkType,matchedText);
                     }
                 });
+                text.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        messageClick.onTextLongClick(getAdapterPosition());
+                        return false;
+                    }
+                });
             }
             if(profilephoto != null){
                 profilephoto.setOnClickListener(new View.OnClickListener() {
@@ -243,6 +250,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public static interface MessageClick {
         void onTextClick(int position,int clickType,String text);
+        void onTextLongClick(int position);
         void onProfileClick(int position);
     }
 

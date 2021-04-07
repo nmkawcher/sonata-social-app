@@ -34,9 +34,8 @@ import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.SonataUser;
+import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.zxy.tiny.Tiny;
-import com.zxy.tiny.callback.FileCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -182,63 +181,56 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void prepareImage(){
 
-        Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-        options.size=55;
-        Tiny.getInstance().source(uri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
+        GenelUtil.compressImage(this,uri, 55, new FileCompressListener() {
             @Override
-            public void callback(boolean isSuccess, String outfile, Throwable t) {
-                if(GenelUtil.isAlive(EditProfileActivity.this)){
-                    if(!isSuccess){
-                        progressDialog.dismiss();
-                        GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
-                    }
-                    else{
+            public void done(File file) {
 
-                        File file = new File(outfile);
-                        ParseFile media = new ParseFile(file);
-                        media.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if(e==null){
-                                    if(GenelUtil.isAlive(EditProfileActivity.this)){
-                                        progressDialog.setMessage(getString(R.string.finishingup));
-                                        HashMap<String, Object> params = new HashMap<String, Object>();
-                                        params.put("pp", media);
-                                        params.put("name", name.getText().toString().trim());
-                                        params.put("bio", bio.getText().toString().trim());
-                                        ParseCloud.callFunctionInBackground("updateOwnProfile", params, new FunctionCallback<HashMap>() {
-                                            @Override
-                                            public void done(HashMap object, ParseException e) {
-                                                if(e==null){
-                                                    GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) object.get("user")),EditProfileActivity.this);
-                                                    progressDialog.dismiss();
-                                                    finish();
-                                                }
-                                                else{
-                                                    Log.e("error",e.getMessage());
-                                                    progressDialog.dismiss();
-                                                }
-                                            }
-                                        });
+                ParseFile media = new ParseFile(file);
+                media.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e==null){
+                            if(GenelUtil.isAlive(EditProfileActivity.this)){
+                                progressDialog.setMessage(getString(R.string.finishingup));
+                                HashMap<String, Object> params = new HashMap<String, Object>();
+                                params.put("pp", media);
+                                params.put("name", name.getText().toString().trim());
+                                params.put("bio", bio.getText().toString().trim());
+                                ParseCloud.callFunctionInBackground("updateOwnProfile", params, new FunctionCallback<HashMap>() {
+                                    @Override
+                                    public void done(HashMap object, ParseException e) {
+                                        if(e==null){
+                                            GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) object.get("user")),EditProfileActivity.this);
+                                            progressDialog.dismiss();
+                                            finish();
+                                        }
+                                        else{
+                                            Log.e("error",e.getMessage());
+                                            progressDialog.dismiss();
+                                        }
                                     }
-                                }
-                                else{
-                                    progressDialog.dismiss();
-                                    GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
-                                }
+                                });
                             }
-                        }, new ProgressCallback() {
-                            @Override
-                            public void done(Integer percentDone) {
-                                if(GenelUtil.isAlive(EditProfileActivity.this)){
-                                    progressDialog.setMessage(getString(R.string.uploading)+" ("+percentDone+"%)");
-                                }
-                            }
-                        });
-
-
+                        }
+                        else{
+                            progressDialog.dismiss();
+                            GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                        }
                     }
-                }
+                }, new ProgressCallback() {
+                    @Override
+                    public void done(Integer percentDone) {
+                        if(GenelUtil.isAlive(EditProfileActivity.this)){
+                            progressDialog.setMessage(getString(R.string.uploading)+" ("+percentDone+"%)");
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void error(String message) {
+                progressDialog.dismiss();
+                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
             }
         });
 

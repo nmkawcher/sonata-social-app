@@ -423,10 +423,21 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
     @Override
     public void onBackPressed() {
-        if(listPostLayout.getVisibility()==View.VISIBLE){
-            Jzvd.releaseAllVideos();
-            mainLayout.setVisibility(View.VISIBLE);
-            listPostLayout.setVisibility(View.INVISIBLE);
+        if(listPostLayout!=null){
+            if(listPostLayout.getVisibility()==View.VISIBLE){
+                Jzvd.releaseAllVideos();
+                mainLayout.setVisibility(View.VISIBLE);
+                listPostLayout.setVisibility(View.INVISIBLE);
+            }
+            else{
+                if(this.isTaskRoot() || actionIntent){
+                    startActivity(new Intent(this,MainActivity.class));
+                    finish();
+                }
+                else{
+                    super.onBackPressed();
+                }
+            }
         }
         else{
             if(this.isTaskRoot() || actionIntent){
@@ -605,6 +616,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                 if(list.size()==0){
                     HashMap<String, Object> params = new HashMap<String, Object>();
                     params.put("userID",user.getObjectId());
+                    params.put("lang", GenelUtil.getCurrentCountryCode(this));
                     ParseCloud.callFunctionInBackground("getSuggestionProfiles", params, new FunctionCallback<HashMap>() {
                         @Override
                         public void done(HashMap  objects, ParseException e) {

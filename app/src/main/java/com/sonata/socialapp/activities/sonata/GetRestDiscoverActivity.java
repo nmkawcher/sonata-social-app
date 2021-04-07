@@ -300,7 +300,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                 params.put("date",date);
             }
             params.put("seenList",seenList);
-            params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
+            params.put("lang", GenelUtil.getCurrentCountryCode(this));
             params.put("text",hashtag);
             ParseCloud.callFunctionInBackground("getRestOfTheDiscoverPost", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
@@ -435,7 +435,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
-                            list.clear();
+                            GetRestDiscoverActivity.this.list.clear();
                             adapter.notifyDataSetChanged();
 
                         }

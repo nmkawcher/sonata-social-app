@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.ThemeDay);
+        setTheme(R.style.ThemeDayForRed);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(e==null){
                                 if(user!=null){
                                     GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),LoginActivity.this);
-                                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                    startActivity(new Intent(LoginActivity.this,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                     if(getIntent() != null && getIntent().getStringExtra("deplinkintent") != null){
                                         String text = getIntent().getStringExtra("deplinkintent");
                                         String newS = text.substring(text.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
@@ -201,24 +201,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void become(String token){
-        SonataUser.becomeInBackground(token, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if(e==null){
-                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                    progressDialog.dismiss();
 
-                    finish();
-                }
-                else{
-                    if(e.getCode()==ParseException.CONNECTION_FAILED){
-                        become(token);
-                    }
-                }
-            }
-        });
-    }
 
     boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();

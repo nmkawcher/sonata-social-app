@@ -25,9 +25,8 @@ import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.EditProfileActivity;
 import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.Group;
+import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.zxy.tiny.Tiny;
-import com.zxy.tiny.callback.FileCallback;
 
 import java.io.File;
 import java.util.HashMap;
@@ -101,28 +100,24 @@ public class CreateGroupActivity extends AppCompatActivity {
 
     private void prepareImage(Uri uri,int tr){
         progressDialog.show();
-        Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-        options.size=55;
-        Tiny.getInstance().source(uri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
+        GenelUtil.compressImage(this,uri, 55, new FileCompressListener() {
             @Override
-            public void callback(boolean isSuccess, String outfile, Throwable t) {
-                if(GenelUtil.isAlive(CreateGroupActivity.this)){
-                    if(!isSuccess){
-                        if(tr<5){
-                            prepareImage(uri,tr+1);
-                        }
-                        else{
-                            progressDialog.dismiss();
-                            GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
-                        }
+            public void done(File file) {
+                uploadImage(file,0);
+            }
 
-                    }
-                    else{
-                        uploadImage(new File(outfile),0);
-                    }
+            @Override
+            public void error(String message) {
+                if(tr<5){
+                    prepareImage(uri,tr+1);
+                }
+                else{
+                    progressDialog.dismiss();
+                    GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
                 }
             }
         });
+
     }
 
     private void uploadImage(File file ,int tr){

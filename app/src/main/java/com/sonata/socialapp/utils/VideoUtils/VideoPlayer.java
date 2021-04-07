@@ -70,6 +70,7 @@ public class VideoPlayer extends JzvdStd {
     public void setMute(){
         if(!MyApp.ses){
             mediaInterface.setVolume(1,1);
+
             MyApp.ses=true;
             fullscreenButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_unmute));
         }

@@ -94,6 +94,7 @@ public class FollowSuggestActivity extends AppCompatActivity implements BlockedA
             if(suggestList != null){
                 params.put("list",suggestList);
             }
+            params.put("lang", GenelUtil.getCurrentCountryCode(this));
             ParseCloud.callFunctionInBackground("getSuggestsFromList", params, new FunctionCallback<HashMap>() {
                 @Override
                 public void done(HashMap  objects, ParseException e) {

@@ -139,11 +139,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //startActivity(new Intent(this,ChooseCategoryActivity.class));
+
         MyApp.ses=false;
         //GenelUtil.ToastLong(this,Build.MODEL);
-        if(getIntent() != null && getIntent().getBooleanExtra("newregister",false)){
-            startActivity(new Intent(this,EditProfileActivity.class));
-        }
+        //if(getIntent() != null && getIntent().getBooleanExtra("newregister",false)){
+        //    startActivity(new Intent(this,EditProfileActivity.class));
+        //}
         HashMap<String,String> params = new HashMap<>();
         ParseCloud.callFunctionInBackground("refreshOwnProfile", params, new FunctionCallback<HashMap>() {
             @Override
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         String token = task.getResult();
                         HashMap<String,String> hash = new HashMap<>();
                         hash.put("token",token);
-                        hash.put("lang", Locale.getDefault().getLanguage());
+                        hash.put("lang", GenelUtil.getCurrentCountryCode(MainActivity.this));
                         ParseCloud.callFunctionInBackground("saveUserDeviceToken",hash);
 
                     }

@@ -41,6 +41,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.material.tabs.TabLayout;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -84,7 +85,9 @@ import q.rorbin.badgeview.QBadgeView;
 
 public class HomeFragment extends Fragment implements RecyclerViewClick, BlockedAdapterClick {
 
+    public HomeFragment() {
 
+    }
     private List<ListObject> list;
     private List<UnifiedNativeAd> listreklam;
     private RecyclerView recyclerView;
@@ -98,11 +101,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener;
     private ProgressBar progressBar;
     private RelativeLayout search,upload,messages;
-    Spinner spinner;
-    AdapterView.OnItemSelectedListener onItemSelectedListener;
-    int spinnerPosition;
     RoundKornerRelativeLayout messageLayout;
     List<String> seenList;
+    int hmt = 0;
 
 
     @Override
@@ -127,17 +128,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
 
         seenList = GenelUtil.getSeenList(getActivity());
-        spinner = view.findViewById(R.id.settingsaccountypespinner);
-        List<String> listspinner = new ArrayList<>();
-
-        listspinner.add(getString(R.string.suggestions));
-        listspinner.add(getString(R.string.followings));
-
-        ArrayAdapter<String> adapterspinner = new ArrayAdapter<String>(getContext(),R.layout.spinner_item_home,listspinner);
-        spinner.setAdapter(adapterspinner);
-
-
-
 
         linearLayoutManager=new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -232,13 +222,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
                     if(linearLayoutManager.findLastVisibleItemPosition()>(list.size()-4)&&!loading&&!postson){
                         loading=true;
-                        if(spinner.getSelectedItemPosition() == 1){
-                            get(date,false);
-                        }
-                        else if(spinner.getSelectedItemPosition() == 0){
-                            getInteresting(false);
-                        }
-                        spinner.setEnabled(false);
+                        get(date,false);
                     }
 
 
@@ -280,35 +264,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         });
 
 
-        onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, "onItemSelected: "+listspinner.get(position));
-                spinner.setEnabled(false);
-                if(position == 1){
-                    list.clear();
-                    adapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.VISIBLE);
-                    get(null,true);
-                }
-                else if(position == 0){
-                    list.clear();
-                    adapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.VISIBLE);
-                    getInteresting(false);
-                    //spinner.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
-
-        spinner.setOnItemSelectedListener(onItemSelectedListener);
-        spinner.setEnabled(false);
-
+        get(null,false);
         //((MainActivity) Objects.requireNonNull(getActivity())).startExploreTab();
 
 
@@ -349,25 +305,30 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         if(date!=null){
             params.put("date", date);
         }
+        params.put("seenList",seenList);
+        params.put("hmt",hmt);
+        params.put("lang", GenelUtil.getCurrentCountryCode(getActivity()));
         ParseCloud.callFunctionInBackground("getHomeObjects", params, (FunctionCallback<HashMap>) (objects, e) -> {
             Log.e("done","doneGet");
             if(getActive()){
                 if(e==null){
+                    hmt++;
+                    //if(tabLayout.getSelectedTabPosition() != 1)return;
                     Log.e("done","doneGetErrorNull");
 
 
-                    getAds((List<Post>) objects.get("posts")
+                    getAds(objects.get("suggestions") != null ? (List<Post>) objects.get("suggestions") : new ArrayList<>()
+                            ,(List<Post>) objects.get("posts")
                             ,objects.get("users") != null ? (List<SonataUser>) objects.get("users") : new ArrayList<>()
                             ,(boolean) objects.get("hasmore")
                             ,(Date) objects.get("date")
-                            ,isRefresh);
+                            ,isRefresh,1);
 
                     //initList(objects);
 
 
                 }
                 else{
-                    spinner.setEnabled(true);
                     Log.e("done","doneGetError "+e.getCode());
 
                     if(e.getCode()==ParseException.CONNECTION_FAILED){
@@ -406,9 +367,11 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
             params.put("date", date);
         }
         params.put("seenList",seenList);
-        params.put("lang", ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString());
+        params.put("hmt",hmt);
+        params.put("lang", GenelUtil.getCurrentCountryCode(getActivity()));
         ParseCloud.callFunctionInBackground("getHomeDiscoverObjects", params, (FunctionCallback<HashMap>) (objects, e) -> {
             Log.e("done","doneGet");
+            hmt++;
             if(getActive()){
                 if(e==null){
                     Log.e("done","doneGetErrorNull");
@@ -417,18 +380,18 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                     List<Post> tList = (List<Post>) objects.get("posts");
 
                     Collections.shuffle(tList);
-                    getAds(tList
+                    getAds(objects.get("suggestions") != null ? (List<Post>) objects.get("suggestions") : new ArrayList<>()
+                            ,tList
                             ,objects.get("users") != null ? (List<SonataUser>) objects.get("users") : new ArrayList<>()
                             ,true
                             ,(Date) objects.get("date")
-                            ,isRefresh);
+                            ,isRefresh,0);
 
                     //initList(objects);
 
 
                 }
                 else{
-                    spinner.setEnabled(true);
                     Log.e("done","doneGetError "+e.getCode());
 
                     if(e.getCode()==ParseException.CONNECTION_FAILED){
@@ -470,13 +433,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         if(!loading){
             loading=true;
             postson=false;
-            if(spinner.getSelectedItemPosition()==1){
-                get(null,true);
-            }
-            else if(spinner.getSelectedItemPosition()==0){
-                getInteresting(true);
-            }
-            spinner.setEnabled(false);
+            get(null,true);
         }
     }
 
@@ -491,11 +448,13 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
 
 
-    private void initList(List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
+    private void initList(List<Post> suggestions,List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
         if(getActive()){
             Collections.shuffle(users);
+            objects.addAll(suggestions);
+            Collections.shuffle(objects);
             Log.e("done","InitListActive");
             postson =!hasmore;
             this.date = date;
@@ -517,6 +476,25 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                             list.remove(in);
                             adapter.notifyItemRemoved(in);
                         }
+
+                    }
+                }
+                if(suggestions.size()>0){
+                    ListObject postas = new ListObject();
+                    postas.setType("suggest");
+                    list.add(postas);
+                    for(int i=0;i<suggestions.size();i++){
+
+                        ListObject post = new ListObject();
+                        post.setType(suggestions.get(i).getType());
+                        Post p2 = suggestions.get(i);
+                        p2.setLikenumber(p2.getLikenumber2());
+                        p2.setCommentnumber(p2.getCommentnumber2());
+                        p2.setSaved(p2.getSaved2());
+                        p2.setCommentable(p2.getCommentable2());
+                        p2.setLiked(p2.getLiked2());
+                        post.setPost(p2);
+                        list.add(post);
 
                     }
                 }
@@ -542,7 +520,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                 Log.e("done","adapterNotified");
 
                 progressBar.setVisibility(View.INVISIBLE);
-                spinner.setEnabled(true);
 
             }
             else{
@@ -565,16 +542,18 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                             list.add(reklam);
                         }
                     }
-                    ListObject post = new ListObject();
-                    post.setType(objects.get(i).getType());
-                    Post p2 = objects.get(i);
-                    p2.setLikenumber(p2.getLikenumber2());
-                    p2.setCommentnumber(p2.getCommentnumber2());
-                    p2.setSaved(p2.getSaved2());
-                    p2.setCommentable(p2.getCommentable2());
-                    p2.setLiked(p2.getLiked2());
-                    post.setPost(p2);
-                    list.add(post);
+                    ListObject posta = new ListObject();
+                    posta.setType(objects.get(i).getType());
+                    Post p22 = objects.get(i);
+                    p22.setLikenumber(p22.getLikenumber2());
+                    p22.setCommentnumber(p22.getCommentnumber2());
+                    p22.setSaved(p22.getSaved2());
+                    p22.setCommentable(p22.getCommentable2());
+                    p22.setLiked(p22.getLiked2());
+                    posta.setPost(p22);
+                    list.add(posta);
+
+
                 }
 
                 loading =false;
@@ -605,7 +584,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
 
                 adapter.notifyItemRangeInserted(an, list.size()-an);
-                spinner.setEnabled(true);
+
                 //adapter.notifyDataSetChanged();
 
             }
@@ -614,21 +593,21 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
     }
 
-    private void getAds(List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,boolean isRefresh){
+    private void getAds(List<Post> suggestions,List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,boolean isRefresh,int tab){
         Log.e("done","doneGetAds");
         if(getActive()){
-            GenelUtil.loadAds(objects.size(),getActivity(), new com.sonata.socialapp.utils.interfaces.AdListener() {
+            GenelUtil.loadAds(objects.size()+suggestions.size(),getActivity(), new com.sonata.socialapp.utils.interfaces.AdListener() {
                 @Override
                 public void done(List<UnifiedNativeAd> list) {
                     if(GenelUtil.isAlive(getActivity())){
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
-                            list.clear();
+                            HomeFragment.this.list.clear();
                             adapter.notifyDataSetChanged();
 
                         }
-                        initList(objects,users,hasmore,date,list);
+                        initList(suggestions,objects,users,hasmore,date,list);
                     }
                     else{
                         for(int i = 0; i < list.size(); i++){

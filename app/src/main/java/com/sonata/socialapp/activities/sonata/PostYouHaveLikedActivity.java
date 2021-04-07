@@ -363,7 +363,7 @@ public class PostYouHaveLikedActivity extends AppCompatActivity implements Recyc
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
-                            list.clear();
+                            PostYouHaveLikedActivity.this.list.clear();
                             adapter.notifyDataSetChanged();
 
                         }

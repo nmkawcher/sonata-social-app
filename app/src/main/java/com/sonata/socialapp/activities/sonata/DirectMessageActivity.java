@@ -401,7 +401,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     private void connectLiveServer(Chat chat){
 
         try {
-            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://ws-server.sonatasocialapp.com/ws-server/parse/"),new OkHttp3SocketClientFactory(new OkHttpClient()));
+            parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient(new URI("wss://ws-server.sonatasocialapp.com/ws-server/parse/"));
             parseQuery = ParseQuery.getQuery(Message.class);
             parseQuery.whereEqualTo("chat",chat.getObjectId());
             parseQuery.whereEqualTo("owner",to);
@@ -460,11 +460,22 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
         if(parseLiveQueryClient != null && parseQuery != null) parseLiveQueryClient.unsubscribe(parseQuery);
     }
 
+
     @Override
     public void onTextClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        if(!isDialogShown){
+            GenelUtil.handleLinkClicks(this,text,clickType);
+        }
     }
 
+    public static boolean isDialogShown = false;
+    @Override
+    public void onTextLongClick(int position) {
+        clickCheck = System.currentTimeMillis();
+        GenelUtil.messageLongClick(list.get(position),this);
+    }
+
+    long clickCheck = 0;
     @Override
     public void onProfileClick(int position) {
         if(user!=null){

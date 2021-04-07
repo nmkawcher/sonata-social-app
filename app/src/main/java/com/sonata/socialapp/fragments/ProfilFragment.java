@@ -60,6 +60,9 @@ import static com.parse.Parse.getApplicationContext;
 
 
 public class ProfilFragment extends Fragment implements RecyclerViewClick, AccountManagerClicks {
+    public ProfilFragment() {
+
+    }
     private Date date;
 
     private List<ListObject> list;
