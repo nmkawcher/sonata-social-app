@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    android:layout_marginBottom="6dp"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="start|bottom"
+            android:layout_marginStart="5dp"
+            app:corner_radius="12.5dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_height="match_parent"
+                android:id="@+id/mesaggeProfilePhoto"
+                />
+
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="80dp"
+            android:layout_marginStart="5dp"
+            android:background="?attr/beyazbackground"
+            app:bottom_right_corner_radius="15dp"
+            app:top_right_corner_radius="15dp"
+            app:top_left_corner_radius="15dp">
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:layout_alignParentTop="true"
+                android:id="@+id/message_media"/>
+            <com.tylersuehr.socialtextview.SocialTextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/message_media"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                app:hashtagColor="@color/blue"
+                app:mentionColor="@color/blue"
+                app:urlColor="@color/blue"
+                app:linkModes="hashtag|mention|url"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:id="@+id/messageText"
+                android:textColor="?attr/siyahyazı"/>
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+    </LinearLayout>
+
+
+
+</RelativeLayout>

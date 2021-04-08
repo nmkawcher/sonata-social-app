@@ -61,6 +61,7 @@ import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.VideoUtils.VideoUtils;
 import com.sonata.socialapp.utils.adapters.SafPostAdapter;
+import com.sonata.socialapp.utils.adapters.SafPostAdapterNew;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;

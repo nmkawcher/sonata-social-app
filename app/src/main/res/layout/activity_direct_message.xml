@@ -68,7 +68,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:background="?attr/recyclerbackground"
-        android:layout_above="@+id/makecommentlayout"
+        android:layout_above="@+id/commentimagelayout"
         android:layout_below="@+id/z_toolbar"
         android:paddingTop="6dp"
         android:clipToPadding="false"
@@ -83,12 +83,89 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="gone"
+        android:background="?attr/beyazbackground"
+        android:layout_above="@+id/makecommentlayout"
+        android:id="@+id/commentimagelayout">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/notif"
+            android:id="@+id/commentimagelayouttopayrac"/>
+
+
+
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:scaleType="fitCenter"
+            android:layout_below="@+id/commentimagelayouttopayrac"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/commentimagecancel"
+            android:layout_height="120dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/commentimageview"/>
+
+
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:corner_radius="16dp"
+            android:layout_marginRight="9dp"
+            android:background="#BDBDBD"
+            android:id="@+id/commentimagecancel"
+            android:layout_centerVertical="true"
+
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_cancel"/>
+
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:id="@+id/makecommentlayout"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:background="?attr/beyazbackground"
         android:layout_height="50dp">
 
+
+        <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
+            android:layout_width="43dp"
+            app:corner_radius="21.5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="3dp"
+            android:id="@+id/addImagebuttonlayout"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_height="43dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:id="@+id/commentaddimageripple">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_add_photo"/>
+            </RelativeLayout>
+
+        </com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout>
 
 
         <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
@@ -115,12 +192,12 @@
             android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toEndOf="@+id/addImagebuttonlayout"
+            android:layout_marginLeft="5dp"
             android:layout_toStartOf="@+id/sendbuttonlayout">
 
-            <EditText
+            <com.sonata.socialapp.socialview.SocialAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:hint="@string/sendmessage"
                 android:minHeight="43dp"

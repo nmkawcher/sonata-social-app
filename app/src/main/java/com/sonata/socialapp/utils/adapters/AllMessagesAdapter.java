@@ -135,11 +135,12 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
                 }
             }
             holder.name.setText(user.getName());
+            String text = chat.getMessage().equals("_message_media_only_") ? holder.itemView.getContext().getString(R.string.photo):chat.getMessage();
             if(anan){
-                holder.message.setText(holder.itemView.getContext().getString(R.string.you)+" "+chat.getMessage());
+                holder.message.setText(holder.itemView.getContext().getString(R.string.you)+" "+text);
             }
             else{
-                holder.message.setText(chat.getMessage());
+                holder.message.setText(text);
             }
 
             holder.date.setText(DateUtils.getRelativeTimeSpanString(chat.getLastEdit().getTime(), System.currentTimeMillis(), DateUtils.FORMAT_24HOUR));

@@ -1,6 +1,7 @@
 include ':app'
 include ':library'
 include ':medialoader'
+include ':magicExoPlayer'
 
 
 

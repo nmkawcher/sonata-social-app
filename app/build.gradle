@@ -69,7 +69,7 @@ dependencies {
 
     implementation project(":library")
     implementation project(":medialoader")
-
+    implementation project(":magicExoPlayer")
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 

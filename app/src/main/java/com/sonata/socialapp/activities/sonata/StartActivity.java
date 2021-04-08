@@ -39,9 +39,8 @@ public class StartActivity extends AppCompatActivity {
         MyApp.ses=false;
 
 
-
         if(ParseUser.getCurrentUser()!=null){
-            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            MobileAds.initialize(StartActivity.this, new OnInitializationCompleteListener() {
                 @Override
                 public void onInitializationComplete(InitializationStatus initializationStatus) {
                     startActivity(new Intent(StartActivity.this,MainActivity.class));
@@ -50,10 +49,12 @@ public class StartActivity extends AppCompatActivity {
             });
         }
         else{
-            JSONArray userList = GenelUtil.getSavedUsersFinal(this);
+            JSONArray userList = GenelUtil.getSavedUsersFinal(StartActivity.this);
             asdasdas(0,userList);
 
         }
+
+
     }
 
     private void asdasdas (int a,JSONArray userList){

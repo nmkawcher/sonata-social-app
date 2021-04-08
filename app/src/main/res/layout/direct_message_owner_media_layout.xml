@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="5dp"
@@ -17,11 +17,19 @@
         app:bottom_left_corner_radius="15dp"
         app:top_right_corner_radius="15dp"
         app:top_left_corner_radius="15dp">
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:layout_alignParentTop="true"
+            android:id="@+id/message_media"/>
+
 
         <com.tylersuehr.socialtextview.SocialTextView
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_below="@+id/message_media"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"

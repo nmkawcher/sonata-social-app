@@ -109,7 +109,7 @@ public class FcmService extends FirebaseMessagingService {
                                                 .setColor(getResources().getColor(R.color.notif))
                                                 .setLargeIcon(bitmap)//a resource for your custom small icon
                                                 .setContentTitle(title) //the "title" value you sent in your notification
-                                                .setContentText(remoteMessage.getData().get("message")) //ditto
+                                                .setContentText(remoteMessage.getData().get("message").equals("_message_media_only_") ? getString(R.string.photo):remoteMessage.getData().get("message")) //ditto
                                                 .setAutoCancel(true)
                                                 .setContentIntent(pendingIntent)//dismisses the notification on click
                                                 .setSound(defaultSoundUri);

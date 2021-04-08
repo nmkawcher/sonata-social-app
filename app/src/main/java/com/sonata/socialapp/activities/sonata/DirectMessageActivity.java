@@ -1,25 +1,35 @@
 package com.sonata.socialapp.activities.sonata;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
@@ -35,6 +45,7 @@ import com.sonata.socialapp.utils.adapters.MessageAdapter;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.SonataUser;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -71,6 +82,15 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
 
     RecyclerView.OnScrollListener onScrollListener;
 
+
+    int imagerequestcode = 1111;
+    ProgressDialog alertDialog;
+    RoundKornerRelativeLayout imageCancel,addImageLayout;
+    ImageView commentimage;
+    RelativeLayout imagelayout;
+    RelativeLayout addImageRipple;
+    private long lastClick=0;
+    Uri uri;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +129,63 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
         editText = findViewById(R.id.commentedittext);
         //chat = getIntent() != null ? getIntent().getParcelableExtra("chat") : null;
         bottomCommentLayout.setVisibility(View.INVISIBLE);
+
+        alertDialog = new ProgressDialog(this);
+        alertDialog.setCancelable(false);
+
+        addImageLayout=findViewById(R.id.addImagebuttonlayout);
+        imageCancel = findViewById(R.id.commentimagecancel);
+
+        commentimage = findViewById(R.id.commentimageview);
+        imagelayout = findViewById(R.id.commentimagelayout);
+        addImageRipple=findViewById(R.id.commentaddimageripple);
+        imageCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (SystemClock.elapsedRealtime() - lastClick < 1000){
+                    return;
+                }
+                lastClick = SystemClock.elapsedRealtime();
+
+                uri=null;
+                commentimage.setImageDrawable(null);
+                commentimage.setImageBitmap(null);
+                Glide.with(commentimage).clear(commentimage);
+                addImageLayout.setVisibility(View.VISIBLE);
+                imagelayout.setVisibility(View.GONE);
+
+
+            }
+        });
+
+        addImageRipple.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (SystemClock.elapsedRealtime() - lastClick < 1000){
+                    return;
+                }
+                lastClick = SystemClock.elapsedRealtime();
+                String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                Permissions.check(DirectMessageActivity.this,permissions,null, null, new PermissionHandler() {
+                    @Override
+                    public void onGranted() {
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(Intent.createChooser(intent,getString(R.string.video)),imagerequestcode);
+                    }
+                    @Override
+                    public void onDenied(Context context, ArrayList<String> deniedPermissions){
+
+                    }
+                });
+
+            }
+        });
         getChatAndMessages(to);
 
     }
+
 
     private void setUpRecyclerView(String key){
         if(!GenelUtil.isAlive(this)) return;
@@ -342,6 +416,10 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
                 if(editText.getText().toString().trim().length()>0){
                     if(chat != null){
                         Message message = new Message();
+                        if(imagelayout.getVisibility() == View.VISIBLE){
+                            message.setIsUri(true);
+                            message.setUri(uri);
+                        }
                         message.setChat(chat.getObjectId());
                         message.setOwner(ParseUser.getCurrentUser().getObjectId());
                         message.setMessage(editText.getText().toString().trim());
@@ -349,8 +427,30 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
                         //Log.e("chat id",chat.getObjectId());
                         adapter.notifyItemInserted(0);
                         recyclerView.scrollToPosition(0);
+                        imageCancel.performClick();
 
 
+                    }
+                    else{
+                        sendFirstMessage();
+                    }
+                    editText.setText("");
+                }
+                else{
+                    if(chat != null){
+                        Message message = new Message();
+                        if(imagelayout.getVisibility() == View.VISIBLE){
+                            message.setIsUri(true);
+                            message.setUri(uri);
+                            message.setChat(chat.getObjectId());
+                            message.setOwner(ParseUser.getCurrentUser().getObjectId());
+                            message.setMessage("_message_media_only_");
+                            list.add(0,message);
+                            //Log.e("chat id",chat.getObjectId());
+                            adapter.notifyItemInserted(0);
+                            recyclerView.scrollToPosition(0);
+                            imageCancel.performClick();
+                        }
                     }
                     else{
                         sendFirstMessage();
@@ -482,4 +582,43 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
             startActivity(new Intent(this,GuestProfileActivity.class).putExtra("user",user));
         }
     }
+
+    @Override
+    public void onImageClick(int position,ImageView media) {
+        List<String> ulist = new ArrayList<>();
+        ulist.add("0");
+
+        List<HashMap> ulist2 = new ArrayList<>();
+        HashMap json = new HashMap();
+        try {
+            json.put("media",list.get(position).getMedia());
+            json.put("thumbnail",list.get(position).getMedia());
+            json.put("width",2000);
+            json.put("height",2000);
+            ulist2.add(json);
+
+            GenelUtil.showImage(ulist,ulist2
+                    ,media,0,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            if(requestCode==imagerequestcode&&data.getData()!=null){
+                uri=data.getData();
+                Glide.with(this).load(uri).into(commentimage);
+                addImageLayout.setVisibility(View.GONE);
+                imagelayout.setVisibility(View.VISIBLE);
+
+            }
+
+
+        }
+    }
+
 }
