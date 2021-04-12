@@ -78,7 +78,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             return VIEW_TYPE_LOAD;
         }
         else{
-            if(list.get(position).getMedia() != null){
+            if(list.get(position).getMedia() != null || list.get(position).getIsUri()){
                 if(list.get(position).getOwner().equals(owner)){
                     return VIEW_TYPE_OWNER_MEDIA;
                 }
@@ -87,23 +87,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 }
             }
             else{
-                if(list.get(position).getIsUri()){
-                    if(list.get(position).getOwner().equals(owner)){
-                        return VIEW_TYPE_OWNER_MEDIA;
-                    }
-                    else{
-                        return VIEW_TYPE_OTHER_MEDIA;
-                    }
+                if(list.get(position).getOwner().equals(owner)){
+                    return VIEW_TYPE_OWNER;
                 }
                 else{
-                    if(list.get(position).getOwner().equals(owner)){
-                        return VIEW_TYPE_OWNER;
-                    }
-                    else{
-                        return VIEW_TYPE_OTHER;
-                    }
+                    return VIEW_TYPE_OTHER;
                 }
-
             }
         }
         //return position;
@@ -136,23 +125,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_load,viewGroup,false);
             return new ViewHolder(view);
         }
-        else{
-            if(i==VIEW_TYPE_OWNER){
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_owner_layout,viewGroup,false);
-                return new ViewHolder(view);
-            }
-            else if(i==VIEW_TYPE_OWNER_MEDIA){
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_owner_media_layout,viewGroup,false);
-                return new ViewHolder(view);
-            }
-            else if(i==VIEW_TYPE_OTHER_MEDIA){
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_other_media_layout,viewGroup,false);
-                return new ViewHolder(view);
-            }
-            else {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_other_layout,viewGroup,false);
-                return new ViewHolder(view);
-            }
+        else if(i==VIEW_TYPE_OWNER){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_owner_layout,viewGroup,false);
+            return new ViewHolder(view);
+        }
+        else if(i==VIEW_TYPE_OWNER_MEDIA){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_owner_media_layout,viewGroup,false);
+            return new ViewHolder(view);
+        }
+        else if(i==VIEW_TYPE_OTHER_MEDIA){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_other_media_layout,viewGroup,false);
+            return new ViewHolder(view);
+        }
+        else {
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.direct_message_other_layout,viewGroup,false);
+            return new ViewHolder(view);
         }
     }
 
@@ -164,10 +151,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             @Override
             public void done(ParseException e) {
                 if(e==null){
-                    progresstext.setVisibility(View.GONE);
-                    mainlayout.setOnClickListener(null);
-                    //notifyItemChanged(position);
-                    text.setLinkText(message.getMessage());
+                    notifyItemChanged(list.indexOf(message));
                 }
                 else{
                     Log.e("MessageSaveError",e.getMessage());
@@ -211,14 +195,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                                         @Override
                                         public void done(ParseException e) {
                                             if(e==null){
-                                                progresstext.setVisibility(View.GONE);
-                                                mainlayout.setOnClickListener(null);
-                                                //notifyItemChanged(position);
-                                                text.setLinkText(message.getMessage());
-                                                glide.load(message.getMedia().getUrl()).into(media);
+                                                notifyItemChanged(list.indexOf(message));
                                             }
                                             else{
                                                 Log.e("MessageSaveError",e.getMessage());
+                                                //GenelUtil.ToastLong(media.getContext(),e.getMessage());
                                                 setRetryClick(message,progresstext,mainlayout,position,text,media);
                                             }
                                         }
@@ -277,15 +258,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         if(getItemViewType(holder.getAdapterPosition())!=VIEW_TYPE_LOAD){
             Message message = list.get(holder.getAdapterPosition());
-
-
+            if(holder.progresstext!=null){
+                holder.progresstext.setVisibility(View.GONE);
+            }
+            if(holder.mainLayout!=null){
+                holder.mainLayout.setOnClickListener(null);
+            }
             if(getItemViewType(holder.getAdapterPosition()) == VIEW_TYPE_OWNER){
                 //Ben gönderdim
                 if(message.getObjectId() == null){
+                    holder.progresstext.setVisibility(View.VISIBLE);
                     saveMessage(message,holder.progresstext,holder.mainLayout,holder.getAdapterPosition(),holder.text);
                 }
                 else{
-                    holder.progresstext.setVisibility(View.GONE);
+
                     holder.mainLayout.setOnClickListener(null);
                 }
                 holder.text.setVisibility(View.VISIBLE);
@@ -296,10 +282,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
                 if(message.getObjectId() == null){
                     glide.load(message.getUri()).into(holder.media);
+                    holder.progresstext.setVisibility(View.VISIBLE);
                     saveMessage(message,holder.progresstext,holder.mainLayout,holder.getAdapterPosition(),holder.text,holder.media);
                 }
                 else{
-                    holder.progresstext.setVisibility(View.GONE);
+
                     holder.mainLayout.setOnClickListener(null);
                     glide.load(message.getMedia().getUrl()).into(holder.media);
                 }
