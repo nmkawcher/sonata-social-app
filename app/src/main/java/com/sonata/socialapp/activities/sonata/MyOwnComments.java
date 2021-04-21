@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -14,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,8 +32,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.SafCommentAdapter;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.interfaces.CommentReplyAdapterClick;
@@ -79,7 +76,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -147,7 +144,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
 
         recyclerView.addOnScrollListener(onScrollListener);
 
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             getReqs(null,false);
         }
 
@@ -160,7 +157,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
 
 
     private void getReqs(Date date,boolean isRefresh){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<String, Object>();
             if(date!=null){
                 params.put("date",date);
@@ -169,7 +166,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                 @Override
                 public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
-                    if(GenelUtil.isAlive(MyOwnComments.this)){
+                    if(Util.isAlive(MyOwnComments.this)){
                         if(e==null){
 
                             if(objects!= null){
@@ -198,7 +195,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
     }
 
     private void initList(List<Comment> objects,boolean hasmore,Date date){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             postson = !hasmore;
             this.date = date;
             if(objects.size()==0){
@@ -378,7 +375,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
             json.put("height",post.getRatioH());
             ulist2.add(json);
 
-            GenelUtil.showImage(ulist,ulist2
+            Util.showImage(ulist,ulist2
                     ,imageView,0,null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -437,12 +434,12 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                             if(e==null){
                                 post.setSaved(true);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(MyOwnComments.this,getString(R.string.commentsaved));
+                                Util.ToastLong(MyOwnComments.this,getString(R.string.commentsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(MyOwnComments.this,getString(R.string.error));
+                                Util.ToastLong(MyOwnComments.this,getString(R.string.error));
                             }
                         }
                     });
@@ -462,12 +459,12 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                             if(e==null){
                                 post.setSaved(false);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(MyOwnComments.this,getString(R.string.commentunsaved));
+                                Util.ToastLong(MyOwnComments.this,getString(R.string.commentunsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(MyOwnComments.this,getString(R.string.error));
+                                Util.ToastLong(MyOwnComments.this,getString(R.string.error));
                             }
                         }
                     });
@@ -483,12 +480,12 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                         @Override
                         public void done(String object, ParseException e) {
                             if(e==null){
-                                GenelUtil.ToastLong(MyOwnComments.this,getString(R.string.reportsucces));
+                                Util.ToastLong(MyOwnComments.this,getString(R.string.reportsucces));
                                 progressDialog.dismiss();
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(MyOwnComments.this,getString(R.string.error));
+                                Util.ToastLong(MyOwnComments.this,getString(R.string.error));
                             }
                         }
                     });
@@ -527,7 +524,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                                     }
                                     else{
                                         progressDialog.dismiss();
-                                        GenelUtil.ToastLong(MyOwnComments.this,getString(R.string.error));
+                                        Util.ToastLong(MyOwnComments.this,getString(R.string.error));
                                     }
                                 }
                             });
@@ -556,7 +553,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                 upvoteimage.setImageDrawable( getDrawable(R.drawable.ic_upvote_blue));
                 votecount.setTextColor(Color.parseColor("#2d72bc"));
                 post.increment("vote",2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),MyOwnComments.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),MyOwnComments.this));
 
 
                 //upvote
@@ -571,7 +568,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),MyOwnComments.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),MyOwnComments.this));
 
 
                     //unupvote
@@ -584,7 +581,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote_blue));
                     votecount.setTextColor(Color.parseColor("#2d72bc"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),MyOwnComments.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),MyOwnComments.this));
 
 
                     //upvote
@@ -609,7 +606,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                 votecount.setTextColor(Color.parseColor("#a64942"));
 
                 post.increment("vote",-2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),MyOwnComments.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),MyOwnComments.this));
 
 
 
@@ -624,7 +621,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),MyOwnComments.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),MyOwnComments.this));
 
 
                     //undownvote
@@ -637,7 +634,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote_red));
                     votecount.setTextColor(Color.parseColor("#a64942"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),MyOwnComments.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),MyOwnComments.this));
 
 
                     //downvote
@@ -661,7 +658,7 @@ public class MyOwnComments extends AppCompatActivity implements CommentReplyAdap
 
     @Override
     public void onCommentSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
 }

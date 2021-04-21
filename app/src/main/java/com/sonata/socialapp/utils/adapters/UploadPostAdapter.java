@@ -1,18 +1,15 @@
 package com.sonata.socialapp.utils.adapters;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
@@ -21,13 +18,9 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.classes.ListObject;
-import com.sonata.socialapp.utils.classes.SonataUser;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.UploadObject;
-import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 import com.sonata.socialapp.utils.interfaces.UploadPostClick;
 
 import java.util.List;
@@ -121,7 +114,7 @@ public class UploadPostAdapter extends RecyclerView.Adapter<UploadPostAdapter.Vi
             glide.load(list.get(holder.getAdapterPosition()).getUri()).placeholder(progressDrawable).addListener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    GenelUtil.ToastLong(holder.itemView.getContext(),R.string.error);
+                    Util.ToastLong(holder.itemView.getContext(),R.string.error);
                     holder.cancel.performClick();
                     return false;
                 }

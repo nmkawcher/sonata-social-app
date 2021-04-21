@@ -21,7 +21,7 @@ import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
@@ -115,7 +115,7 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Vi
             holder.username.setText("@"+user.getUsername());
 
             View.OnClickListener onClickListener = view -> {
-                if(GenelUtil.clickable(700)){
+                if(Util.clickable(700)){
                     if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                         holder.itemView.getContext().startActivity(new Intent(holder.itemView.getContext(), GuestProfileActivity.class).putExtra("user",user));
 

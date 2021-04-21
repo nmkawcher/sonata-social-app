@@ -1,22 +1,17 @@
 package com.sonata.socialapp.utils.adapters;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,95 +26,62 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.google.android.gms.ads.formats.NativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.VideoUtils.JZMediaExo;
 import com.sonata.socialapp.utils.VideoUtils.VideoPlayer;
-import com.sonata.socialapp.utils.classes.ListObject;
+import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
-import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
-import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
+import com.sonata.socialapp.utils.interfaces.CommentAdapterClick;
 import com.takwolf.android.aspectratio.AspectRatioLayout;
 import com.tylersuehr.socialtextview.SocialTextView;
 import com.vincan.medialoader.MediaLoader;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import cn.jzvd.JZDataSource;
 import cn.jzvd.Jzvd;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 
 
-public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHolder> {
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
 
 
 
 
-    private List<ListObject> list;
+    private List<ParseObject> list;
     private RequestManager glide;
-    private BlockedAdapterClick click;
 
-    SonataUser user;
-    private boolean finish = false;
-    public void setFinish(boolean finish){
-        this.finish=finish;
-    }
 
-    private RecyclerViewClick recyclerViewClick;
-    public void setContext(List<ListObject> list
-            , RequestManager glide, RecyclerViewClick recyclerViewClick){
+
+    private CommentAdapterClick recyclerViewClick;
+    public void setContext(List<ParseObject> list
+            ,RequestManager glide,CommentAdapterClick recyclerViewClick){
         this.recyclerViewClick=recyclerViewClick;
         this.list=list;
         this.glide=glide;
-
-    }
-    public void setContext(List<ListObject> list
-            , RequestManager glide, RecyclerViewClick recyclerViewClick,SonataUser user){
-        this.recyclerViewClick=recyclerViewClick;
-        this.list=list;
-        this.glide=glide;
-        this.user = user;
-
-    }
-
-    public void setContext(List<ListObject> list
-            , RequestManager glide, RecyclerViewClick recyclerViewClick,BlockedAdapterClick click){
-        this.recyclerViewClick=recyclerViewClick;
-        this.list=list;
-        this.glide=glide;
-        this.click = click;
 
     }
 
     private static final int POST_TYPE_TEXT = 1;
-    private static final int POST_TYPE_IMAGE = 27;
+    private static final int POST_TYPE_IMAGE = 2;
     private static final int POST_TYPE_IMAGE1 = 2589;
     private static final int POST_TYPE_IMAGE2 = 24758;
     private static final int POST_TYPE_IMAGE3 = 21256;
-    private static final int POST_TYPE_VIDEO = 22145;
+    private static final int POST_TYPE_VIDEO = 22;
+    private static final int COMMENT_TYPE_TEXT = 3;
+    private static final int COMMENT_TYPE_IMAGE = 7;
     private static final int POST_TYPE_LINK = 4;
     private static final int POST_TYPE_EMPTY = 5;
+    private static final int POST_TYPE_SEE_SIMILAR = 3131;
     private static final int POST_TYPE_LOAD = 6;
-    private static final int POST_TYPE_AD = 7;
-    private static final int POST_TYPE_TOP = 8;
-    private static final int TYPE_USER = 888;
-    private static final int TYPE_SUGGEST = 889;
-
-    public static final int TYPE_HASHTAG = 1;
-    public static final int TYPE_LINK = 16;
-    public static final int TYPE_MENTION = 2;
+    private static final int REPLY_TYPE_TEXT = 8;
+    private static final int REPLY_TYPE_IMAGE = 9;
 
 
     @Override
@@ -129,50 +91,102 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
     @Override
     public int getItemViewType(int i) {
-        switch (list.get(i).getType()) {
-            case "text":
-                return POST_TYPE_TEXT;
-            case "image":
-                if(list.get(i).getPost().getImageCount()==1){
-                    return POST_TYPE_IMAGE;
+        ParseObject object = list.get(i);
+        if(object.getClassName().equals("Post")){
+            switch (Objects.requireNonNull(object.getString("type"))) {
+                case "text":
+                    return POST_TYPE_TEXT;
+                case "image":
+                    int count = list.get(i).getList("media") != null ? list.get(i).getList("media").size():1;
+                    if(count==1){
+                        return POST_TYPE_IMAGE;
+                    }
+                    else if(count==2){
+                        return POST_TYPE_IMAGE1;
+                    }
+                    else if(count==3){
+                        return POST_TYPE_IMAGE2;
+                    }
+                    else if(count==4){
+                        return POST_TYPE_IMAGE3;
+                    }
+                    else if(count==0){
+                        return POST_TYPE_IMAGE;
+                    }
+                case "video":
+                    return POST_TYPE_VIDEO;
+                case "link":
+                    return POST_TYPE_LINK;
+                case "boş":
+                    return POST_TYPE_EMPTY;
+                default:
+                    return POST_TYPE_LOAD;
+            }
+        }
+        else{
+            if(object.getString("isreply")!=null){
+                if(object.getString("isreply").equals("false")){
+                    switch (Objects.requireNonNull(object.getString("type"))) {
+                        case "text":
+                            return COMMENT_TYPE_TEXT;
+                        case "image":
+                            return COMMENT_TYPE_IMAGE;
+                        case "boş":
+                            return POST_TYPE_EMPTY;
+                        default:
+                            return POST_TYPE_LOAD;
+                    }
                 }
-                else if(list.get(i).getPost().getImageCount()==2){
-                    return POST_TYPE_IMAGE1;
+                else{
+                    switch (Objects.requireNonNull(object.getString("type"))) {
+                        case "text":
+                            return REPLY_TYPE_TEXT;
+                        case "boş":
+                            return POST_TYPE_EMPTY;
+                        case "image":
+                            return REPLY_TYPE_IMAGE;
+                        default:
+                            return POST_TYPE_LOAD;
+                    }
                 }
-                else if(list.get(i).getPost().getImageCount()==3){
-                    return POST_TYPE_IMAGE2;
+            }
+            else{
+                if (object.getString("type").equals("boş")) {
+                    return POST_TYPE_EMPTY;
                 }
-                else if(list.get(i).getPost().getImageCount()==4){
-                    return POST_TYPE_IMAGE3;
+                else if(object.getString("type").equals("seesimilar")){
+                    return POST_TYPE_SEE_SIMILAR;
                 }
-                else if(list.get(i).getPost().getImageCount()==0){
-                    return POST_TYPE_IMAGE;
-                }
-            case "user":
-                return TYPE_USER;
-            case "suggest":
-                return TYPE_SUGGEST;
-            case "video":
-                return POST_TYPE_VIDEO;
-            case "link":
-                return POST_TYPE_LINK;
-            case "reklam":
-                return POST_TYPE_AD;
-            case "load":
                 return POST_TYPE_LOAD;
-            default:
-                return POST_TYPE_EMPTY;
+            }
         }
     }
 
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
+        if (holder.postprofilephoto != null) {
+            if(holder.postprofilephoto.getVisibility()== View.VISIBLE){
+                glide.clear(holder.postprofilephoto);
+                holder.postprofilephoto.setImageDrawable(null);
+                holder.postprofilephoto.setImageBitmap(null);
+            }
+
+        }
+        if (holder.commentprofilephoto != null) {
+            if(holder.commentprofilephoto.getVisibility()== View.VISIBLE){
+                glide.clear(holder.commentprofilephoto);
+                holder.commentprofilephoto.setImageDrawable(null);
+                holder.commentprofilephoto.setImageBitmap(null);
+            }
+
+        }
         if (holder.postimage != null) {
+            if(holder.postimage.getVisibility()== View.VISIBLE){
                 glide.clear(holder.postimage);
                 holder.postimage.setImageDrawable(null);
                 holder.postimage.setImageBitmap(null);
-
+            }
         }
         if (holder.postimage1 != null) {
             glide.clear(holder.postimage1);
@@ -192,36 +206,18 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
             holder.postimage3.setImageBitmap(null);
 
         }
-        if(finish){
-            if(holder.adView!=null){
-                holder.adView.destroy();
+
+
+
+        if (holder.postlinkimage != null) {
+            if(holder.postlinkimage.getVisibility()== View.VISIBLE){
+                glide.clear(holder.postlinkimage);
+                holder.postlinkimage.setImageDrawable(null);
+                holder.postlinkimage.setImageBitmap(null);
             }
         }
-        if (holder.linkimage != null) {
-                glide.clear(holder.linkimage);
-                holder.linkimage.setImageDrawable(null);
-                holder.linkimage.setImageBitmap(null);
-
-        }
 
 
-
-        if (holder.profilephoto2 != null) {
-            glide.clear(holder.profilephoto2);
-            holder.profilephoto2.setImageDrawable(null);
-            holder.profilephoto2.setImageBitmap(null);
-
-
-        }
-
-
-        if (holder.profilephoto != null) {
-                glide.clear(holder.profilephoto);
-                holder.profilephoto.setImageDrawable(null);
-                holder.profilephoto.setImageBitmap(null);
-
-
-        }
 
         if(holder.videoPlayer!=null){
             if (holder.videoPlayer.posterImageView != null) {
@@ -235,7 +231,6 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
 
     }
-
     @Override
     public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
@@ -249,55 +244,67 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
 
 
+
     @NonNull
     @Override
-    public SafPostAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public CommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         if(i==POST_TYPE_TEXT){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_text_layout,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_text_layout_comment,viewGroup,false);
             return new ViewHolder(view);
         }
         else if(i==POST_TYPE_IMAGE){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout_comment,viewGroup,false);
             return new ViewHolder(view);
         }
         else if(i==POST_TYPE_IMAGE1){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout_1,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout_1_comment,viewGroup,false);
             return new ViewHolder(view);
         }
         else if(i==POST_TYPE_IMAGE2){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout_2,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout_2_comment,viewGroup,false);
             return new ViewHolder(view);
         }
         else if(i==POST_TYPE_IMAGE3){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout_3,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_image_layout_3_comment,viewGroup,false);
             return new ViewHolder(view);
         }
         else if(i==POST_TYPE_VIDEO){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_video_layout,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_video_layout_comment,viewGroup,false);
             return new ViewHolder(view);
         }
         else if(i==POST_TYPE_LINK){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_link_layout,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_link_layout_comment,viewGroup,false);
             return new ViewHolder(view);
         }
-        else if(i==POST_TYPE_AD){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.admobreklam,viewGroup,false);
-            return new ViewHolder(view);
-        }
+
         else if(i==POST_TYPE_LOAD){
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recyclerview_load,viewGroup,false);
             return new ViewHolder(view);
         }
-        else if(i==TYPE_USER){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.block_account_layout,viewGroup,false);
+        else if(i==POST_TYPE_SEE_SIMILAR){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.see_more_like_this_layout,viewGroup,false);
             return new ViewHolder(view);
         }
-        else if(i==TYPE_SUGGEST){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.suggest_text_layout,viewGroup,false);
+        else if(i==COMMENT_TYPE_IMAGE){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_layout_image,viewGroup,false);
             return new ViewHolder(view);
         }
+        else if(i==COMMENT_TYPE_TEXT){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_layout,viewGroup,false);
+            return new ViewHolder(view);
+        }
+
+        else if(i==REPLY_TYPE_IMAGE){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_layout_image_reply_first_notif,viewGroup,false);
+            return new ViewHolder(view);
+        }
+        else if(i==REPLY_TYPE_TEXT){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_layout_reply_first_notif,viewGroup,false);
+            return new ViewHolder(view);
+        }
+
         else{
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty_view_real,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty_view,viewGroup,false);
             return new ViewHolder(view);
 
         }
@@ -305,125 +312,82 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SafPostAdapter.ViewHolder holder, int positiona) {
-        int viewType = getItemViewType(holder.getAdapterPosition());
-        if(viewType!=TYPE_SUGGEST&&viewType!=TYPE_USER&&viewType!=POST_TYPE_TOP&&viewType!=POST_TYPE_LOAD&&viewType!=POST_TYPE_AD&&viewType!=POST_TYPE_EMPTY){
+    public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int positiona) {
+        if(getItemViewType(holder.getAdapterPosition())!=POST_TYPE_SEE_SIMILAR&&getItemViewType(holder.getAdapterPosition())!=POST_TYPE_LOAD&&getItemViewType(holder.getAdapterPosition())!=POST_TYPE_EMPTY){
+            ParseObject object = list.get(holder.getAdapterPosition());
+            if(object.getClassName().equals("Post")){
+                Post post = (Post)object;
+                SonataUser user = post.getUser();
 
-            if(list.get(holder.getAdapterPosition()).getPost().getIsDeleted()){
-                if (holder.postimage != null) {
-                    if(holder.postimage.getVisibility()== View.VISIBLE){
-                        glide.clear(holder.postimage);
-                        holder.postimage.setImageDrawable(null);
-                        holder.postimage.setImageBitmap(null);
-                    }
-                }
+                holder.postpostdate.setText(DateUtils.getRelativeTimeSpanString(post.getCreatedAt().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
+                holder.postpostdesc.setLinkText("");
+                holder.postpostdesc.setVisibility(View.GONE);
 
-                if (holder.linkimage != null) {
-                    if(holder.linkimage.getVisibility()== View.VISIBLE){
-                        glide.clear(holder.linkimage);
-                        holder.linkimage.setImageDrawable(null);
-                        holder.linkimage.setImageBitmap(null);
-                    }
-                }
-
-
-
-
-
-
-                if (holder.profilephoto != null) {
-                    if(holder.profilephoto.getVisibility()== View.VISIBLE){
-                        glide.clear(holder.profilephoto);
-                        holder.profilephoto.setImageDrawable(null);
-                        holder.profilephoto.setImageBitmap(null);
-                    }
-
-                }
-                list.remove(holder.getAdapterPosition());
-                notifyDataSetChanged();
-
-            }
-            else{
-                Post post = list.get(holder.getAdapterPosition()).getPost();
-                SonataUser user = this.user != null ? this.user: post.getUser();
-
-                holder.postdate.setText(DateUtils.getRelativeTimeSpanString(post.getCreatedAt().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
-                holder.postdesc.setLinkText("");
-                holder.postdesc.setVisibility(View.GONE);
-
-
-
-
-                if(post.getCommentable()){
-                    holder.commentnumber.setText(GenelUtil.ConvertNumber((int)post.getCommentnumber(),holder.itemView.getContext()));
+                if(post.getCommentnumber()==1){
+                    holder.posthowmanyreplies.setText(post.getCommentnumber()+" "+holder.itemView.getContext().getString(R.string.comments2tekil));
                 }
                 else{
-                    holder.commentnumber.setText(holder.itemView.getContext().getString(R.string.disabledcomment));
+                    holder.posthowmanyreplies.setText(post.getCommentnumber()+" "+holder.itemView.getContext().getString(R.string.comments2cogul));
+                }
+
+
+                if(post.getBoolean("commentable")){
+                    holder.postcommentnumber.setText(Util.ConvertNumber((int)post.getCommentnumber(),holder.itemView.getContext()));
+                }
+                else{
+                    holder.postcommentnumber.setText(holder.itemView.getContext().getString(R.string.disabledcomment));
                 }
 
                 if(!post.getLiked()){
-                    holder.likeimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_like));
+                    holder.postlikeimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_like));
                 }
                 else{
-                    holder.likeimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_like_red));
+                    holder.postlikeimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_like_red));
                 }
 
                 if(post.getLikenumber()>=0){
-                    holder.likenumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),holder.itemView.getContext()));
+                    holder.postlikenumber.setText(Util.ConvertNumber((int)post.getLikenumber(),holder.itemView.getContext()));
                 }
                 else{
                     post.setLikenumber(0);
-                    holder.likenumber.setText("0");
+                    holder.postlikenumber.setText("0");
                 }
 
 
                 if(user.getHasPp()){
                     glide.load(user.getPPAdapter())
                             .apply(RequestOptions.circleCropTransform())
-                            .placeholder(new ColorDrawable(ContextCompat.getColor(holder.profilephoto.getContext(), R.color.placeholder_gray)))
-                            .addListener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
-                            .into(holder.profilephoto);
+                            .placeholder(new ColorDrawable(ContextCompat.getColor(holder.postprofilephoto.getContext(), R.color.placeholder_gray)))
+                            .into(holder.postprofilephoto);
                 }
                 else{
-                    glide.load(holder.profilephoto.getContext().getResources().getDrawable(R.drawable.emptypp)).into(holder.profilephoto);
+                    glide.load(holder.postprofilephoto.getContext().getResources().getDrawable(R.drawable.emptypp)).into(holder.postprofilephoto);
 
                 }
 
 
 
+                holder.postname.setText(user.getName());
+                holder.postusername.setText("@"+user.getUsername());
 
 
-                holder.name.setText(user.getName());
-                holder.username.setText("@"+user.getUsername());
+
+
+
 
 
                 holder.textLayout.setVisibility(View.GONE);
                 String description = post.getDescription().trim();
                 if(!description.equals("")){
-                    if(!holder.postdesc.getPostId().equals(post.getObjectId())){
-                        holder.postdesc.setPostId(post.getObjectId());
-                        holder.postdesc.setMaxLines(1);
+                    if(!holder.postpostdesc.getPostId().equals(post.getObjectId())){
+                        holder.postpostdesc.setPostId(post.getObjectId());
+                        holder.postpostdesc.setMaxLines(3);
                     }
-                    holder.postdesc.setLinkText(description);
-                    holder.postdesc.setVisibility(View.VISIBLE);
+                    holder.postpostdesc.setLinkText(description);
+                    holder.postpostdesc.setVisibility(View.VISIBLE);
                     holder.textLayout.setVisibility(View.VISIBLE);
                 }
-
-
-
-
-
-
+                int viewType = getItemViewType(holder.getAdapterPosition());
                 if(viewType==POST_TYPE_IMAGE){
 
                     List<HashMap> mediaList = post.getMediaList();
@@ -793,152 +757,178 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
                         //JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
                         JZDataSource jzDataSource = new JZDataSource(MediaLoader.getInstance(holder.itemView.getContext()).getProxyUrl(url));
-                        //JZDataSource jzDataSource = new JZDataSource(MyApp.getProxy(holder.videoPlayer.getContext()).getProxyUrl(url));
-
                         jzDataSource.looping=true;
 
-                        glide.load(thumburl).thumbnail(glide.load(thumburl2)).into(holder.videoPlayer.posterImageView);
+                        glide.load(thumburl).thumbnail(glide.load(thumburl2)).addListener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                return false;
+                            }
+                        }).into(holder.videoPlayer.posterImageView);
                         holder.videoPlayer.setUp(jzDataSource,Jzvd.SCREEN_NORMAL, JZMediaExo.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
 
+
+
+
+
+
+
+
+
+                }
+            }
+            else{
+                Comment post =(Comment) object;
+
+
+                holder.commentpostdate.setText(DateUtils.getRelativeTimeSpanString(post.getCreatedAt().getTime()-5000, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
+
+
+
+
+
+                holder.commentupvoteimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_upvote));
+                holder.commentdownvoteimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_downvote));
+                holder.commentvotecount.setTextColor(Color.parseColor("#999999"));
+                if(post.getUpvote()){
+                    holder.commentupvoteimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_upvote_blue));
+                    holder.commentdownvoteimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_downvote));
+
+                    holder.commentvotecount.setTextColor(Color.parseColor("#2d72bc"));
+
+
+                }
+                if(post.getDownvote()){
+                    holder.commentdownvoteimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_downvote_red));
+                    holder.commentupvoteimage.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_upvote));
+
+                    holder.commentvotecount.setTextColor(Color.parseColor("#a64942"));
+                }
+                if(post.getVote()<0){
+                    holder.commentvotecount.setText("-"+ Util.ConvertNumber((int)post.getVote()*(-1),holder.itemView.getContext()));
+
+                }
+                if(post.getVote()>=0){
+                    holder.commentvotecount.setText(Util.ConvertNumber((int)post.getVote(),holder.itemView.getContext()));
+
                 }
 
-            }
-
-        }
-        else if(viewType==TYPE_USER){
-            SonataUser user = list.get(holder.getAdapterPosition()).getUser();
-            if(user.getObjectId().equals(GenelUtil.getCurrentUser().getObjectId())){
-                holder.buttonLay.setVisibility(View.INVISIBLE);
-            }
-            else{
-                holder.buttonLay.setVisibility(View.VISIBLE);
-            }
-            if(user.getHasPp()){
-                glide.load(user.getPPAdapter())
-                        .placeholder(new ColorDrawable(ContextCompat.getColor(holder.profilephoto2.getContext(), R.color.placeholder_gray)))
-                        .into(holder.profilephoto2);
-            }
-            else{
-                glide.load(holder.profilephoto2.getContext().getResources().getDrawable(R.drawable.emptypp,null)).into(holder.profilephoto2);
-            }
-
-            holder.name2.setText(user.getName());
-            holder.username2.setText("@"+user.getUsername());
 
 
-            if(user.getBlock()){
-                holder.buttonText.setText(holder.itemView.getContext().getString(R.string.unblock));
-                holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
-                holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_engel));
-            }
-            else{
-                if(user.getFollow()){
-                    holder.buttonText.setText(holder.itemView.getContext().getString(R.string.unfollow));
-                    holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
-                    holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_dolu));
+
+
+
+
+
+                if(post.getString("isreply").equals("false")){
+                    if(post.getReplyCount()>0){
+                        holder.commentshowreplies.setVisibility(View.VISIBLE);
+                        holder.commentreplytext.setText(holder.itemView.getContext().getString(R.string.showreplies)+" ("+post.getReplyCount()+")");
+
+
+
+                    }
+                    if(post.getReplyCount()<=0){
+                        holder.commentshowreplies.setVisibility(View.GONE);
+                    }
+                }
+
+                SonataUser user = post.getUser();
+
+                if(user.getHasPp()){
+                    glide.load(user.getPPAdapter())
+                            .placeholder(new ColorDrawable(ContextCompat.getColor(holder.commentprofilephoto.getContext(), R.color.placeholder_gray)))
+                            .into(holder.commentprofilephoto);
                 }
                 else{
-                    if(user.getFollowRequest()){
-                        holder.buttonText.setText(holder.itemView.getContext().getString(R.string.requestsent));
-                        holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
-                        holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background_dolu));
-                    }
-                    else{
-                        holder.buttonText.setText(holder.itemView.getContext().getString(R.string.follow));
-                        holder.buttonText.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.blue));
-                        holder.buttonLay.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.button_background));
-                    }
+                    glide.load(holder.itemView.getContext().getResources().getDrawable(R.drawable.emptypp)).into(holder.commentprofilephoto);
 
                 }
-            }
-        }
-        else if(viewType==POST_TYPE_AD){
-            if(finish){
-                holder.adView.destroy();
-            }
-            else{
-                holder.adView.setMediaView(holder.adView.findViewById(R.id.ad_media));
-                holder.adView.setHeadlineView(holder.adView.findViewById(R.id.ad_headline));
-                holder.adView.setBodyView(holder.adView.findViewById(R.id.ad_body));
-                holder.adView.setCallToActionView(holder.adView.findViewById(R.id.ad_call_to_action));
-                holder.adView.setIconView(holder.adView.findViewById(R.id.ad_icon));
-                holder.adView.setPriceView(holder.adView.findViewById(R.id.ad_price));
-                holder.adView.setStarRatingView(holder.adView.findViewById(R.id.ad_stars));
-                holder.adView.setStoreView(holder.adView.findViewById(R.id.ad_store));
-                holder.adView.setAdvertiserView(holder.adView.findViewById(R.id.ad_advertiser));
 
-                UnifiedNativeAd nativeAd = list.get(holder.getAdapterPosition()).getAd();
-                ((TextView) holder.adView.getHeadlineView()).setText(nativeAd.getHeadline());
-                ((TextView) holder.adView.getBodyView()).setText(nativeAd.getBody());
-                ((Button) holder.adView.getCallToActionView()).setText(nativeAd.getCallToAction());
+                holder.commentname.setText(user.getName());
+                holder.commentusername.setText("@"+user.getUsername());
 
-                // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
-                // check before trying to display them.
-                NativeAd.Image icon = nativeAd.getIcon();
-                holder.adView.getMediaView().setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
-                    @Override
-                    public void onChildViewAdded(View view, View view1) {
-                        if (view1 instanceof ImageView) {
-                            ImageView imageView = (ImageView) view1;
-                            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                            imageView.setAdjustViewBounds(true);
+
+
+                holder.commentpostdesc.setVisibility(View.GONE);
+                holder.readMore.setVisibility(View.GONE);
+                if(post.getDesc().trim().length()>0){
+                    if(!holder.commentpostdesc.getPostId().equals(post.getObjectId())){
+                        holder.commentpostdesc.setPostId(post.getObjectId());
+                        holder.commentpostdesc.setMaxLines(3);
+                    }
+                    holder.commentpostdesc.setLinkText(post.getDesc().trim());
+                    holder.commentpostdesc.setVisibility(View.VISIBLE);
+                }
+
+                if(getItemViewType(holder.getAdapterPosition())==COMMENT_TYPE_IMAGE){
+
+                    //holder.imageprogress.setVisibility(View.VISIBLE);
+                    //holder.reloadlayout.setVisibility(View.INVISIBLE);
+
+                    try {
+                        List<HashMap> mediaList = post.getMediaList();
+                        HashMap media = mediaList.get(0);
+                        ParseFile mainMedia = (ParseFile) media.get("media");
+                        ParseFile thumbnail = (ParseFile) media.get("thumbnail");
+
+                        String url = mainMedia.getUrl();
+                        String thumburl = thumbnail.getUrl();
+
+                        int width = (int) media.get("width");
+                        int height = (int) media.get("height");
+
+                        if(((float)height/(float)width)>1.4f){
+                            holder.ratiolayout.setAspectRatio(10,14);
                         }
+                        else{
+                            if(((float)height/(float)width)<0.4f){
+                                holder.ratiolayout.setAspectRatio(10,4);
+                            }
+                            else{
+                                holder.ratiolayout.setAspectRatio(width,height);
+                            }
+                        }
+
+                        if(height>1280||width>1280){
+                            int ih = 1280;
+                            int iw = 1280;
+                            if(height>width){
+                                //ih = 1280;
+                                iw = 1280 * (int) (width/height);
+                            }
+                            else{
+                                //iw = 1280;
+                                ih = 1280 * (int) (height/width);
+                            }
+                            glide.load(url).fitCenter().override(iw,ih).thumbnail(glide.load(thumburl)).into(holder.postimage);
+                        }
+                        else{
+                            //holder.nsfwIcon.setVisibility(View.INVISIBLE);
+                            glide.load(url).fitCenter().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).thumbnail(glide.load(thumburl)).into(holder.postimage);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
-                    @Override
-                    public void onChildViewRemoved(View view, View view1) {
 
-                    }
-                });
-                if (icon == null) {
-                    //((ImageView) holder.adView.getIconView()).setBackgroundColor(Color.parseColor("#999999"));
-                    holder.adView.getIconView().setVisibility(View.GONE);
-                    holder.pplayout.setVisibility(View.GONE);
-                } else {
-                    ((ImageView) holder.adView.getIconView()).setImageDrawable(icon.getDrawable());
-                    holder.adView.getIconView().setVisibility(View.VISIBLE);
-                    holder.pplayout.setVisibility(View.VISIBLE);
                 }
-
-                if (nativeAd.getPrice() == null) {
-                    holder.adView.getPriceView().setVisibility(View.GONE);
-                } else {
-                    holder.adView.getPriceView().setVisibility(View.VISIBLE);
-                    ((TextView) holder.adView.getPriceView()).setText(nativeAd.getPrice());
-                }
-
-                if (nativeAd.getStore() == null) {
-                    holder.adView.getStoreView().setVisibility(View.GONE);
-                } else {
-                    holder.adView.getStoreView().setVisibility(View.VISIBLE);
-                    ((TextView) holder.adView.getStoreView()).setText(nativeAd.getStore());
-                }
-
-                if (nativeAd.getStarRating() == null) {
-                    holder.adView.getStarRatingView().setVisibility(View.GONE);
-                } else {
-                    ((RatingBar) holder.adView.getStarRatingView())
-                            .setRating(nativeAd.getStarRating().floatValue());
-                    holder.adView.getStarRatingView().setVisibility(View.VISIBLE);
-                }
-
-                if (nativeAd.getAdvertiser() == null) {
-                    holder.adView.getAdvertiserView().setVisibility(View.INVISIBLE);
-                } else {
-                    ((TextView) holder.adView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
-                    holder.adView.getAdvertiserView().setVisibility(View.VISIBLE);
-                }
-
-                // Assign native ad object to the native view.
-                holder.adView.setNativeAd(nativeAd);
             }
 
 
         }
+
+
     }
 
     @Override
@@ -955,47 +945,64 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView profilephoto,postimage,postimage1,postimage2,postimage3,linkimage,likeimage,nsfwIcon;
-        TextView name,username,linktitle,linkdesc,linkurl,likenumber,commentnumber,postdate,readMore;
+        ImageView commentupvoteimage,commentdownvoteimage;
+        ImageView commentprofilephoto,postimage,postimage1,postimage2,postimage3;
+        TextView commentname,commentusername,commentpostdate,commentvotecount,commentreplytext;
+        SocialTextView commentpostdesc;
         ProgressBar imageprogress;
-        RelativeLayout options,like,comment,reloadripple;
-        RelativeLayout linkripple,textLayout;
-        AspectRatioLayout ratiolayout,linkimagelayout;
-        SocialTextView postdesc;
-        RoundKornerRelativeLayout reloadlayout,pplayout;
-        UnifiedNativeAdView adView;
+        AspectRatioLayout ratiolayout;
+        RelativeLayout reloadripple;
+        RoundKornerRelativeLayout reloadlayout;
+        RelativeLayout commentoptions,commentupvote,commentdownvote,commentreply,commentshowreplies;
 
+
+        TextView readMore;
+        RelativeLayout textLayout;
+
+        //PostHolder
+        ImageView postprofilephoto,postlinkimage,postlikeimage,nsfwIcon;
+        TextView postname,postusername,postlinktitle,postlinkdesc,postlinkurl,postlikenumber,postcommentnumber,postpostdate,posthowmanyreplies;
+        RelativeLayout postoptions,postlike,postcomment;
+        AspectRatioLayout postlinkimagelayout;
+        com.tylersuehr.socialtextview.SocialTextView postpostdesc;
+        RoundKornerRelativeLayout postpplayout;
+        RelativeLayout postlinkripple;
         VideoPlayer videoPlayer;
 
-        private long mLastClickTime = 0;
+        RelativeLayout seeSimilar;
 
-
-
-        ImageView profilephoto2;
-        TextView name2,username2,buttonText;
-        RelativeLayout button;
-        RoundKornerRelativeLayout buttonLay;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            button = itemView.findViewById(R.id.blockButton);
-            buttonText = itemView.findViewById(R.id.followButtonText);
-            buttonLay = itemView.findViewById(R.id.folreqacceptlayout);
-            profilephoto2 = itemView.findViewById(R.id.followreqlayoutpp);
-            name2 = itemView.findViewById(R.id.followreqname);
-            username2 = itemView.findViewById(R.id.followrequsername);
-            //-----------------------------------------
+            posthowmanyreplies=itemView.findViewById(R.id.commentreplyfirst);
+            postpplayout = itemView.findViewById(R.id.pplayout);
+            postlinkimagelayout=itemView.findViewById(R.id.linkimagelayout);
+            postprofilephoto = itemView.findViewById(R.id.postprofilephoto);
+            postname = itemView.findViewById(R.id.postnametext);
+            postusername = itemView.findViewById(R.id.postusernametext);
+            postoptions = itemView.findViewById(R.id.postopripple);
+            postpostdesc = itemView.findViewById(R.id.postdesc);
+            postlike = itemView.findViewById(R.id.postlikeripple);
+            postcomment = itemView.findViewById(R.id.postcommentripple);
+            postlinktitle = itemView.findViewById(R.id.linktitle);
+            postlinkdesc = itemView.findViewById(R.id.linkdesc);
+            postlinkurl = itemView.findViewById(R.id.linkurl);
+            postlinkimage = itemView.findViewById(R.id.linkimage);
+            postlikenumber = itemView.findViewById(R.id.postlikenumber);
+            postcommentnumber = itemView.findViewById(R.id.postcommentnumber);
+            postpostdate = itemView.findViewById(R.id.postdate);
+            postlikeimage = itemView.findViewById(R.id.postlikeicon);
+            postlinkripple=itemView.findViewById(R.id.postlinkripple);
             videoPlayer = itemView.findViewById(R.id.masterExoPlayer);
-            nsfwIcon = itemView.findViewById(R.id.postImageNsfwIcon);
-            adView = itemView.findViewById(R.id.ad_view);
-            pplayout = itemView.findViewById(R.id.pplayout);
-            linkimagelayout=itemView.findViewById(R.id.linkimagelayout);
-            profilephoto = itemView.findViewById(R.id.postprofilephoto);
-            name = itemView.findViewById(R.id.postnametext);
-            username = itemView.findViewById(R.id.postusernametext);
-            options = itemView.findViewById(R.id.postopripple);
 
+
+            nsfwIcon = itemView.findViewById(R.id.postImageNsfwIcon);
+            seeSimilar = itemView.findViewById(R.id.buttonSeeSimilar);
+
+
+            commentreplytext=itemView.findViewById(R.id.commentshowreplytext);
+            commentshowreplies=itemView.findViewById(R.id.commentshowrepliesripple);
+            commentreply=itemView.findViewById(R.id.commentreplyripple);
 
             postimage = itemView.findViewById(R.id.postimageview);
             postimage1 = itemView.findViewById(R.id.postimageview1);
@@ -1006,71 +1013,26 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
             ratiolayout = itemView.findViewById(R.id.postratiolayout);
             reloadripple = itemView.findViewById(R.id.postfailimageripple);
             reloadlayout=itemView.findViewById(R.id.postimagefail);
-            postdesc = itemView.findViewById(R.id.postdesc);
-            like = itemView.findViewById(R.id.postlikeripple);
-            comment = itemView.findViewById(R.id.postcommentripple);
-            linktitle = itemView.findViewById(R.id.linktitle);
-            linkdesc = itemView.findViewById(R.id.linkdesc);
-            linkurl = itemView.findViewById(R.id.linkurl);
-            linkimage = itemView.findViewById(R.id.linkimage);
-            likenumber = itemView.findViewById(R.id.postlikenumber);
-            commentnumber = itemView.findViewById(R.id.postcommentnumber);
-            postdate = itemView.findViewById(R.id.postdate);
-            likeimage = itemView.findViewById(R.id.postlikeicon);
-            linkripple=itemView.findViewById(R.id.postlinkripple);
+            commentvotecount = itemView.findViewById(R.id.commentvotecounttext);
+            commentoptions = itemView.findViewById(R.id.commentoptions);
+            commentupvote = itemView.findViewById(R.id.commentupvoteripple);
+            commentdownvote = itemView.findViewById(R.id.commentdownvoteripple);
+            commentupvoteimage = itemView.findViewById(R.id.commentupvoteimage);
+            commentdownvoteimage = itemView.findViewById(R.id.commentdownvoteimage);
+            commentprofilephoto = itemView.findViewById(R.id.commentppimage);
+            commentname = itemView.findViewById(R.id.commentnametext);
+            commentusername = itemView.findViewById(R.id.commentusernametext);
+            commentpostdesc = itemView.findViewById(R.id.commentdesc);
+            commentpostdate = itemView.findViewById(R.id.commentdate);
 
             readMore = itemView.findViewById(R.id.readMoreText);
             textLayout = itemView.findViewById(R.id.textLayout);
 
-
-            if(profilephoto2!=null){
-                profilephoto2.setOnClickListener(new View.OnClickListener() {
+            if(seeSimilar!=null){
+                seeSimilar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(click != null){
-                            click.goToProfileClick(getAdapterPosition());
-                        }
-                    }
-                });
-            }
-            if(name2!=null){
-                name2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(click != null){
-                            click.goToProfileClick(getAdapterPosition());
-                        }
-                    }
-                });
-            }
-            if(username2!=null){
-                username2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(click != null){
-                            click.goToProfileClick(getAdapterPosition());
-                        }
-                    }
-                });
-            }
-
-            if(button!=null&&buttonText!=null&&buttonLay!=null){
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(click != null){
-                            click.buttonClick(getAdapterPosition(),buttonText,buttonLay);
-                        }
-                    }
-                });
-            }
-
-
-            if(options!=null){
-                options.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        recyclerViewClick.onOptionsClick(getAdapterPosition(),commentnumber);
+                        recyclerViewClick.onSeeSimilarPosts();
                     }
                 });
             }
@@ -1079,53 +1041,148 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
                 readMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(postdesc==null) return;
-
-                        if(postdesc.getLineCount()>postdesc.getMaxLines()){
-                            postdesc.setMaxLines(Integer.MAX_VALUE);
-                            postdesc.setEllipsize(null);
-                            if(readMore!=null){
-                                readMore.setVisibility(View.GONE);
-                            }
-
-                        }
-                        else if(postdesc.getLineCount()<=postdesc.getMaxLines()){
-                            postdesc.setMaxLines(1);
-                            postdesc.setEllipsize(null);
-                            if(postdesc.getLineCount()>1){
+                        if(commentpostdesc != null){
+                            if(commentpostdesc.getLineCount()>commentpostdesc.getMaxLines()){
+                                commentpostdesc.setMaxLines(Integer.MAX_VALUE);
+                                commentpostdesc.setEllipsize(null);
                                 if(readMore!=null){
-                                    readMore.setVisibility(View.VISIBLE);
+                                    readMore.setVisibility(View.GONE);
+                                }
+
+                            }
+                            else if(commentpostdesc.getLineCount()<=commentpostdesc.getMaxLines()){
+                                commentpostdesc.setMaxLines(3);
+                                commentpostdesc.setEllipsize(null);
+                                if(commentpostdesc.getLineCount()>3){
+                                    if(readMore!=null){
+                                        readMore.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
                         }
+                        else{
+                            if(postpostdesc != null){
+                                if(postpostdesc.getLineCount()>postpostdesc.getMaxLines()){
+                                    postpostdesc.setMaxLines(Integer.MAX_VALUE);
+                                    postpostdesc.setEllipsize(null);
+                                    if(readMore!=null){
+                                        readMore.setVisibility(View.GONE);
+                                    }
+
+                                }
+                                else if(postpostdesc.getLineCount()<=postpostdesc.getMaxLines()){
+                                    postpostdesc.setMaxLines(3);
+                                    postpostdesc.setEllipsize(null);
+                                    if(postpostdesc.getLineCount()>3){
+                                        if(readMore!=null){
+                                            readMore.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
                     }
                 });
             }
 
-            if(postdesc!=null){
-
-                postdesc.setOnLinkClickListener(new SocialTextView.OnLinkClickListener() {
+            if(commentprofilephoto!=null){
+                commentprofilephoto.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onLinkClicked(int i, String s) {
-                        recyclerViewClick.onSocialClick(getAdapterPosition(),i,s);
+                    public void onClick(View v) {
+                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
                     }
                 });
-                postdesc.setOnClickListener(new View.OnClickListener() {
+            }
+
+            if(commentname!=null){
+                commentname.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(commentusername!=null){
+                commentusername.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(commentshowreplies!=null){
+                commentshowreplies.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onCommentShowReplies(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(commentupvote!=null){
+                commentupvote.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onCommentUpvoteClick(getAdapterPosition(),commentupvoteimage,commentdownvoteimage,commentvotecount);
+                    }
+                });
+            }
+
+            if(commentdownvote!=null){
+                commentdownvote.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onCommentDownvoteClick(getAdapterPosition(),commentupvoteimage,commentdownvoteimage,commentvotecount);
+                    }
+                });
+            }
+
+            if(commentreply!=null){
+                commentreply.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onCommentReply(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(commentoptions!=null){
+                commentoptions.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onCommentOptionsClick(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(commentpostdesc!=null){
+                commentpostdesc.setOnLinkClickListener(new SocialTextView.OnLinkClickListener() {
+                    @Override
+                    public void onLinkClicked(int i, String s) {
+                        recyclerViewClick.onCommentSocialClick(getAdapterPosition(),i,s);
+
+                    }
+                });
+                commentpostdesc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //GenelUtil.ToastLong(itemView.getContext(),postdesc.getLineCount()+"");
-                        if(postdesc.getLineCount()>postdesc.getMaxLines()){
-                            postdesc.setMaxLines(Integer.MAX_VALUE);
-                            postdesc.setEllipsize(null);
+                        if(commentpostdesc.getLineCount()>commentpostdesc.getMaxLines()){
+                            commentpostdesc.setMaxLines(Integer.MAX_VALUE);
+                            commentpostdesc.setEllipsize(null);
                             if(readMore!=null){
                                 readMore.setVisibility(View.GONE);
                             }
 
                         }
-                        else if(postdesc.getLineCount()<=postdesc.getMaxLines()){
-                            postdesc.setMaxLines(1);
-                            postdesc.setEllipsize(null);
-                            if(postdesc.getLineCount()>1){
+                        else if(commentpostdesc.getLineCount()<=commentpostdesc.getMaxLines()){
+                            commentpostdesc.setMaxLines(3);
+                            commentpostdesc.setEllipsize(null);
+                            if(commentpostdesc.getLineCount()>3){
                                 if(readMore!=null){
                                     readMore.setVisibility(View.VISIBLE);
                                 }
@@ -1133,13 +1190,13 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
                         }
                     }
                 });
-                postdesc.setLineCountListener(new SocialTextView.LineCountListener() {
+                commentpostdesc.setLineCountListener(new SocialTextView.LineCountListener() {
                     @Override
                     public void onLineCount(int lineCount) {
                         Log.e("Position",getAdapterPosition()+"");
                         Log.e("line count",lineCount+"");
-                        Log.e("max line count",postdesc.getMaxLines()+"");
-                        if(lineCount > postdesc.getMaxLines()){
+                        Log.e("max line count",commentpostdesc.getMaxLines()+"");
+                        if(lineCount > commentpostdesc.getMaxLines()){
                             if(readMore != null){
                                 Log.e("readMoreVisible","true");
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -1165,64 +1222,128 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
                         }
                     }
                 });
-
             }
 
-            if(like!=null){
-                like.setOnClickListener(new View.OnClickListener() {
+
+            if(postoptions!=null){
+                postoptions.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        recyclerViewClick.onLikeClick(getAdapterPosition(),likeimage,likenumber);
+                        recyclerViewClick.onPostOptionsClick(getAdapterPosition(),postcommentnumber);
                     }
                 });
             }
 
-            if(comment!=null){
-                comment.setOnClickListener(new View.OnClickListener() {
+            if(postpostdesc!=null){
+                postpostdesc.setOnLinkClickListener(new SocialTextView.OnLinkClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        recyclerViewClick.onOpenComments(getAdapterPosition());
+                    public void onLinkClicked(int i, String s) {
+                        recyclerViewClick.onPostSocialClick(getAdapterPosition(),i,s);
                     }
                 });
-            }
-
-            if(profilephoto!=null){
-                profilephoto.setOnClickListener(new View.OnClickListener() {
+                postpostdesc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
-                    }
-                });
-            }
+                        //GenelUtil.ToastLong(itemView.getContext(),postdesc.getLineCount()+"");
+                        if(postpostdesc.getLineCount()>postpostdesc.getMaxLines()){
+                            postpostdesc.setMaxLines(Integer.MAX_VALUE);
+                            postpostdesc.setEllipsize(null);
+                            if(readMore!=null){
+                                readMore.setVisibility(View.GONE);
+                            }
 
-
-            if(name!=null){
-                name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
-                    }
-                });
-            }
-
-            if(username!=null){
-                username.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
-                    }
-                });
-            }
-
-            if(linkripple!=null){
-                linkripple.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (SystemClock.elapsedRealtime() - mLastClickTime < 250){
-                            return;
                         }
-                        mLastClickTime = SystemClock.elapsedRealtime();
-                        //recyclerViewClick.onLinkClick(getAdapterPosition());
+                        else if(postpostdesc.getLineCount()<=postpostdesc.getMaxLines()){
+                            postpostdesc.setMaxLines(3);
+                            postpostdesc.setEllipsize(null);
+                            if(postpostdesc.getLineCount()>3){
+                                if(readMore!=null){
+                                    readMore.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }
+                    }
+                });
+                postpostdesc.setLineCountListener(new SocialTextView.LineCountListener() {
+                    @Override
+                    public void onLineCount(int lineCount) {
+                        if(lineCount > postpostdesc.getMaxLines()){
+                            if(readMore != null){
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    public void run() {
+                                        // do something
+                                        readMore.setVisibility(View.VISIBLE);
+                                    }
+                                });
+
+                            }
+                        }
+                        else{
+                            if(readMore!=null){
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    public void run() {
+                                        // do something
+                                        readMore.setVisibility(View.GONE);
+                                    }
+                                });
+
+                            }
+                        }
+                    }
+                });
+
+            }
+
+            if(postlike!=null){
+                postlike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onPostLikeClick(getAdapterPosition(),postlikeimage,postlikenumber);
+                    }
+                });
+            }
+
+            if(postcomment!=null){
+                postcomment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onPostOpenComments(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(postprofilephoto!=null){
+                postprofilephoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(postname!=null){
+                postname.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(postusername!=null){
+                postusername.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onGoToProfileClick(getAdapterPosition());
+                    }
+                });
+            }
+
+            if(postlinkripple!=null){
+                postlinkripple.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerViewClick.onPostLinkClick(getAdapterPosition());
                     }
                 });
 
@@ -1265,28 +1386,15 @@ public class SafPostAdapter extends RecyclerView.Adapter<SafPostAdapter.ViewHold
                 reloadripple.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //recyclerViewClick.onReloadImageClick(getAdapterPosition(),reloadlayout,imageprogress,postimage);
+                        recyclerViewClick.onReloadImageClick(getAdapterPosition()
+                                ,reloadlayout,imageprogress,postimage);
                     }
                 });
             }
 
 
-
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

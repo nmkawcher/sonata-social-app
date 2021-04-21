@@ -2,12 +2,10 @@ package com.sonata.socialapp.utils.VideoUtils;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.MyApp;
 
 import cn.jzvd.JzvdStd;

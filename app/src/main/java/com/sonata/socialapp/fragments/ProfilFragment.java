@@ -35,10 +35,10 @@ import com.sonata.socialapp.activities.sonata.FollowingsActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.LoginActivity;
 import com.sonata.socialapp.activities.sonata.MainActivity;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.GridProfilAdapter;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
+import com.sonata.socialapp.utils.adapters.PostAdapter;
 import com.sonata.socialapp.utils.classes.BottomSheetDialog;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
@@ -80,7 +80,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     private TextView name,bio,followers,followerstext,followingtext,followings,username;
 
 
-    private SafPostAdapter postAdapter;
+    private PostAdapter postAdapter;
     private RecyclerView.OnScrollListener postOnScrollListener;
     private RecyclerView postRecyclerView;
 
@@ -157,7 +157,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
             public void onClick(View v) {
 
                 dialog = new BottomSheetDialog(
-                        GenelUtil.getSavedUsersFinal(getActivity())
+                        Util.getSavedUsersFinal(getActivity())
                         ,getActivity()
                         ,ParseUser.getCurrentUser().getObjectId()
                         ,ProfilFragment.this);
@@ -171,7 +171,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
             @Override
             public void onClick(View v) {
                 dialog = new BottomSheetDialog(
-                        GenelUtil.getSavedUsersFinal(getActivity())
+                        Util.getSavedUsersFinal(getActivity())
                         ,getActivity()
                         ,ParseUser.getCurrentUser().getObjectId()
                         ,ProfilFragment.this);
@@ -182,7 +182,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         profilephoto=view.findViewById(R.id.profilephotophoto);
         profilephoto.setOnClickListener(view1 -> {
             if(user.getHasPp()){
-                if(GenelUtil.clickable(500)) {
+                if(Util.clickable(500)) {
                     List<String> ulist = new ArrayList<>();
                     ulist.add("0");
 
@@ -195,7 +195,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                         json.put("height",2000);
                         ulist2.add(json);
 
-                        GenelUtil.showImage(ulist,ulist2
+                        Util.showImage(ulist,ulist2
                                 ,profilephoto,0,null);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -232,7 +232,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
             if(dialog != null){
                 dialog.dismiss();
             }
-            if(GenelUtil.clickable(500)){
+            if(Util.clickable(500)){
                 ((MainActivity)Objects.requireNonNull(getActivity())).startSettingsActivity();
             }
 
@@ -377,30 +377,30 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
                         .into(profilephoto);
             }
 
-            followings.setText(GenelUtil.ConvertNumber((int)user.getFollowing(),followings.getContext()));
-            followers.setText(GenelUtil.ConvertNumber((int)user.getFollower(),followers.getContext()));
+            followings.setText(Util.ConvertNumber((int)user.getFollowing(),followings.getContext()));
+            followers.setText(Util.ConvertNumber((int)user.getFollower(),followers.getContext()));
             followingtext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().startActivity(new Intent(getActivity(), FollowingsActivity.class).putExtra("id",GenelUtil.getCurrentUser().getObjectId()));
+                    getActivity().startActivity(new Intent(getActivity(), FollowingsActivity.class).putExtra("id", Util.getCurrentUser().getObjectId()));
                 }
             });
             followings.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().startActivity(new Intent(getActivity(), FollowingsActivity.class).putExtra("id",GenelUtil.getCurrentUser().getObjectId()));
+                    getActivity().startActivity(new Intent(getActivity(), FollowingsActivity.class).putExtra("id", Util.getCurrentUser().getObjectId()));
                 }
             });
             followerstext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().startActivity(new Intent(getActivity(), FollowersActivity.class).putExtra("id",GenelUtil.getCurrentUser().getObjectId()));
+                    getActivity().startActivity(new Intent(getActivity(), FollowersActivity.class).putExtra("id", Util.getCurrentUser().getObjectId()));
                 }
             });
             followers.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().startActivity(new Intent(getActivity(), FollowersActivity.class).putExtra("id",GenelUtil.getCurrentUser().getObjectId()));
+                    getActivity().startActivity(new Intent(getActivity(), FollowersActivity.class).putExtra("id", Util.getCurrentUser().getObjectId()));
                 }
             });
         }
@@ -617,17 +617,17 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
     }
 
     private boolean getActive(){
-        return getActivity()!=null && GenelUtil.isAlive(getActivity());
+        return getActivity()!=null && Util.isAlive(getActivity());
     }
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        GenelUtil.handlePostOptionsClick(getContext(),position,list,postAdapter,commentNumber);
+        Util.handlePostOptionsClick(getContext(),position,list,postAdapter,commentNumber);
     }
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(getContext(),text,clickType);
+        Util.handleLinkClicks(getContext(),text,clickType);
     }
 
     @Override
@@ -643,7 +643,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
 
 
             post.increment("likenumber");
-            likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),getContext()));
+            likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),getContext()));
 
 
         }
@@ -653,7 +653,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
             if(post.getLikenumber()>0){
 
                 post.increment("likenumber",-1);
-                likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),getContext()));                                                    }
+                likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),getContext()));                                                    }
             else{
                 post.setLikenumber(0);
                 likeNumber.setText("0");
@@ -685,7 +685,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         }
         else{
             if(postAdapter == null){
-                postAdapter = new SafPostAdapter();
+                postAdapter = new PostAdapter();
                 postAdapter.setContext(list,Glide.with(getActivity()),this,user);
                 LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
                 linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -788,7 +788,7 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
         for(int i = 0; i < post.getImageCount(); i++){
             ulist.add(String.valueOf(i));
         }
-        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,postAdapter);
+        Util.showImage(ulist,post.getMediaList(),imageView,pos,postAdapter);
     }
 
     @Override
@@ -811,17 +811,17 @@ public class ProfilFragment extends Fragment implements RecyclerViewClick, Accou
 
                     if(e==null){
                         String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                        GenelUtil.ToastLong(getActivity(),text);
+                        Util.ToastLong(getActivity(),text);
                         progressDialog.dismiss();
                         getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
                         getActivity().finish();
                     }
                     else{
                         if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
-                            GenelUtil.removeUserFromCache(id, getActivity());
+                            Util.removeUserFromCache(id, getActivity());
                         }
                         progressDialog.dismiss();
-                        GenelUtil.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
+                        Util.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
                     }
                 }
             });

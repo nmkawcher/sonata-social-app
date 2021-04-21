@@ -1,33 +1,19 @@
 package com.sonata.socialapp.activities.sonata;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.os.ConfigurationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -35,10 +21,9 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
+import com.sonata.socialapp.utils.adapters.PostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -62,7 +47,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
     RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
-    SafPostAdapter adapter;
+    PostAdapter adapter;
     private boolean loading=true;
     private List<UnifiedNativeAd> listreklam;
     List<String> kategori;
@@ -77,7 +62,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -89,7 +74,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         back = findViewById(R.id.backbuttonbutton);
         back.setOnClickListener(view -> onBackPressed());
 
-        seenList = GenelUtil.getSeenList(this);
+        seenList = Util.getSeenList(this);
         recyclerView = findViewById(R.id.folreqrecyclerview);
         swipeRefreshLayout = findViewById(R.id.folreqSwipeRefreshLayout);
         onScrollListener = new RecyclerView.OnScrollListener() {
@@ -179,7 +164,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
             linearLayoutManager=new LinearLayoutManager(GetRestDiscoverActivity.this);
             linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
             recyclerView.setLayoutManager(linearLayoutManager);
-            adapter=new SafPostAdapter();
+            adapter=new PostAdapter();
             adapter.setContext(list, Glide.with(GetRestDiscoverActivity.this),this);
             adapter.setHasStableIds(true);
             recyclerView.setAdapter(adapter);
@@ -202,7 +187,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
             recyclerView.addOnScrollListener(onScrollListener);
 
-            if(GenelUtil.isAlive(this)){
+            if(Util.isAlive(this)){
                 getReqs(null,false,kategori);
             }
         }
@@ -220,7 +205,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
                 linearLayoutManager=new LinearLayoutManager(GetRestDiscoverActivity.this);
                 linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
                 recyclerView.setLayoutManager(linearLayoutManager);
-                adapter=new SafPostAdapter();
+                adapter=new PostAdapter();
                 adapter.setContext(list, Glide.with(GetRestDiscoverActivity.this),this);
                 adapter.setHasStableIds(true);
                 recyclerView.setAdapter(adapter);
@@ -243,7 +228,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
                 recyclerView.addOnScrollListener(onScrollListener);
 
-                if(GenelUtil.isAlive(this)){
+                if(Util.isAlive(this)){
                     getPost(id);
                     //getReqs(null,false,kategori);
                 }
@@ -286,7 +271,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
     protected void onPause() {
         super.onPause();
         Jzvd.releaseAllVideos();
-        GenelUtil.setSeenList(this,seenList);
+        Util.setSeenList(this,seenList);
     }
 
 
@@ -294,17 +279,17 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
 
     private void getReqs(Date date,boolean isRefresh,List<String> hashtag){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<>();
             if(date!=null){
                 params.put("date",date);
             }
             params.put("seenList",seenList);
-            params.put("lang", GenelUtil.getCurrentCountryCode(this));
+            params.put("lang", Util.getCurrentCountryCode(this));
             params.put("text",hashtag);
             ParseCloud.callFunctionInBackground("getRestOfTheDiscoverPost", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
-                if(GenelUtil.isAlive(GetRestDiscoverActivity.this)){
+                if(Util.isAlive(GetRestDiscoverActivity.this)){
                     if(e==null){
                         Log.e("hashmap ",objects.toString());
                         List<Post> tpL = (List<Post>) objects.get("posts");
@@ -336,7 +321,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
     private void initList(List<Post> objects,boolean hasMore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             Log.e("done","InitListActive");
             postson = !hasMore;
             this.date = date;
@@ -427,11 +412,11 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
     private void getAds(List<Post> objects,boolean hasMore,Date date,boolean isRefresh){
         Log.e("done","doneGetAds");
 
-        if(GenelUtil.isAlive(GetRestDiscoverActivity.this)){
-            GenelUtil.loadAds(objects.size(),GetRestDiscoverActivity.this, new com.sonata.socialapp.utils.interfaces.AdListener() {
+        if(Util.isAlive(GetRestDiscoverActivity.this)){
+            Util.loadAds(objects.size(),GetRestDiscoverActivity.this, new com.sonata.socialapp.utils.interfaces.AdListener() {
                 @Override
                 public void done(List<UnifiedNativeAd> list) {
-                    if(GenelUtil.isAlive(GetRestDiscoverActivity.this)){
+                    if(Util.isAlive(GetRestDiscoverActivity.this)){
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
@@ -469,12 +454,12 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        GenelUtil.handlePostOptionsClick(this,position,list,adapter,commentNumber);
+        Util.handlePostOptionsClick(this,position,list,adapter,commentNumber);
     }
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
     @Override
@@ -490,7 +475,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
 
 
             post.increment("likenumber");
-            likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),GetRestDiscoverActivity.this));
+            likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),GetRestDiscoverActivity.this));
 
 
         }
@@ -500,7 +485,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
             if(post.getLikenumber()>0){
 
                 post.increment("likenumber",-1);
-                likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),GetRestDiscoverActivity.this));                                                    }
+                likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),GetRestDiscoverActivity.this));                                                    }
             else{
                 post.setLikenumber(0);
                 likeNumber.setText("0");
@@ -537,7 +522,7 @@ public class GetRestDiscoverActivity extends AppCompatActivity implements Recycl
         for(int i = 0; i < post.getImageCount(); i++){
             ulist.add(String.valueOf(i));
         }
-        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+        Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
 

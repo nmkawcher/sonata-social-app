@@ -21,11 +21,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.parse.ParseCloud;
-import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
-import com.sonata.socialapp.activities.sonata.DirectMessageActivity;
 import com.sonata.socialapp.activities.sonata.FollowRequestActivity;
 import com.sonata.socialapp.activities.sonata.GetRestDiscoverActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
@@ -70,7 +68,7 @@ public class FcmService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
         if(ParseUser.getCurrentUser()!=null){
             if(remoteMessage.getData().get("to")!=null){
-                List<Object> res = GenelUtil.isUserSaved(this,remoteMessage.getData().get("to"));
+                List<Object> res = Util.isUserSaved(this,remoteMessage.getData().get("to"));
                 if((Boolean) res.get(0)){
                     String toId = remoteMessage.getData().get("to");
                     String usna = (String) res.get(1);

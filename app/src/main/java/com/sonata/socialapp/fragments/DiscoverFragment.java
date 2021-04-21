@@ -1,14 +1,11 @@
 package com.sonata.socialapp.fragments;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.os.ConfigurationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -17,40 +14,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.GetRestDiscoverActivity;
-import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
-import com.sonata.socialapp.activities.sonata.HashtagActivity;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
-import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.DiscoverGridProfilAdapter;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
-import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.GridClick;
-import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
-import com.vincan.medialoader.DownloadManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import cn.jzvd.Jzvd;
 
 
 public class DiscoverFragment extends Fragment implements GridClick {
@@ -141,7 +123,7 @@ public class DiscoverFragment extends Fragment implements GridClick {
         recyclerView.addOnScrollListener(listener);
 
 
-        if(getActivity() != null && GenelUtil.isAlive(getActivity()) && !this.isDetached()){
+        if(getActivity() != null && Util.isAlive(getActivity()) && !this.isDetached()){
             getReqs(null,true);
         }
 
@@ -151,12 +133,12 @@ public class DiscoverFragment extends Fragment implements GridClick {
 
     private void getReqs(Date date,boolean isRefresh){
         HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("lang", GenelUtil.getCurrentCountryCode(getActivity()));
+        params.put("lang", Util.getCurrentCountryCode(getActivity()));
         ParseCloud.callFunctionInBackground("getDiscoverObjects", params, new FunctionCallback<HashMap>() {
             @Override
             public void done(HashMap  objects, ParseException e) {
                 Log.e("done","done");
-                if(getActivity() != null && GenelUtil.isAlive(getActivity()) && !DiscoverFragment.this.isDetached()){
+                if(getActivity() != null && Util.isAlive(getActivity()) && !DiscoverFragment.this.isDetached()){
                     if(e==null){
 
                         if(objects!= null){
@@ -184,7 +166,7 @@ public class DiscoverFragment extends Fragment implements GridClick {
 
 
     private void initList(List<Post> objects) {
-        if(getActivity() != null && GenelUtil.isAlive(getActivity()) && !DiscoverFragment.this.isDetached()){
+        if(getActivity() != null && Util.isAlive(getActivity()) && !DiscoverFragment.this.isDetached()){
 
             if(objects.size()==0){
                 loading =false;

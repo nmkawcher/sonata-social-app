@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,7 @@ import com.sonata.socialapp.R;
 import com.sonata.socialapp.activities.sonata.CommentActivity;
 import com.sonata.socialapp.activities.sonata.FollowRequestActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
-import com.sonata.socialapp.activities.sonata.MessagesActivity;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.NotificationAdapter;
 import com.sonata.socialapp.utils.classes.Notif;
 import com.sonata.socialapp.utils.interfaces.NotifRecyclerView;
@@ -37,9 +35,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import q.rorbin.badgeview.Badge;
-import q.rorbin.badgeview.QBadgeView;
 
 
 public class NotifFragment extends Fragment implements NotifRecyclerView {
@@ -74,10 +69,10 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
     @Override
     public void onResume() {
         super.onResume();
-        if(GenelUtil.getCurrentUser().getPrivate()){
+        if(Util.getCurrentUser().getPrivate()){
             followReqLayout.setVisibility(View.VISIBLE);
-            if(followReqText!=null&&followreqs!=null&&GenelUtil.getCurrentUser()!=null){
-                followReqText.setText(getString(R.string.followreqs)+" ("+ GenelUtil.getCurrentUser().getFollowReqCount()+")");
+            if(followReqText!=null&&followreqs!=null&& Util.getCurrentUser()!=null){
+                followReqText.setText(getString(R.string.followreqs)+" ("+ Util.getCurrentUser().getFollowReqCount()+")");
                 followreqs.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -104,9 +99,9 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
         followReqLayout = view.findViewById(R.id.followreqlayout);
         followReqText=view.findViewById(R.id.followrequesttext);
         followreqs = view.findViewById(R.id.followreqripple);
-        if(GenelUtil.getCurrentUser().getPrivate()){
+        if(Util.getCurrentUser().getPrivate()){
 
-            followReqText.setText(getString(R.string.followreqs)+" ("+ GenelUtil.getCurrentUser().getFollowReqCount()+")");
+            followReqText.setText(getString(R.string.followreqs)+" ("+ Util.getCurrentUser().getFollowReqCount()+")");
             followreqs.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -221,10 +216,10 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
 
 
     public void notifyAdapter(){
-        if(GenelUtil.getCurrentUser().getPrivate()){
+        if(Util.getCurrentUser().getPrivate()){
             followReqLayout.setVisibility(View.VISIBLE);
-            if(followReqText!=null&&followreqs!=null&&GenelUtil.getCurrentUser()!=null){
-                followReqText.setText(getString(R.string.followreqs)+" ("+ GenelUtil.getCurrentUser().getFollowReqCount()+")");
+            if(followReqText!=null&&followreqs!=null&& Util.getCurrentUser()!=null){
+                followReqText.setText(getString(R.string.followreqs)+" ("+ Util.getCurrentUser().getFollowReqCount()+")");
                 followreqs.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -244,16 +239,16 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
         }
     }
     private boolean getActive(){
-        return getActivity()!=null && GenelUtil.isAlive(getActivity());
+        return getActivity()!=null && Util.isAlive(getActivity());
     }
 
 
     public void Refresh(){
         if(getActive()){
-            if(GenelUtil.getCurrentUser().getPrivate()){
+            if(Util.getCurrentUser().getPrivate()){
                 followReqLayout.setVisibility(View.VISIBLE);
-                if(followReqText!=null&&followreqs!=null&&GenelUtil.getCurrentUser()!=null){
-                    followReqText.setText(getString(R.string.followreqs)+" ("+ GenelUtil.getCurrentUser().getFollowReqCount()+")");
+                if(followReqText!=null&&followreqs!=null&& Util.getCurrentUser()!=null){
+                    followReqText.setText(getString(R.string.followreqs)+" ("+ Util.getCurrentUser().getFollowReqCount()+")");
                     followreqs.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -353,7 +348,7 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
 
     @Override
     public void goToProfile(int position) {
-        if(GenelUtil.clickable(400)){
+        if(Util.clickable(400)){
             Notif notif = list.get(position);
             if(!notif.getOwner().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                 startActivity(new Intent(getContext(), GuestProfileActivity.class).putExtra("user",notif.getOwner()));
@@ -363,7 +358,7 @@ public class NotifFragment extends Fragment implements NotifRecyclerView {
 
     @Override
     public void notifClick(int position) {
-        if(GenelUtil.clickable(400)){
+        if(Util.clickable(400)){
             Notif notif = list.get(position);
             switch (notif.getType()) {
                 case "followedyou":

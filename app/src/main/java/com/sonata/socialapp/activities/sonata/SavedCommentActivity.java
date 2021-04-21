@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -34,8 +32,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.SafCommentAdapter;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.interfaces.CommentReplyAdapterClick;
@@ -79,7 +76,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -148,7 +145,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
 
         recyclerView.addOnScrollListener(onScrollListener);
 
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             getReqs(null,false);
         }
 
@@ -161,7 +158,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
 
 
     private void getReqs(Date date,boolean isRefresh){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<String, Object>();
             if(date!=null){
                 params.put("date",date);
@@ -170,7 +167,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                 @Override
                 public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
-                    if(GenelUtil.isAlive(SavedCommentActivity.this)){
+                    if(Util.isAlive(SavedCommentActivity.this)){
                         if(e==null){
 
                             if(objects!= null){
@@ -199,7 +196,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
     }
 
     private void initList(List<Comment> objects,boolean hasmore,Date date){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             this.date = date;
             postson = !hasmore;
             if(objects.size()==0){
@@ -376,7 +373,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
             json.put("height",post.getRatioH());
             ulist2.add(json);
 
-            GenelUtil.showImage(ulist,ulist2
+            Util.showImage(ulist,ulist2
                     ,imageView,0,null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -435,12 +432,12 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                             if(e==null){
                                 post.setSaved(true);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(SavedCommentActivity.this,getString(R.string.commentsaved));
+                                Util.ToastLong(SavedCommentActivity.this,getString(R.string.commentsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(SavedCommentActivity.this,getString(R.string.error));
+                                Util.ToastLong(SavedCommentActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -460,12 +457,12 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                             if(e==null){
                                 post.setSaved(false);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(SavedCommentActivity.this,getString(R.string.commentunsaved));
+                                Util.ToastLong(SavedCommentActivity.this,getString(R.string.commentunsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(SavedCommentActivity.this,getString(R.string.error));
+                                Util.ToastLong(SavedCommentActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -481,12 +478,12 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                         @Override
                         public void done(String object, ParseException e) {
                             if(e==null){
-                                GenelUtil.ToastLong(SavedCommentActivity.this,getString(R.string.reportsucces));
+                                Util.ToastLong(SavedCommentActivity.this,getString(R.string.reportsucces));
                                 progressDialog.dismiss();
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(SavedCommentActivity.this,getString(R.string.error));
+                                Util.ToastLong(SavedCommentActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -525,7 +522,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                                     }
                                     else{
                                         progressDialog.dismiss();
-                                        GenelUtil.ToastLong(SavedCommentActivity.this,getString(R.string.error));
+                                        Util.ToastLong(SavedCommentActivity.this,getString(R.string.error));
                                     }
                                 }
                             });
@@ -554,7 +551,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                 upvoteimage.setImageDrawable( getDrawable(R.drawable.ic_upvote_blue));
                 votecount.setTextColor(Color.parseColor("#2d72bc"));
                 post.increment("vote",2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
 
 
                 //upvote
@@ -569,7 +566,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
 
 
                     //unupvote
@@ -582,7 +579,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote_blue));
                     votecount.setTextColor(Color.parseColor("#2d72bc"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
 
 
                     //upvote
@@ -607,7 +604,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                 votecount.setTextColor(Color.parseColor("#a64942"));
 
                 post.increment("vote",-2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
 
 
 
@@ -622,7 +619,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
 
 
                     //undownvote
@@ -635,7 +632,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote_red));
                     votecount.setTextColor(Color.parseColor("#a64942"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),SavedCommentActivity.this));
 
 
                     //downvote
@@ -659,7 +656,7 @@ public class SavedCommentActivity extends AppCompatActivity implements CommentRe
 
     @Override
     public void onCommentSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
 }

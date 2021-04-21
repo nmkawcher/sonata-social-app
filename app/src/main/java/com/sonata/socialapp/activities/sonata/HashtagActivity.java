@@ -1,42 +1,29 @@
 package com.sonata.socialapp.activities.sonata;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
-import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
+import com.sonata.socialapp.utils.adapters.PostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -58,7 +45,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
     RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
-    SafPostAdapter adapter;
+    PostAdapter adapter;
     private boolean loading=true;
     private AdLoader adLoader;
     private List<UnifiedNativeAd> listreklam;
@@ -106,7 +93,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -191,7 +178,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
         linearLayoutManager=new LinearLayoutManager(HashtagActivity.this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter=new SafPostAdapter();
+        adapter=new PostAdapter();
         adapter.setContext(list, Glide.with(HashtagActivity.this),this);
         adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
@@ -213,7 +200,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
         recyclerView.addOnScrollListener(onScrollListener);
 
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             getReqs(null,false,hashtag);
         }
 
@@ -229,7 +216,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
 
     private void getReqs(Date date,boolean isRefresh,String hashtag){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<>();
             if(date!=null){
                 params.put("date",date);
@@ -237,7 +224,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
             params.put("text",hashtag);
             ParseCloud.callFunctionInBackground("searchPost", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
-                if(GenelUtil.isAlive(HashtagActivity.this)){
+                if(Util.isAlive(HashtagActivity.this)){
                     if(e==null){
 
                         if(objects!= null){
@@ -269,7 +256,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
     private void initList(List<Post> objects,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam) {
         Log.e("done","InitList");
 
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             Log.e("done","InitListActive");
             postson =!hasmore;
             this.date = date;
@@ -360,11 +347,11 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
     private void getAds(List<Post> objects,boolean hasmore,Date date,boolean isRefresh){
         Log.e("done","doneGetAds");
 
-        if(GenelUtil.isAlive(HashtagActivity.this)){
-            GenelUtil.loadAds(objects.size(),HashtagActivity.this, new com.sonata.socialapp.utils.interfaces.AdListener() {
+        if(Util.isAlive(HashtagActivity.this)){
+            Util.loadAds(objects.size(),HashtagActivity.this, new com.sonata.socialapp.utils.interfaces.AdListener() {
                 @Override
                 public void done(List<UnifiedNativeAd> list) {
-                    if(GenelUtil.isAlive(HashtagActivity.this)){
+                    if(Util.isAlive(HashtagActivity.this)){
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
@@ -403,12 +390,12 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        GenelUtil.handlePostOptionsClick(this,position,list,adapter,commentNumber);
+        Util.handlePostOptionsClick(this,position,list,adapter,commentNumber);
     }
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
     @Override
@@ -424,7 +411,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
 
 
             post.increment("likenumber");
-            likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),HashtagActivity.this));
+            likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),HashtagActivity.this));
 
 
         }
@@ -434,7 +421,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
             if(post.getLikenumber()>0){
 
                 post.increment("likenumber",-1);
-                likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),HashtagActivity.this));                                                    }
+                likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),HashtagActivity.this));                                                    }
             else{
                 post.setLikenumber(0);
                 likeNumber.setText("0");
@@ -471,7 +458,7 @@ public class HashtagActivity extends AppCompatActivity implements RecyclerViewCl
         for(int i = 0; i < post.getImageCount(); i++){
             ulist.add(String.valueOf(i));
         }
-        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+        Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
 }

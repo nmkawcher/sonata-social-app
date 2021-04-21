@@ -1,7 +1,6 @@
 package com.sonata.socialapp.utils.adapters;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
@@ -106,7 +105,7 @@ public class BlockedPersonAdapter extends RecyclerView.Adapter<BlockedPersonAdap
         if(getItemViewType(holder.getAdapterPosition())!=TYPE_LOAD&&getItemViewType(holder.getAdapterPosition())!=TYPE_EMPTY){
 
             SonataUser user = list.get(holder.getAdapterPosition()).getUser();
-            if(user.getObjectId().equals(GenelUtil.getCurrentUser().getObjectId())){
+            if(user.getObjectId().equals(Util.getCurrentUser().getObjectId())){
                 holder.buttonLay.setVisibility(View.INVISIBLE);
             }
             else{

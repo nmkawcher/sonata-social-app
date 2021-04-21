@@ -39,7 +39,7 @@ public class MyApp extends Application {
             LeakCanary.install(this);
         }*/
 
-        if(GenelUtil.getNightModeApp(this)){
+        if(Util.getNightModeApp(this)){
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_YES);
         }
@@ -62,9 +62,9 @@ public class MyApp extends Application {
 
 
         Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId("fDVnuSxHVTycjWW2J3ZG9WHukxewXxZq")
+                .applicationId("YOUR_APP_ID")
                 .enableLocalDataStore()
-                .server("http://23.94.217.167:3152/parse/")
+                .server("YOUR_PARSE_SERVER_URL")
                 .build());
 
     }

@@ -21,7 +21,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.BlockedPersonAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -51,7 +51,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -123,7 +123,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
 
         recyclerView.addOnScrollListener(onScrollListener);
 
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             getReqs(null,false);
         }
 
@@ -138,7 +138,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
 
 
     private void getReqs(Date date,boolean isRefresh){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<String, Object>();
             if(date!=null){
                 params.put("date",date);
@@ -148,7 +148,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
                 @Override
                 public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
-                    if(GenelUtil.isAlive(FollowersActivity.this)){
+                    if(Util.isAlive(FollowersActivity.this)){
                         if(e==null){
 
                             if(objects!= null){
@@ -177,7 +177,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
     }
 
     private void initList(List<SonataUser> objects,boolean hasmore,Date date) {
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             postson = !hasmore;
             this.date = date;
             if(objects.size()==0){
@@ -279,7 +279,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
     @Override
     public void goToProfileClick(int position) {
         SonataUser user = list.get(position).getUser();
-        if(GenelUtil.clickable(700)){
+        if(Util.clickable(700)){
             if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                 startActivity(new Intent(FollowersActivity.this, GuestProfileActivity.class).putExtra("user",user));
             }
@@ -309,7 +309,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
                                 }
                                 else{
                                     buttonText.setText(getString(R.string.follow));
-                                    GenelUtil.ToastLong(FollowersActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowersActivity.this,getString(R.string.error));
                                 }
 
 
@@ -333,7 +333,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
                                 }
                                 else{
                                     buttonText.setText(getString(R.string.follow));
-                                    GenelUtil.ToastLong(FollowersActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowersActivity.this,getString(R.string.error));
                                 }
 
 
@@ -361,7 +361,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
                                 }
                                 else{
                                     buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                    GenelUtil.ToastLong(FollowersActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowersActivity.this,getString(R.string.error));
                                 }
 
 
@@ -385,7 +385,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
                                 }
                                 else{
                                     buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                    GenelUtil.ToastLong(FollowersActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowersActivity.this,getString(R.string.error));
                                 }
 
 
@@ -413,7 +413,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
                             }
                             else{
                                 buttonText.setText(getString(R.string.accept));
-                                GenelUtil.ToastLong(FollowersActivity.this,getString(R.string.error));
+                                Util.ToastLong(FollowersActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -435,7 +435,7 @@ public class FollowersActivity extends AppCompatActivity implements BlockedAdapt
                             }
                             else{
                                 buttonText.setText(buttonText.getContext().getString(R.string.requestsent));
-                                GenelUtil.ToastLong(FollowersActivity.this,getString(R.string.error));
+                                Util.ToastLong(FollowersActivity.this,getString(R.string.error));
                             }
 
 

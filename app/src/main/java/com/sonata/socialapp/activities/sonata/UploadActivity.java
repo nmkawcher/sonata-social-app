@@ -43,7 +43,7 @@ import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.socialview.Mention;
 import com.sonata.socialapp.socialview.SocialAutoCompleteTextView;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.VideoUtils.VideoUtils;
 import com.sonata.socialapp.utils.adapters.MentionAdapter;
 import com.sonata.socialapp.utils.adapters.UploadPostAdapter;
@@ -107,7 +107,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -196,13 +196,13 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                 @Override
                                 public void run() {
                                     // Do something after 5s = 5000ms
-                                    if(GenelUtil.isAlive(UploadActivity.this)){
+                                    if(Util.isAlive(UploadActivity.this)){
                                         if(t.equals(postdesc.getText().toString())){
                                             HashMap<String, Object> params = new HashMap<>();
                                             params.put("text",queryString.replace("@","").toLowerCase());
                                             ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                                 Log.e("done","done");
-                                                if(GenelUtil.isAlive(UploadActivity.this)){
+                                                if(Util.isAlive(UploadActivity.this)){
                                                     if(e==null){
                                                         List<SonataUser> object = (List<SonataUser>) objecta.get("users");
 
@@ -255,13 +255,13 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                             @Override
                             public void run() {
                                 // Do something after 5s = 5000ms
-                                if(GenelUtil.isAlive(UploadActivity.this)){
+                                if(Util.isAlive(UploadActivity.this)){
                                     if(t.equals(postdesc.getText().toString())){
                                         HashMap<String, Object> params = new HashMap<>();
                                         params.put("text",t.replace("@","").toLowerCase());
                                         ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                             Log.e("done","done");
-                                            if(GenelUtil.isAlive(UploadActivity.this)){
+                                            if(Util.isAlive(UploadActivity.this)){
                                                 if(e==null){
                                                     List<SonataUser> object = (List<SonataUser>) objecta.get("users");
 
@@ -376,7 +376,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                GenelUtil.hideKeyboard(UploadActivity.this);
+                Util.hideKeyboard(UploadActivity.this);
                 if(list.size()>0){
                     if(list.get(0).getType().equals("image")){
                         progressDialog.show();
@@ -412,7 +412,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
     }
 
     private void compressImages(List<Uri> uriList,int current,List<File> fileList){
-        GenelUtil.compressImage(this,uriList.get(current), 155, new FileCompressListener() {
+        Util.compressImage(this,uriList.get(current), 155, new FileCompressListener() {
             @Override
             public void done(File file) {
                 fileList.add(file);
@@ -443,7 +443,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
             @Override
             public void done(ParseException e) {
 
-                if(GenelUtil.isAlive(UploadActivity.this)){
+                if(Util.isAlive(UploadActivity.this)){
                     if(e==null){
                         parseFileList.add(media);
                         if(fileList.size()==current+1){
@@ -464,7 +464,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
         }, new ProgressCallback() {
             @Override
             public void done(Integer percentDone) {
-                if(GenelUtil.isAlive(UploadActivity.this)){
+                if(Util.isAlive(UploadActivity.this)){
 
                     float maxYuzdeDosyaBasi = 100f/(float)fileList.size();
 
@@ -494,7 +494,6 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                     if(e==null){
 
                         if((boolean)postID.get("result")){
-                            GenelUtil.saveUploadTexts(postdesc.getText().toString().trim());
                             //GenelUtil.saveUploadUri(uri.toString());
                             Intent data = new Intent();
                             data.putExtra("post","postID");
@@ -505,13 +504,13 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                         }
                         else{
                             progressDialog.dismiss();
-                            GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                            Util.ToastLong(getApplicationContext(),getString(R.string.error));
                         }
                     }
                     else{
                         progressDialog.dismiss();
                         Log.e("error",e.getLocalizedMessage());
-                        GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                        Util.ToastLong(getApplicationContext(),getString(R.string.error));
                     }
                 }
 
@@ -528,7 +527,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
             Observable.fromCallable(() -> {
 
                 try {
-                    GenelUtil.copy(uri,new File(UploadActivity.this.getCacheDir()+File.separator+"copiedvideo.mp4"),UploadActivity.this,progressDialog);
+                    Util.copy(uri,new File(UploadActivity.this.getCacheDir()+File.separator+"copiedvideo.mp4"),UploadActivity.this,progressDialog);
                     return true;
                 } catch (IOException e) {
 
@@ -542,9 +541,9 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                     .subscribe((result) -> {
                         //Use result for something
                         if(!result){
-                            if(GenelUtil.isAlive(UploadActivity.this)){
+                            if(Util.isAlive(UploadActivity.this)){
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(getString(R.string.unsupportedvideo)+"While copy",getApplicationContext());
+                                Util.ToastLong(getString(R.string.unsupportedvideo)+"While copy",getApplicationContext());
                             }
                         }
                         else{
@@ -569,7 +568,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                         , new VideoCompressListener() {
                                             @Override
                                             public void onSuccess(File file) {
-                                                if(GenelUtil.isAlive(UploadActivity.this)){
+                                                if(Util.isAlive(UploadActivity.this)){
                                                     runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
@@ -585,11 +584,11 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                         retriever.setDataSource(UploadActivity.this,list.get(0).getUri());
                                                                         Bitmap bitmap = retriever.getFrameAtTime(Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))/2);
                                                                         ParseFile thumbnail = new ParseFile(
-                                                                                GenelUtil.getBytesFromBitmap(bitmap));
+                                                                                Util.getBytesFromBitmap(bitmap));
                                                                         thumbnail.saveInBackground(new SaveCallback() {
                                                                                                        @Override
                                                                                                        public void done(ParseException e) {
-                                                                                                           if(GenelUtil.isAlive(UploadActivity.this)){
+                                                                                                           if(Util.isAlive(UploadActivity.this)){
                                                                                                                if(e==null){
                                                                                                                    progressDialog.setMessage(getString(R.string.finishingup));
                                                                                                                    HashMap<String, Object> params = new HashMap<>();
@@ -608,8 +607,6 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                                                                if(e==null){
 
                                                                                                                                    if((boolean)postID.get("result")){
-                                                                                                                                       GenelUtil.saveUploadTexts(postdesc.getText().toString().trim());
-                                                                                                                                       GenelUtil.saveUploadUri(uri.toString());
                                                                                                                                        Intent data = new Intent();
                                                                                                                                        data.putExtra("post","postID");
                                                                                                                                        data.setData(Uri.parse("postID.getObjectId()"));
@@ -619,14 +616,14 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                                                                    }
                                                                                                                                    else{
                                                                                                                                        progressDialog.dismiss();
-                                                                                                                                       GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                                                                                                                                       Util.ToastLong(getApplicationContext(),getString(R.string.error));
                                                                                                                                    }
 
 
                                                                                                                                }
                                                                                                                                else{
                                                                                                                                    progressDialog.dismiss();
-                                                                                                                                   GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                                                                                                                                   Util.ToastLong(getApplicationContext(),getString(R.string.error));
                                                                                                                                }
                                                                                                                            }
 
@@ -646,7 +643,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                 ,new ProgressCallback() {
                                                                                     @Override
                                                                                     public void done(Integer percentDone) {
-                                                                                        if(GenelUtil.isAlive(UploadActivity.this)){
+                                                                                        if(Util.isAlive(UploadActivity.this)){
                                                                                             if((90+Math.round(percentDone/10))<101){
                                                                                                 progressDialog.setMessage(getString(R.string.uploading)+" ("+(90+Math.round(percentDone/10))+"%)");
                                                                                             }
@@ -667,7 +664,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                             }, new ProgressCallback() {
                                                                 @Override
                                                                 public void done(Integer percentDone) {
-                                                                    if(GenelUtil.isAlive(UploadActivity.this)){
+                                                                    if(Util.isAlive(UploadActivity.this)){
                                                                         progressDialog.setMessage(getString(R.string.uploading)+" ("+Math.round((percentDone*9)/10)+"%)");
                                                                     }
 
@@ -682,7 +679,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
 
                                             @Override
                                             public void OnError(String message) {
-                                                if(GenelUtil.isAlive(UploadActivity.this)){
+                                                if(Util.isAlive(UploadActivity.this)){
                                                     runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
@@ -695,7 +692,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
 
                                             @Override
                                             public void onProgress(int progress) {
-                                                if(GenelUtil.isAlive(UploadActivity.this)){
+                                                if(Util.isAlive(UploadActivity.this)){
                                                     runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
@@ -720,11 +717,11 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                             retriever.setDataSource(UploadActivity.this,list.get(0).getUri());
                                             Bitmap bitmap = retriever.getFrameAtTime(Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))/2);
                                             ParseFile thumbnail = new ParseFile(
-                                                    GenelUtil.getBytesFromBitmap(bitmap));
+                                                    Util.getBytesFromBitmap(bitmap));
                                             thumbnail.saveInBackground(new SaveCallback() {
                                                                            @Override
                                                                            public void done(ParseException e) {
-                                                                               if(GenelUtil.isAlive(UploadActivity.this)){
+                                                                               if(Util.isAlive(UploadActivity.this)){
                                                                                    if(e==null){
                                                                                        progressDialog.setMessage(getString(R.string.finishingup));
                                                                                        HashMap<String, Object> params = new HashMap<>();
@@ -743,8 +740,6 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                                    if(e==null){
 
                                                                                                        if((boolean)postID.get("result")){
-                                                                                                           GenelUtil.saveUploadTexts(postdesc.getText().toString().trim());
-                                                                                                           GenelUtil.saveUploadUri(uri.toString());
                                                                                                            Intent data = new Intent();
                                                                                                            data.putExtra("post","postID");
                                                                                                            data.setData(Uri.parse("postID.getObjectId()"));
@@ -754,14 +749,14 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                                                                        }
                                                                                                        else{
                                                                                                            progressDialog.dismiss();
-                                                                                                           GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                                                                                                           Util.ToastLong(getApplicationContext(),getString(R.string.error));
                                                                                                        }
 
 
                                                                                                    }
                                                                                                    else{
                                                                                                        progressDialog.dismiss();
-                                                                                                       GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                                                                                                       Util.ToastLong(getApplicationContext(),getString(R.string.error));
                                                                                                    }
                                                                                                }
 
@@ -781,7 +776,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                                     ,new ProgressCallback() {
                                                         @Override
                                                         public void done(Integer percentDone) {
-                                                            if(GenelUtil.isAlive(UploadActivity.this)){
+                                                            if(Util.isAlive(UploadActivity.this)){
                                                                 if((90+Math.round(percentDone/10))<101){
                                                                     progressDialog.setMessage(getString(R.string.uploading)+" ("+(90+Math.round(percentDone/10))+"%)");
                                                                 }
@@ -802,7 +797,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                                 }, new ProgressCallback() {
                                     @Override
                                     public void done(Integer percentDone) {
-                                        if(GenelUtil.isAlive(UploadActivity.this)){
+                                        if(Util.isAlive(UploadActivity.this)){
                                             progressDialog.setMessage(getString(R.string.uploading)+" ("+Math.round((percentDone*9)/10)+"%)");
                                         }
 
@@ -871,7 +866,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
 
 
             if(resultCode== RESULT_OK&&data!=null){
@@ -930,7 +925,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                         Log.e("Video Suresi :",sure+"");
                         if(sure>60500){
                             progressDialog.dismiss();
-                            GenelUtil.ToastLong(getApplicationContext(),getString(R.string.videosure));
+                            Util.ToastLong(getApplicationContext(),getString(R.string.videosure));
                         }
                         else{
                             if(adapter==null){
@@ -963,7 +958,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
 
                         }
                     }catch (Exception e){
-                        GenelUtil.ToastLong(UploadActivity.this,getString(R.string.error)+e.getMessage());
+                        Util.ToastLong(UploadActivity.this,getString(R.string.error)+e.getMessage());
                         progressDialog.dismiss();
                     }
                 }
@@ -982,7 +977,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
                             Log.e("Video Suresi :",sure+"");
                             if(sure>60500){
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.videosure));
+                                Util.ToastLong(getApplicationContext(),getString(R.string.videosure));
                             }
                             else{
                                 if(adapter==null){
@@ -1015,7 +1010,7 @@ public class UploadActivity extends AppCompatActivity implements UploadPostClick
 
                             }
                         }catch (Exception e){
-                            GenelUtil.ToastLong(UploadActivity.this,getString(R.string.error)+e.getMessage());
+                            Util.ToastLong(UploadActivity.this,getString(R.string.error)+e.getMessage());
                             progressDialog.dismiss();
                         }
                     }

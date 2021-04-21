@@ -1,7 +1,6 @@
 package com.sonata.socialapp.utils.adapters;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
-import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.Notif;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.NotifRecyclerView;

@@ -1,21 +1,13 @@
 package com.sonata.socialapp.activities.sonata;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,10 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -34,10 +23,9 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
+import com.sonata.socialapp.utils.adapters.PostAdapter;
 import com.sonata.socialapp.utils.adapters.SearchUserAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
@@ -66,7 +54,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
     RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
-    SafPostAdapter adapter;
+    PostAdapter adapter;
     String searchString = "";
     private boolean loading=true;
     private AdLoader adLoader;
@@ -123,7 +111,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -213,14 +201,14 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
         linearLayoutManager=new LinearLayoutManager(SearchActivity.this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter=new SafPostAdapter();
+        adapter=new PostAdapter();
         adapter.setContext(list, Glide.with(SearchActivity.this),this);
         adapter.setHasStableIds(true);
         recyclerView.setAdapter(adapter);
 
         searchView = findViewById(R.id.searchView);
         searchView.requestFocus();
-        GenelUtil.showKeyboard(this);
+        Util.showKeyboard(this);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -234,7 +222,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                 listuser.add(object2);
                 adapterUser.notifyDataSetChanged();
                 adapter.notifyDataSetChanged();
-                if(GenelUtil.isAlive(SearchActivity.this)){
+                if(Util.isAlive(SearchActivity.this)){
                     getReqs(searchText);
                 }
                 searchView.setIconified(false);
@@ -288,14 +276,14 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
     }
 
     private void getReqsPost(@NonNull Date date,String searchStr){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<>();
 
             params.put("text",searchStr);
             params.put("date",date);
             ParseCloud.callFunctionInBackground("searchPost", params, (FunctionCallback<HashMap>) (objects, e) -> {
                 Log.e("done","done");
-                if(GenelUtil.isAlive(SearchActivity.this)){
+                if(Util.isAlive(SearchActivity.this)){
                     if(e==null){
                         if(searchStr.equals(searchText)){
                             if(objects!= null){
@@ -320,12 +308,12 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
     }
 
     private void getReqs(String searchStr){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<>();
             params.put("text",searchStr);
             ParseCloud.callFunctionInBackground("search", params, (FunctionCallback<List<HashMap>>) (objects, e) -> {
                 Log.e("done","done");
-                if(GenelUtil.isAlive(SearchActivity.this)){
+                if(Util.isAlive(SearchActivity.this)){
                     if(e==null){
                         if(searchText.equals(searchStr)){
                             if(objects!= null){
@@ -351,7 +339,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
     }
 
     private void initUser(List<SonataUser> objects) {
-        if(GenelUtil.isAlive(SearchActivity.this)){
+        if(Util.isAlive(SearchActivity.this)){
             if(objects.size()==0){
 
                 recyclerViewuser.setVisibility(View.GONE);
@@ -379,7 +367,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
     private void initList(List<Post> objects,boolean hasmore,Date date,List<UnifiedNativeAd> listreklam,boolean isrefresh) {
         Log.e("done","InitList");
 
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             Log.e("done","InitListActive");
             postson =!hasmore;
             this.date = date;
@@ -466,11 +454,11 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
     private void getAds(List<Post> objects,boolean hasmore,Date date,String searchString){
         Log.e("done","doneGetAds");
 
-        if(GenelUtil.isAlive(SearchActivity.this)){
-            GenelUtil.loadAds(objects.size(),SearchActivity.this, new com.sonata.socialapp.utils.interfaces.AdListener() {
+        if(Util.isAlive(SearchActivity.this)){
+            Util.loadAds(objects.size(),SearchActivity.this, new com.sonata.socialapp.utils.interfaces.AdListener() {
                 @Override
                 public void done(List<UnifiedNativeAd> list) {
-                    if(GenelUtil.isAlive(SearchActivity.this)){
+                    if(Util.isAlive(SearchActivity.this)){
                         listreklam.addAll(list);
                         initList(objects,hasmore,date,list,false);
                     }
@@ -503,12 +491,12 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        GenelUtil.handlePostOptionsClick(this,position,list,adapter,commentNumber);
+        Util.handlePostOptionsClick(this,position,list,adapter,commentNumber);
     }
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
     @Override
@@ -524,7 +512,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
 
 
             post.increment("likenumber");
-            likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),SearchActivity.this));
+            likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),SearchActivity.this));
 
 
         }
@@ -534,7 +522,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
             if(post.getLikenumber()>0){
 
                 post.increment("likenumber",-1);
-                likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),SearchActivity.this));                                                    }
+                likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),SearchActivity.this));                                                    }
             else{
                 post.setLikenumber(0);
                 likeNumber.setText("0");
@@ -573,7 +561,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
         for(int i = 0; i < post.getImageCount(); i++){
             ulist.add(String.valueOf(i));
         }
-        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+        Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
 

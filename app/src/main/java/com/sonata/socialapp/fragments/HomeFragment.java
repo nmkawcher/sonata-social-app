@@ -1,47 +1,28 @@
 package com.sonata.socialapp.fragments;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.os.ConfigurationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.material.tabs.TabLayout;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -49,19 +30,16 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.activities.sonata.AdvancedSettingsActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
 import com.sonata.socialapp.activities.sonata.MainActivity;
 import com.sonata.socialapp.activities.sonata.MessagesActivity;
 import com.sonata.socialapp.activities.sonata.SearchActivity;
 import com.sonata.socialapp.activities.sonata.StartActivity;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
-import com.sonata.socialapp.utils.VideoUtils.VideoUtils;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
-import com.sonata.socialapp.utils.adapters.SafPostAdapterNew;
+import com.sonata.socialapp.utils.adapters.PostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -70,15 +48,12 @@ import com.sonata.socialapp.utils.interfaces.RecyclerViewClick;
 import com.vincan.medialoader.DownloadManager;
 import com.vincan.medialoader.MediaLoader;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import cn.jzvd.Jzvd;
 import q.rorbin.badgeview.QBadgeView;
@@ -94,7 +69,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     private RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
-    private SafPostAdapter adapter;
+    private PostAdapter adapter;
     private boolean loading=true;
     private Date date;
     private OnScrollListener onScrollListener;
@@ -128,12 +103,12 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         recyclerView = view.findViewById(R.id.mainrecyclerview);
 
 
-        seenList = GenelUtil.getSeenList(getActivity());
+        seenList = Util.getSeenList(getActivity());
 
         linearLayoutManager=new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter=new SafPostAdapter();
+        adapter=new PostAdapter();
         adapter.setContext(list,Glide.with(getActivity()),this,this);
         adapter.setHasStableIds(true);
 
@@ -308,7 +283,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         }
         params.put("seenList",seenList);
         params.put("hmt",hmt);
-        params.put("lang", GenelUtil.getCurrentCountryCode(getActivity()));
+        params.put("lang", Util.getCurrentCountryCode(getActivity()));
         ParseCloud.callFunctionInBackground("getHomeObjects", params, (FunctionCallback<HashMap>) (objects, e) -> {
             Log.e("done","doneGet");
             if(getActive()){
@@ -336,7 +311,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                         get(date,isRefresh);
                     }
                     else if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
-                        GenelUtil.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
+                        Util.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
                         ParseUser.logOut();
                         startActivity(new Intent(getActivity(), StartActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         getActivity().finish();
@@ -357,7 +332,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     public void onPause() {
         super.onPause();
         if(seenList!=null){
-            GenelUtil.setSeenList(getActivity(),seenList);
+            Util.setSeenList(getActivity(),seenList);
         }
     }
 
@@ -369,7 +344,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         }
         params.put("seenList",seenList);
         params.put("hmt",hmt);
-        params.put("lang", GenelUtil.getCurrentCountryCode(getActivity()));
+        params.put("lang", Util.getCurrentCountryCode(getActivity()));
         ParseCloud.callFunctionInBackground("getHomeDiscoverObjects", params, (FunctionCallback<HashMap>) (objects, e) -> {
             Log.e("done","doneGet");
             hmt++;
@@ -399,7 +374,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                         get(date,isRefresh);
                     }
                     else if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
-                        GenelUtil.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
+                        Util.ToastLong(getActivity(),getString(R.string.invalidsessiontoken));
                         ParseUser.logOut();
                         startActivity(new Intent(getActivity(), StartActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         getActivity().finish();
@@ -597,10 +572,10 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     private void getAds(List<Post> suggestions,List<Post> objects,List<SonataUser> users,boolean hasmore,Date date,boolean isRefresh,int tab){
         Log.e("done","doneGetAds");
         if(getActive()){
-            GenelUtil.loadAds(objects.size()+suggestions.size(),getActivity(), new com.sonata.socialapp.utils.interfaces.AdListener() {
+            Util.loadAds(objects.size()+suggestions.size(),getActivity(), new com.sonata.socialapp.utils.interfaces.AdListener() {
                 @Override
                 public void done(List<UnifiedNativeAd> list) {
-                    if(GenelUtil.isAlive(getActivity())){
+                    if(Util.isAlive(getActivity())){
                         listreklam.addAll(list);
                         if(isRefresh){
                             //refreshSetting();
@@ -651,7 +626,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
     }
 
     private boolean getActive(){
-        return getActivity()!=null && GenelUtil.isAlive(getActivity());
+        return getActivity()!=null && Util.isAlive(getActivity());
     }
 
     private static  String TAG ="HomeFragment";
@@ -659,7 +634,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        GenelUtil.handlePostOptionsClick(getContext(),position,list,adapter,commentNumber);
+        Util.handlePostOptionsClick(getContext(),position,list,adapter,commentNumber);
     }
 
     @Override
@@ -682,7 +657,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
         }
         else if(clickType==MyApp.TYPE_LINK){
-            GenelUtil.handleLinkClicks(getContext(),text,clickType);
+            Util.handleLinkClicks(getContext(),text,clickType);
         }
     }
 
@@ -701,7 +676,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
 
 
             post.increment("likenumber");
-            likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),getContext()));
+            likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),getContext()));
 
 
         }
@@ -711,7 +686,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
             if(post.getLikenumber()>0){
 
                 post.increment("likenumber",-1);
-                likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),getContext()));                                                    }
+                likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),getContext()));                                                    }
             else{
                 post.setLikenumber(0);
                likeNumber.setText("0");
@@ -749,14 +724,14 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
         for(int i = 0; i < post.getImageCount(); i++){
             ulist.add(String.valueOf(i));
         }
-        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+        Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
 
     @Override
     public void goToProfileClick(int position) {
         SonataUser user = list.get(position).getUser();
-        if(GenelUtil.clickable(700)){
+        if(Util.clickable(700)){
             if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                 startActivity(new Intent(getActivity(), GuestProfileActivity.class).putExtra("user",user));
             }
@@ -786,7 +761,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                             }
                             else{
                                 buttonText.setText(getString(R.string.follow));
-                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                                Util.ToastLong(getActivity(),getString(R.string.error));
                             }
 
 
@@ -810,7 +785,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                             }
                             else{
                                 buttonText.setText(getString(R.string.follow));
-                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                                Util.ToastLong(getActivity(),getString(R.string.error));
                             }
 
 
@@ -838,7 +813,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                             }
                             else{
                                 buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                                Util.ToastLong(getActivity(),getString(R.string.error));
                             }
 
 
@@ -862,7 +837,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                             }
                             else{
                                 buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                                Util.ToastLong(getActivity(),getString(R.string.error));
                             }
 
 
@@ -890,7 +865,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                         }
                         else{
                             buttonText.setText(getString(R.string.accept));
-                            GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                            Util.ToastLong(getActivity(),getString(R.string.error));
                         }
                     }
                 });
@@ -912,7 +887,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClick, Blocked
                         }
                         else{
                             buttonText.setText(buttonText.getContext().getString(R.string.requestsent));
-                            GenelUtil.ToastLong(getActivity(),getString(R.string.error));
+                            Util.ToastLong(getActivity(),getString(R.string.error));
                         }
 
 

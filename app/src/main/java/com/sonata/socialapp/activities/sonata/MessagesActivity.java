@@ -21,10 +21,9 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.adapters.AllMessagesAdapter;
-import com.sonata.socialapp.utils.adapters.SearchAccountAdapter;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -32,7 +31,6 @@ import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +58,7 @@ public class MessagesActivity extends AppCompatActivity implements BlockedAdapte
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -74,7 +72,7 @@ public class MessagesActivity extends AppCompatActivity implements BlockedAdapte
                     setOnCreate();
                 }
                 else{
-                    List<Object> an = GenelUtil.isUserSaved(this,to);
+                    List<Object> an = Util.isUserSaved(this,to);
                     boolean isExist = (boolean) an.get(0);
                     if(isExist){
                         String session = (String) an.get(2);
@@ -84,15 +82,15 @@ public class MessagesActivity extends AppCompatActivity implements BlockedAdapte
 
                                 if(e==null){
                                     String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                                    GenelUtil.ToastLong(MessagesActivity.this,text);
+                                    Util.ToastLong(MessagesActivity.this,text);
 
                                     setOnCreate();
                                 }
                                 else{
                                     if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
-                                        GenelUtil.removeUserFromCache(to, MessagesActivity.this);
+                                        Util.removeUserFromCache(to, MessagesActivity.this);
                                     }
-                                    GenelUtil.ToastLong(MessagesActivity.this,getString(R.string.invalidsessiontoken));
+                                    Util.ToastLong(MessagesActivity.this,getString(R.string.invalidsessiontoken));
                                     startActivity(new Intent(MessagesActivity.this, StartActivity.class));
                                     finish();
                                 }
@@ -153,7 +151,7 @@ public class MessagesActivity extends AppCompatActivity implements BlockedAdapte
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(!GenelUtil.isAlive(MessagesActivity.this)) return;
+                if(!Util.isAlive(MessagesActivity.this)) return;
                 refresh(true,false);
             }
         });
@@ -241,7 +239,7 @@ public class MessagesActivity extends AppCompatActivity implements BlockedAdapte
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((result) -> {
-                        if(!GenelUtil.isAlive(MessagesActivity.this)) return;
+                        if(!Util.isAlive(MessagesActivity.this)) return;
                         if(!result) return;
                         adapter.notifyDataSetChanged();
                         loading = false;
@@ -295,7 +293,7 @@ public class MessagesActivity extends AppCompatActivity implements BlockedAdapte
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((result) -> {
-                        if(!GenelUtil.isAlive(MessagesActivity.this)) return;
+                        if(!Util.isAlive(MessagesActivity.this)) return;
                         if(!result) return;
                         adapter.notifyDataSetChanged();
                         loading = false;
@@ -326,7 +324,7 @@ public class MessagesActivity extends AppCompatActivity implements BlockedAdapte
     }
 
     private void refresh(boolean refresh,boolean useExisting){
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         if(loading) return;
         loading = true;
         if(refresh){

@@ -31,12 +31,11 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
 import com.sonata.socialapp.utils.adapters.BlockedPersonAdapter;
 import com.sonata.socialapp.utils.adapters.GuestGridProfilAdapter;
-import com.sonata.socialapp.utils.adapters.SafPostAdapter;
+import com.sonata.socialapp.utils.adapters.PostAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -89,7 +88,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
     private boolean postson=false;
     private boolean loading=true;
     RecyclerView.OnScrollListener onScrollListener,postOnScrollListener;
-    SafPostAdapter postAdapter;
+    PostAdapter postAdapter;
     GuestGridProfilAdapter adapter;
     String usernamestring;
     RelativeLayout loadingLayout,listPostLayout;
@@ -114,7 +113,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -130,7 +129,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                 finish();
                 return;
             }
-            String newS = data.substring(data.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
+            String newS = data.substring(data.indexOf(Util.appUrl)+ Util.appUrl.length());
             if(newS.startsWith("/")){
                 newS = newS.substring(1);
             }
@@ -147,7 +146,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     setUpOnCreate(null);
                 }
                 else{
-                    List<Object> an = GenelUtil.isUserSaved(this,to);
+                    List<Object> an = Util.isUserSaved(this,to);
                     boolean isExist = (boolean) an.get(0);
                     if(isExist){
                         String session = (String) an.get(2);
@@ -157,15 +156,15 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
                                 if(e==null){
                                     String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                                    GenelUtil.ToastLong(GuestProfileActivity.this,text);
+                                    Util.ToastLong(GuestProfileActivity.this,text);
 
                                     setUpOnCreate(null);
                                 }
                                 else{
                                     if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
-                                        GenelUtil.removeUserFromCache(to, GuestProfileActivity.this);
+                                        Util.removeUserFromCache(to, GuestProfileActivity.this);
                                     }
-                                    GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.invalidsessiontoken));
+                                    Util.ToastLong(GuestProfileActivity.this,getString(R.string.invalidsessiontoken));
                                     startActivity(new Intent(GuestProfileActivity.this, StartActivity.class));
                                     finish();
                                 }
@@ -275,7 +274,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         json.put("height",2000);
                         ulist2.add(json);
 
-                        GenelUtil.showImage(ulist,ulist2
+                        Util.showImage(ulist,ulist2
                                 ,profilephoto,0,null);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -494,8 +493,8 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             Glide.with(profilephoto.getContext()).load(getResources().getDrawable(R.drawable.emptypp)).into(profilephoto);
         }
 
-        followingnumber.setText(GenelUtil.ConvertNumber((int)user.getFollowing(),this));
-        followernumber.setText(GenelUtil.ConvertNumber((int)user.getFollower(),this));
+        followingnumber.setText(Util.ConvertNumber((int)user.getFollowing(),this));
+        followernumber.setText(Util.ConvertNumber((int)user.getFollower(),this));
 
         followernumber.setOnClickListener(null);
         followertext.setOnClickListener(null);
@@ -593,8 +592,8 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             Glide.with(profilephoto.getContext()).load(getResources().getDrawable(R.drawable.emptypp)).into(profilephoto);
         }
 
-        followingnumber.setText(GenelUtil.ConvertNumber((int)user.getFollowing(),this));
-        followernumber.setText(GenelUtil.ConvertNumber((int)user.getFollower(),this));
+        followingnumber.setText(Util.ConvertNumber((int)user.getFollowing(),this));
+        followernumber.setText(Util.ConvertNumber((int)user.getFollower(),this));
 
 
 
@@ -616,12 +615,12 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                 if(list.size()==0){
                     HashMap<String, Object> params = new HashMap<String, Object>();
                     params.put("userID",user.getObjectId());
-                    params.put("lang", GenelUtil.getCurrentCountryCode(this));
+                    params.put("lang", Util.getCurrentCountryCode(this));
                     ParseCloud.callFunctionInBackground("getSuggestionProfiles", params, new FunctionCallback<HashMap>() {
                         @Override
                         public void done(HashMap  objects, ParseException e) {
                             Log.e("done","done");
-                            if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                            if(Util.isAlive(GuestProfileActivity.this)){
                                 if(e==null){
                                     if(objects!= null){
                                         if(((List<SonataUser>)objects.get("profiles")).size()<1){
@@ -668,7 +667,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                 @Override
                 public void goToProfileClick(int position) {
                     SonataUser user = suggestList.get(position).getUser();
-                    if(GenelUtil.clickable(700)){
+                    if(Util.clickable(700)){
                         if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                             startActivity(new Intent(GuestProfileActivity.this, GuestProfileActivity.class).putExtra("user",user));
                         }
@@ -697,7 +696,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                         }
                                         else{
                                             buttonText.setText(getString(R.string.follow));
-                                            GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                            Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                         }
 
 
@@ -721,7 +720,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                         }
                                         else{
                                             buttonText.setText(getString(R.string.follow));
-                                            GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                            Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                         }
 
 
@@ -749,7 +748,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                         }
                                         else{
                                             buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                            GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                            Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                         }
 
 
@@ -773,7 +772,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                         }
                                         else{
                                             buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                            GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                            Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                         }
 
 
@@ -801,7 +800,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                     }
                                     else{
                                         buttonText.setText(getString(R.string.accept));
-                                        GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                        Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                     }
                                 }
                             });
@@ -823,7 +822,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                     }
                                     else{
                                         buttonText.setText(buttonText.getContext().getString(R.string.requestsent));
-                                        GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                        Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                     }
 
 
@@ -844,7 +843,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                 @Override
                 public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
-                    if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                    if(Util.isAlive(GuestProfileActivity.this)){
                         if(e==null){
                             if(objects!= null){
                                 if(((List<SonataUser>)objects.get("profiles")).size()<1){
@@ -897,7 +896,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         ParseCloud.callFunctionInBackground("sendFollowRequest", params, new FunctionCallback<Object>() {
                             @Override
                             public void done(Object object, ParseException e) {
-                                if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                                if(Util.isAlive(GuestProfileActivity.this)){
                                     if(e==null){
                                         followLayout.setBackground(getResources().getDrawable(R.drawable.button_background_dolu));
                                         user.setFollowRequest(true);
@@ -906,7 +905,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                     }
                                     else{
                                         followButtonText.setText(getString(R.string.follow));
-                                        GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                        Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                     }
                                 }
 
@@ -921,7 +920,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         ParseCloud.callFunctionInBackground("follow", params, new FunctionCallback<Object>() {
                             @Override
                             public void done(Object object, ParseException e) {
-                                if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                                if(Util.isAlive(GuestProfileActivity.this)){
                                     if(e==null){
                                         user.setFollow(true);
                                         followButtonText.setTextColor(getResources().getColor(R.color.white));
@@ -931,7 +930,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                     }
                                     else{
                                         followButtonText.setText(getString(R.string.follow));
-                                        GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                        Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                     }
                                 }
 
@@ -951,7 +950,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         ParseCloud.callFunctionInBackground("unfollow", params, new FunctionCallback<Object>() {
                             @Override
                             public void done(Object object, ParseException e) {
-                                if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                                if(Util.isAlive(GuestProfileActivity.this)){
                                     if(e==null){
                                         user.setFollow(false);
                                         followButtonText.setText(getString(R.string.follow));
@@ -966,7 +965,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                     }
                                     else{
                                         followButtonText.setText(getString(R.string.unfollow));
-                                        GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                        Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                     }
                                 }
 
@@ -981,7 +980,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         ParseCloud.callFunctionInBackground("unfollow", params, new FunctionCallback<Object>() {
                             @Override
                             public void done(Object object, ParseException e) {
-                                if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                                if(Util.isAlive(GuestProfileActivity.this)){
                                     if(e==null){
                                         user.setFollow(false);
                                         followButtonText.setText(getString(R.string.follow));
@@ -991,7 +990,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                     }
                                     else{
                                         followButtonText.setText(getString(R.string.unfollow));
-                                        GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                        Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                     }
                                 }
 
@@ -1008,7 +1007,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     ParseCloud.callFunctionInBackground("unblock", params, new FunctionCallback<Object>() {
                         @Override
                         public void done(Object object, ParseException e) {
-                            if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                            if(Util.isAlive(GuestProfileActivity.this)){
                                 if(e==null){
                                     user.setBlock(false);
                                     progressDialog.dismiss();
@@ -1018,7 +1017,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
                                 }
                                 else{
-                                    GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                    Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                 }
                             }
 
@@ -1034,7 +1033,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                     ParseCloud.callFunctionInBackground("removeFollowRequest", params, new FunctionCallback<Object>() {
                         @Override
                         public void done(Object object, ParseException e) {
-                            if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                            if(Util.isAlive(GuestProfileActivity.this)){
                                 if(e==null){
                                     user.setFollowRequest(false);
                                     followButtonText.setText(getString(R.string.follow));
@@ -1043,7 +1042,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                                 }
                                 else{
                                     followButtonText.setText(getString(R.string.requestsent));
-                                    GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                    Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                 }
                             }
 
@@ -1069,7 +1068,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             @Override
             public void done(HashMap  objects, ParseException e) {
                 Log.e("done","done");
-                if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                if(Util.isAlive(GuestProfileActivity.this)){
                     if(e==null){
 
                         if(objects!= null){
@@ -1103,7 +1102,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
 
     private void initList(List<Post> objects,boolean hasmore,Date date) {
-        if(GenelUtil.isAlive(GuestProfileActivity.this)){
+        if(Util.isAlive(GuestProfileActivity.this)){
             postson = !hasmore;
             this.date = date;
             if(objects.size()==0){
@@ -1223,7 +1222,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
         ParseCloud.callFunctionInBackground("getGuestProfile", params, new FunctionCallback<HashMap>() {
             @Override
             public void done(HashMap  objects, ParseException e) {
-                if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                if(Util.isAlive(GuestProfileActivity.this)){
                     Log.e("userload done","done");
                     if(e==null){
                         if(objects!=null){
@@ -1349,7 +1348,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                             ParseCloud.callFunctionInBackground("block", params, new FunctionCallback<Object>() {
                                 @Override
                                 public void done(Object object, ParseException e) {
-                                    if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                                    if(Util.isAlive(GuestProfileActivity.this)){
                                         if(e==null){
                                             user.setBlock(true);
                                             progressDialog.dismiss();
@@ -1359,7 +1358,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
                                         }
                                         else{
-                                            GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                            Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                         }
                                     }
 
@@ -1375,7 +1374,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                             ParseCloud.callFunctionInBackground("unblock", params, new FunctionCallback<Object>() {
                                 @Override
                                 public void done(Object object, ParseException e) {
-                                    if(GenelUtil.isAlive(GuestProfileActivity.this)){
+                                    if(Util.isAlive(GuestProfileActivity.this)){
                                         if(e==null){
                                             user.setBlock(false);
                                             progressDialog.dismiss();
@@ -1385,7 +1384,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
                                         }
                                         else{
-                                            GenelUtil.ToastLong(GuestProfileActivity.this,getString(R.string.error));
+                                            Util.ToastLong(GuestProfileActivity.this,getString(R.string.error));
                                         }
                                     }
 
@@ -1399,14 +1398,14 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
                         else if(select.equals(getString(R.string.share))){
                             Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, GenelUtil.getUrlOfObject(user));
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, Util.getUrlOfObject(user));
                             sendIntent.setType("text/plain");
 
                             Intent shareIntent = Intent.createChooser(sendIntent, null);
                             startActivity(shareIntent);
                         }
                         else if(select.equals(getString(R.string.copylink))){
-                            GenelUtil.copyText(GenelUtil.getUrlOfObject(user),GuestProfileActivity.this);
+                            Util.copyText(Util.getUrlOfObject(user),GuestProfileActivity.this);
                         }
                     }
                 });
@@ -1421,12 +1420,12 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
     @Override
     public void onOptionsClick(int position, TextView commentNumber) {
-        GenelUtil.handlePostOptionsClick(this,position,list,adapter,commentNumber);
+        Util.handlePostOptionsClick(this,position,list,adapter,commentNumber);
     }
 
     @Override
     public void onSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
     @Override
@@ -1442,7 +1441,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
 
 
             post.increment("likenumber");
-            likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),GuestProfileActivity.this));
+            likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),GuestProfileActivity.this));
 
 
         }
@@ -1452,7 +1451,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
             if(post.getLikenumber()>0){
 
                 post.increment("likenumber",-1);
-                likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),GuestProfileActivity.this));                                                    }
+                likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),GuestProfileActivity.this));                                                    }
             else{
                 post.setLikenumber(0);
                 likeNumber.setText("0");
@@ -1476,7 +1475,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
     public void onOpenComments(int position) {
         if(listPostLayout.getVisibility()==View.INVISIBLE){
             if(postAdapter == null){
-                postAdapter = new SafPostAdapter();
+                postAdapter = new PostAdapter();
                 postAdapter.setContext(list,Glide.with(GuestProfileActivity.this),GuestProfileActivity.this,user);
 
                 LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
@@ -1582,7 +1581,7 @@ public class GuestProfileActivity extends AppCompatActivity implements RecyclerV
         for(int i = 0; i < post.getImageCount(); i++){
             ulist.add(String.valueOf(i));
         }
-        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+        Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
 }

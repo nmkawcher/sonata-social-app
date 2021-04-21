@@ -1,13 +1,9 @@
 package com.sonata.socialapp.utils.adapters;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,20 +15,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.parse.ParseFile;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.CommentReplyAdapterClick;
@@ -168,10 +159,10 @@ public class SafCommentAdapter extends RecyclerView.Adapter<SafCommentAdapter.Vi
                 holder.votecount.setTextColor(Color.parseColor("#a64942"));
             }
             if(post.getVote()<0){
-                holder.votecount.setText("-"+ GenelUtil.ConvertNumber((int)post.getVote()*(-1),holder.itemView.getContext()));
+                holder.votecount.setText("-"+ Util.ConvertNumber((int)post.getVote()*(-1),holder.itemView.getContext()));
             }
             if(post.getVote()>=0){
-                holder.votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),holder.itemView.getContext()));
+                holder.votecount.setText(Util.ConvertNumber((int)post.getVote(),holder.itemView.getContext()));
             }
 
 

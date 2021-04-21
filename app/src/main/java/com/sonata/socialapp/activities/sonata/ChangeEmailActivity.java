@@ -13,7 +13,7 @@ import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 
 import java.util.HashMap;
 
@@ -26,7 +26,7 @@ public class ChangeEmailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -67,12 +67,12 @@ public class ChangeEmailActivity extends AppCompatActivity {
                         @Override
                         public void done(HashMap object, ParseException e) {
                             if(e==null){
-                                GenelUtil.ToastLong(ChangeEmailActivity.this,getString(R.string.emailchanged));
+                                Util.ToastLong(ChangeEmailActivity.this,getString(R.string.emailchanged));
                                 progressDialog.dismiss();
                                 ChangeEmailActivity.this.finish();
                             }
                             else{
-                                GenelUtil.ToastLong(ChangeEmailActivity.this,getString(R.string.error));
+                                Util.ToastLong(ChangeEmailActivity.this,getString(R.string.error));
                                 progressDialog.dismiss();
                             }
                         }

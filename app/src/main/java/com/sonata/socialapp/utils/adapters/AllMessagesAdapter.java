@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -115,7 +115,7 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
                 glide.load(holder.profilephoto.getContext().getResources().getDrawable(R.drawable.emptypp,null)).into(holder.profilephoto);
             }
 
-            boolean anan = chat.getLastPoster().equals(GenelUtil.getCurrentUser().getObjectId());
+            boolean anan = chat.getLastPoster().equals(Util.getCurrentUser().getObjectId());
             if(anan){
                 holder.name.setTextColor(Color.parseColor("#999999"));
                 holder.message.setTextColor(Color.parseColor("#999999"));
@@ -129,8 +129,8 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
                 }
                 else{
                     //yeni okuyacak
-                    holder.name.setTextColor(GenelUtil.getNightMode() ? Color.parseColor("#ffffff"):Color.parseColor("#000000"));
-                    holder.message.setTextColor(GenelUtil.getNightMode() ? Color.parseColor("#ffffff"):Color.parseColor("#000000"));
+                    holder.name.setTextColor(Util.getNightMode() ? Color.parseColor("#ffffff"):Color.parseColor("#000000"));
+                    holder.message.setTextColor(Util.getNightMode() ? Color.parseColor("#ffffff"):Color.parseColor("#000000"));
                     holder.indicator.setVisibility(View.VISIBLE);
                 }
             }

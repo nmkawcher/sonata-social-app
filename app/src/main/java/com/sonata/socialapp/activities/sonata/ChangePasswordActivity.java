@@ -17,7 +17,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 
 import java.util.HashMap;
 
@@ -30,7 +30,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -87,13 +87,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                         public void done(HashMap object, ParseException e) {
                                             if(e==null){
                                                 ParseUser.logOut();
-                                                GenelUtil.ToastLong(ChangePasswordActivity.this,getString(R.string.passwordchanged));
+                                                Util.ToastLong(ChangePasswordActivity.this,getString(R.string.passwordchanged));
                                                 progressDialog.dismiss();
                                                 startActivity(new Intent(ChangePasswordActivity.this,StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                                 ChangePasswordActivity.this.finish();
                                             }
                                             else{
-                                                GenelUtil.ToastLong(ChangePasswordActivity.this,getString(R.string.error));
+                                                Util.ToastLong(ChangePasswordActivity.this,getString(R.string.error));
                                                 progressDialog.dismiss();
                                             }
                                         }
@@ -106,11 +106,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
                         }
                         else{
-                            GenelUtil.ToastLong(ChangePasswordActivity.this,getString(R.string.passwordsdoesntmatch));
+                            Util.ToastLong(ChangePasswordActivity.this,getString(R.string.passwordsdoesntmatch));
                         }
                     }
                     else{
-                        GenelUtil.ToastLong(ChangePasswordActivity.this,getString(R.string.shortpass));
+                        Util.ToastLong(ChangePasswordActivity.this,getString(R.string.shortpass));
                     }
                 }
             }

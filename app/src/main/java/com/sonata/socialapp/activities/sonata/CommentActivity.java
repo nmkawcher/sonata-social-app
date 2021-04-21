@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -52,19 +51,16 @@ import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.socialview.Mention;
 import com.sonata.socialapp.socialview.SocialAutoCompleteTextView;
-import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.VideoUtils.AutoPlayUtils;
-import com.sonata.socialapp.utils.adapters.ComAdapter;
+import com.sonata.socialapp.utils.adapters.CommentAdapter;
 import com.sonata.socialapp.utils.adapters.MentionAdapter;
 import com.sonata.socialapp.utils.classes.Comment;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.CommentAdapterClick;
 import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.theartofdev.edmodo.cropper.CropImage;
-
-import com.vincan.medialoader.DownloadManager;
 
 
 import java.io.File;
@@ -83,7 +79,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
-    ComAdapter adapter;
+    CommentAdapter adapter;
     Post post;
     private boolean loading=true;
     Date date;
@@ -155,7 +151,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -171,7 +167,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 finish();
                 return;
             }
-            String newS = data.substring(data.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
+            String newS = data.substring(data.indexOf(Util.appUrl)+ Util.appUrl.length());
             if(newS.startsWith("/")){
                 newS = newS.substring(1);
             }
@@ -188,7 +184,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     setUpOnCreate(null);
                 }
                 else{
-                    List<Object> an = GenelUtil.isUserSaved(this,to);
+                    List<Object> an = Util.isUserSaved(this,to);
                     boolean isExist = (boolean) an.get(0);
                     if(isExist){
                         String session = (String) an.get(2);
@@ -198,15 +194,15 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
                                 if(e==null){
                                     String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                                    GenelUtil.ToastLong(CommentActivity.this,text);
+                                    Util.ToastLong(CommentActivity.this,text);
 
                                     setUpOnCreate(null);
                                 }
                                 else{
                                     if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
-                                        GenelUtil.removeUserFromCache(to, CommentActivity.this);
+                                        Util.removeUserFromCache(to, CommentActivity.this);
                                     }
-                                    GenelUtil.ToastLong(CommentActivity.this,getString(R.string.invalidsessiontoken));
+                                    Util.ToastLong(CommentActivity.this,getString(R.string.invalidsessiontoken));
                                     startActivity(new Intent(CommentActivity.this, StartActivity.class));
                                     finish();
                                 }
@@ -352,13 +348,13 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                 @Override
                                 public void run() {
                                     // Do something after 5s = 5000ms
-                                    if(GenelUtil.isAlive(CommentActivity.this)){
+                                    if(Util.isAlive(CommentActivity.this)){
                                         if(t.equals(commenttext.getText().toString())){
                                             HashMap<String, Object> params = new HashMap<>();
                                             params.put("text",queryString.replace("@","").toLowerCase());
                                             ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                                 Log.e("done","done");
-                                                if(GenelUtil.isAlive(CommentActivity.this)){
+                                                if(Util.isAlive(CommentActivity.this)){
                                                     if(e==null){
                                                         List<SonataUser> object = (List<SonataUser>) objecta.get("users");
                                                         if(t.equals(commenttext.getText().toString())){
@@ -410,13 +406,13 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             @Override
                             public void run() {
                                 // Do something after 5s = 5000ms
-                                if(GenelUtil.isAlive(CommentActivity.this)){
+                                if(Util.isAlive(CommentActivity.this)){
                                     if(t.equals(commenttext.getText().toString())){
                                         HashMap<String, Object> params = new HashMap<>();
                                         params.put("text",t.replace("@","").toLowerCase());
                                         ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                             Log.e("done","done");
-                                            if(GenelUtil.isAlive(CommentActivity.this)){
+                                            if(Util.isAlive(CommentActivity.this)){
                                                 if(e==null){
                                                     List<SonataUser> object = (List<SonataUser>) objecta.get("users");
 
@@ -538,7 +534,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 linearLayoutManager=new LinearLayoutManager(CommentActivity.this);
                 linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
                 recyclerView.setLayoutManager(linearLayoutManager);
-                adapter=new ComAdapter();
+                adapter=new CommentAdapter();
                 adapter.setContext(list,Glide.with(CommentActivity.this),this);
                 adapter.setHasStableIds(true);
                 recyclerView.setAdapter(adapter);
@@ -612,7 +608,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
         ParseCloud.callFunctionInBackground("getNotifObjects", params, new FunctionCallback<HashMap>() {
             @Override
             public void done(HashMap  listObjects, ParseException e) {
-                if(GenelUtil.isAlive(CommentActivity.this)){
+                if(Util.isAlive(CommentActivity.this)){
                     if(e==null){
                         if(listObjects!=null){
 
@@ -655,7 +651,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             linearLayoutManager=new LinearLayoutManager(CommentActivity.this);
                             linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
                             recyclerView.setLayoutManager(linearLayoutManager);
-                            adapter=new ComAdapter();
+                            adapter=new CommentAdapter();
                             adapter.setContext(list,Glide.with(CommentActivity.this),CommentActivity.this);
                             adapter.setHasStableIds(true);
                             recyclerView.setAdapter(adapter);
@@ -738,7 +734,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                         linearLayoutManager=new LinearLayoutManager(CommentActivity.this);
                         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
                         recyclerView.setLayoutManager(linearLayoutManager);
-                        adapter=new ComAdapter();
+                        adapter=new CommentAdapter();
                         adapter.setContext(list,Glide.with(CommentActivity.this),CommentActivity.this);
                         adapter.setHasStableIds(true);
                         recyclerView.setAdapter(adapter);
@@ -836,7 +832,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
 
     private void getComments(Date date1,boolean isRefresh){
-        if(GenelUtil.isAlive(CommentActivity.this)){
+        if(Util.isAlive(CommentActivity.this)){
             HashMap<String, Object> params = new HashMap<String, Object>();
             if(date1!=null){
                 params.put("date",date1);
@@ -846,7 +842,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 @Override
                 public void done(HashMap  objects, ParseException e) {
                     Log.e("done","done");
-                    if(GenelUtil.isAlive(CommentActivity.this)){
+                    if(Util.isAlive(CommentActivity.this)){
                         if(e==null){
 
                             if(objects!= null){
@@ -901,7 +897,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
         commenttext.append("");
         commenttext.setSelection(commenttext.getText().length());
         commenttext.requestFocus();
-        GenelUtil.showKeyboard(this);
+        Util.showKeyboard(this);
     }
 
 
@@ -941,7 +937,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
 
     private void initObjects(List<Comment> objects,boolean hasmore,Date date){
-        if(GenelUtil.isAlive(CommentActivity.this)){
+        if(Util.isAlive(CommentActivity.this)){
             postson = !hasmore;
             this.date = date;
             if(objects.size()==0){
@@ -1051,14 +1047,14 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                         if(imagelayout.getVisibility()==View.VISIBLE){
                             alertDialog.setMessage(getString(R.string.preparingimage));
 
-                            GenelUtil.compressImage(CommentActivity.this,uri, 55, new FileCompressListener() {
+                            Util.compressImage(CommentActivity.this,uri, 55, new FileCompressListener() {
                                 @Override
                                 public void done(File file) {
                                     ParseFile media = new ParseFile(file);
                                     media.saveInBackground(new SaveCallback() {
                                         @Override
                                         public void done(ParseException e) {
-                                            if(GenelUtil.isAlive(CommentActivity.this)){
+                                            if(Util.isAlive(CommentActivity.this)){
                                                 HashMap<String, Object> params = new HashMap<String, Object>();
                                                 params.put("text", commenttext.getText().toString().trim());
                                                 params.put("post",post.getObjectId());
@@ -1086,7 +1082,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                                 adapter.notifyDataSetChanged();
                                                                 recyclerView.scrollToPosition(list.size()-1);
                                                                 alertDialog.dismiss();
-                                                                GenelUtil.hideKeyboard(CommentActivity.this);
+                                                                Util.hideKeyboard(CommentActivity.this);
                                                                 commenttext.setText("");
                                                                 commenttext.clearFocus();
 
@@ -1106,10 +1102,10 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                                                 }
                                                                 else{
                                                                     if(e.getMessage().equals("CommentsDisabled")){
-                                                                        GenelUtil.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
+                                                                        Util.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
                                                                     }
                                                                     else{
-                                                                        GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                                                                        Util.ToastLong(getApplicationContext(),getString(R.string.error));
                                                                     }
                                                                 }
                                                             }
@@ -1121,7 +1117,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                     }, new ProgressCallback() {
                                         @Override
                                         public void done(Integer percentDone) {
-                                            if(GenelUtil.isAlive(CommentActivity.this)){
+                                            if(Util.isAlive(CommentActivity.this)){
                                                 alertDialog.setMessage(getString(R.string.uploading)+" ("+percentDone+"%)");
                                             }
                                         }
@@ -1131,7 +1127,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                 @Override
                                 public void error(String message) {
                                     alertDialog.dismiss();
-                                    GenelUtil.ToastLong(getString(R.string.error),getApplicationContext());
+                                    Util.ToastLong(getString(R.string.error),getApplicationContext());
                                 }
                             });
                         }
@@ -1160,7 +1156,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                             adapter.notifyDataSetChanged();
                                             recyclerView.scrollToPosition(list.size()-1);
                                             alertDialog.dismiss();
-                                            GenelUtil.hideKeyboard(CommentActivity.this);
+                                            Util.hideKeyboard(CommentActivity.this);
                                             commenttext.setText("");
                                             commenttext.clearFocus();
 
@@ -1181,10 +1177,10 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                             }
                                             else{
                                                 if(e.getMessage().equals("CommentsDisabled")){
-                                                    GenelUtil.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
+                                                    Util.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
                                                 }
                                                 else{
-                                                    GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                                                    Util.ToastLong(getApplicationContext(),getString(R.string.error));
                                                 }
                                             }
                                         }
@@ -1240,12 +1236,12 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     @Override
     public void onPostOptionsClick(int position, TextView commentNumber) {
         Post post = (Post) list.get(position);
-        GenelUtil.handlePostOptionsClickInComments(this,post,commentNumber);
+        Util.handlePostOptionsClickInComments(this,post,commentNumber);
     }
 
     @Override
     public void onPostSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
     @Override
@@ -1297,12 +1293,12 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             if(e==null){
                                 post.setSaved(true);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentActivity.this,getString(R.string.commentsaved));
+                                Util.ToastLong(CommentActivity.this,getString(R.string.commentsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentActivity.this,getString(R.string.error));
+                                Util.ToastLong(CommentActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -1322,12 +1318,12 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                             if(e==null){
                                 post.setSaved(false);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentActivity.this,getString(R.string.commentunsaved));
+                                Util.ToastLong(CommentActivity.this,getString(R.string.commentunsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentActivity.this,getString(R.string.error));
+                                Util.ToastLong(CommentActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -1343,12 +1339,12 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                         @Override
                         public void done(String object, ParseException e) {
                             if(e==null){
-                                GenelUtil.ToastLong(CommentActivity.this,getString(R.string.reportsucces));
+                                Util.ToastLong(CommentActivity.this,getString(R.string.reportsucces));
                                 progressDialog.dismiss();
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentActivity.this,getString(R.string.error));
+                                Util.ToastLong(CommentActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -1387,7 +1383,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                                     }
                                     else{
                                         progressDialog.dismiss();
-                                        GenelUtil.ToastLong(CommentActivity.this,getString(R.string.error));
+                                        Util.ToastLong(CommentActivity.this,getString(R.string.error));
                                     }
                                 }
                             });
@@ -1417,7 +1413,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 upvoteimage.setImageDrawable( getDrawable(R.drawable.ic_upvote_blue));
                 votecount.setTextColor(Color.parseColor("#2d72bc"));
                 post.increment("vote",2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentActivity.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentActivity.this));
 
 
                 //upvote
@@ -1432,7 +1428,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentActivity.this));
 
 
                     //unupvote
@@ -1445,7 +1441,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote_blue));
                     votecount.setTextColor(Color.parseColor("#2d72bc"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentActivity.this));
 
 
                     //upvote
@@ -1470,7 +1466,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 votecount.setTextColor(Color.parseColor("#a64942"));
 
                 post.increment("vote",-2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentActivity.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentActivity.this));
 
 
 
@@ -1485,7 +1481,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentActivity.this));
 
 
                     //undownvote
@@ -1498,7 +1494,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote_red));
                     votecount.setTextColor(Color.parseColor("#a64942"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentActivity.this));
 
 
                     //downvote
@@ -1536,7 +1532,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
     @Override
     public void onCommentSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
     @Override
@@ -1552,7 +1548,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
 
             post.increment("likenumber");
-            likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),CommentActivity.this));
+            likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),CommentActivity.this));
 
 
         }
@@ -1562,7 +1558,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
             if(post.getLikenumber()>0){
 
                 post.increment("likenumber",-1);
-                likeNumber.setText(GenelUtil.ConvertNumber((int)post.getLikenumber(),CommentActivity.this));                                                    }
+                likeNumber.setText(Util.ConvertNumber((int)post.getLikenumber(),CommentActivity.this));                                                    }
             else{
                 post.setLikenumber(0);
                 likeNumber.setText("0");
@@ -1601,7 +1597,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
             for(int i = 0; i < post.getImageCount(); i++){
                 ulist.add(String.valueOf(i));
             }
-            GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+            Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
         }
         else{
             Comment post = (Comment) list.get(position);
@@ -1610,7 +1606,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
             ulist.add(String.valueOf(0));
 
-            GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+            Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
             /*Comment post = (Comment)list.get(position);
             List<String> ulist = new ArrayList<>();
             ulist.add("0");

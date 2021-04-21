@@ -25,7 +25,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.FollowReqAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -71,7 +71,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -85,7 +85,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
                 setUpOnCreate();
             }
             else{
-                List<Object> an = GenelUtil.isUserSaved(this,to);
+                List<Object> an = Util.isUserSaved(this,to);
                 boolean isExist = (boolean) an.get(0);
                 if(isExist){
                     String session = (String) an.get(2);
@@ -95,15 +95,15 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
 
                             if(e==null){
                                 String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                                GenelUtil.ToastLong(FollowRequestActivity.this,text);
+                                Util.ToastLong(FollowRequestActivity.this,text);
 
                                 setUpOnCreate();
                             }
                             else{
                                 if(e.getCode() == ParseException.INVALID_SESSION_TOKEN){
-                                    GenelUtil.removeUserFromCache(to, FollowRequestActivity.this);
+                                    Util.removeUserFromCache(to, FollowRequestActivity.this);
                                 }
-                                GenelUtil.ToastLong(FollowRequestActivity.this,getString(R.string.invalidsessiontoken));
+                                Util.ToastLong(FollowRequestActivity.this,getString(R.string.invalidsessiontoken));
                                 startActivity(new Intent(FollowRequestActivity.this, StartActivity.class));
                                 finish();
                             }
@@ -258,7 +258,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
     }
 
     private void initList(List<SonataUser> objects,boolean hasmore,Date date) {
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             postson =!hasmore;
             this.date = date;
             if(objects.size()==0){
@@ -357,7 +357,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
     @Override
     public void goToProfileClick(int position) {
         SonataUser user = list.get(position).getUser();
-        if(GenelUtil.clickable(700)){
+        if(Util.clickable(700)){
             if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                 startActivity(new Intent(FollowRequestActivity.this, GuestProfileActivity.class).putExtra("user",user));
             }
@@ -414,7 +414,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
 
                                 rejectLayout.setVisibility(View.VISIBLE);
                                 buttonText.setText(buttonText.getContext().getString(R.string.accept));
-                                GenelUtil.ToastLong(buttonText.getContext(),buttonText.getContext().getString(R.string.error));
+                                Util.ToastLong(buttonText.getContext(),buttonText.getContext().getString(R.string.error));
                             }
                         }
                     });
@@ -438,7 +438,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
                                 }
                                 else{
                                     buttonText.setText(getString(R.string.follow));
-                                    GenelUtil.ToastLong(FollowRequestActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowRequestActivity.this,getString(R.string.error));
                                 }
 
 
@@ -462,7 +462,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
                                 }
                                 else{
                                     buttonText.setText(getString(R.string.follow));
-                                    GenelUtil.ToastLong(FollowRequestActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowRequestActivity.this,getString(R.string.error));
                                 }
 
 
@@ -490,7 +490,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
                                 }
                                 else{
                                     buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                    GenelUtil.ToastLong(FollowRequestActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowRequestActivity.this,getString(R.string.error));
                                 }
 
 
@@ -514,7 +514,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
                                 }
                                 else{
                                     buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                    GenelUtil.ToastLong(FollowRequestActivity.this,getString(R.string.error));
+                                    Util.ToastLong(FollowRequestActivity.this,getString(R.string.error));
                                 }
 
 
@@ -542,7 +542,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
                             }
                             else{
                                 buttonText.setText(getString(R.string.accept));
-                                GenelUtil.ToastLong(FollowRequestActivity.this,getString(R.string.error));
+                                Util.ToastLong(FollowRequestActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -564,7 +564,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
                             }
                             else{
                                 buttonText.setText(buttonText.getContext().getString(R.string.requestsent));
-                                GenelUtil.ToastLong(FollowRequestActivity.this,getString(R.string.error));
+                                Util.ToastLong(FollowRequestActivity.this,getString(R.string.error));
                             }
 
 
@@ -579,7 +579,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
 
     @Override
     public void rejectClick(int position, TextView buttonText, RoundKornerRelativeLayout buttonLay, RoundKornerRelativeLayout rejectLayout, ProgressBar progressBar, RelativeLayout reject) {
-        if(GenelUtil.clickable(700)){
+        if(Util.clickable(700)){
             SonataUser user = list.get(position).getUser();
             if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                 buttonText.setText(getString(R.string.loading));
@@ -599,7 +599,7 @@ public class FollowRequestActivity extends AppCompatActivity implements FollowRe
 
                         }
                         else{
-                            GenelUtil.ToastLong(reject.getContext(),reject.getContext().getString(R.string.error));
+                            Util.ToastLong(reject.getContext(),reject.getContext().getString(R.string.error));
                             reject.setVisibility(View.VISIBLE);
                             buttonText.setText(getString(R.string.accept));
                             buttonText.setTextColor(getResources().getColor(R.color.blue));

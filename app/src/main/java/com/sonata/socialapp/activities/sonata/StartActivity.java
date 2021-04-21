@@ -1,7 +1,6 @@
 package com.sonata.socialapp.activities.sonata;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.MyApp;
 
 import org.json.JSONArray;
@@ -26,7 +25,7 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -49,7 +48,7 @@ public class StartActivity extends AppCompatActivity {
             });
         }
         else{
-            JSONArray userList = GenelUtil.getSavedUsersFinal(StartActivity.this);
+            JSONArray userList = Util.getSavedUsersFinal(StartActivity.this);
             asdasdas(0,userList);
 
         }
@@ -68,7 +67,7 @@ public class StartActivity extends AppCompatActivity {
                         public void done(ParseUser user, ParseException e) {
                             if(e==null){
                                 String text = String.format(getResources().getString(R.string.accsw), "@"+ParseUser.getCurrentUser().getUsername());
-                                GenelUtil.ToastLong(StartActivity.this,text);
+                                Util.ToastLong(StartActivity.this,text);
                                 MobileAds.initialize(StartActivity.this, new OnInitializationCompleteListener() {
                                     @Override
                                     public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -80,7 +79,7 @@ public class StartActivity extends AppCompatActivity {
                             else{
                                 if(e.getCode()==ParseException.INVALID_SESSION_TOKEN){
                                     try {
-                                        GenelUtil.removeUserFromCache(usob.getString("id"), StartActivity.this);
+                                        Util.removeUserFromCache(usob.getString("id"), StartActivity.this);
                                     } catch (JSONException ex) {
                                         ex.printStackTrace();
                                     }

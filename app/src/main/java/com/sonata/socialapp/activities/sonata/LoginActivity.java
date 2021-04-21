@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +23,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                                 progressDialog.show();
                                 String text = input.getText().toString();
                                 if(text.trim().length()<1){
-                                    GenelUtil.ToastLong(LoginActivity.this,getString(R.string.error));
+                                    Util.ToastLong(LoginActivity.this,getString(R.string.error));
                                     dialog.dismiss();
                                     progressDialog.dismiss();
                                     return;
@@ -106,12 +105,12 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void done(ParseException e) {
                                         if(e==null){
-                                            GenelUtil.ToastLong(LoginActivity.this,getString(R.string.emailsent));
+                                            Util.ToastLong(LoginActivity.this,getString(R.string.emailsent));
                                             dialog.dismiss();
                                             progressDialog.dismiss();
                                         }
                                         else{
-                                            GenelUtil.ToastLong(LoginActivity.this,getString(R.string.error));
+                                            Util.ToastLong(LoginActivity.this,getString(R.string.error));
                                             dialog.dismiss();
                                             progressDialog.dismiss();
                                         }
@@ -163,11 +162,11 @@ public class LoginActivity extends AppCompatActivity {
                         public void done(ParseUser user, ParseException e) {
                             if(e==null){
                                 if(user!=null){
-                                    GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),LoginActivity.this);
+                                    Util.saveNewUser(Util.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),LoginActivity.this);
                                     startActivity(new Intent(LoginActivity.this,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                     if(getIntent() != null && getIntent().getStringExtra("deplinkintent") != null){
                                         String text = getIntent().getStringExtra("deplinkintent");
-                                        String newS = text.substring(text.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
+                                        String newS = text.substring(text.indexOf(Util.appUrl)+ Util.appUrl.length());
                                         if(newS.startsWith("/")){
                                             newS = newS.substring(1);
                                         }

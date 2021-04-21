@@ -32,7 +32,7 @@ import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.FileCompressListener;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -41,9 +41,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-
-import static com.sonata.socialapp.utils.GenelUtil.getBase64;
 
 public class EditProfileActivity extends AppCompatActivity {
     SonataUser user;
@@ -60,7 +57,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -181,7 +178,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void prepareImage(){
 
-        GenelUtil.compressImage(this,uri, 55, new FileCompressListener() {
+        Util.compressImage(this,uri, 55, new FileCompressListener() {
             @Override
             public void done(File file) {
 
@@ -190,7 +187,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     @Override
                     public void done(ParseException e) {
                         if(e==null){
-                            if(GenelUtil.isAlive(EditProfileActivity.this)){
+                            if(Util.isAlive(EditProfileActivity.this)){
                                 progressDialog.setMessage(getString(R.string.finishingup));
                                 HashMap<String, Object> params = new HashMap<String, Object>();
                                 params.put("pp", media);
@@ -200,7 +197,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     @Override
                                     public void done(HashMap object, ParseException e) {
                                         if(e==null){
-                                            GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) object.get("user")),EditProfileActivity.this);
+                                            Util.saveNewUser(Util.convertUserToJson((SonataUser) object.get("user")),EditProfileActivity.this);
                                             progressDialog.dismiss();
                                             finish();
                                         }
@@ -214,13 +211,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                         else{
                             progressDialog.dismiss();
-                            GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                            Util.ToastLong(getApplicationContext(),getString(R.string.error));
                         }
                     }
                 }, new ProgressCallback() {
                     @Override
                     public void done(Integer percentDone) {
-                        if(GenelUtil.isAlive(EditProfileActivity.this)){
+                        if(Util.isAlive(EditProfileActivity.this)){
                             progressDialog.setMessage(getString(R.string.uploading)+" ("+percentDone+"%)");
                         }
                     }
@@ -230,7 +227,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void error(String message) {
                 progressDialog.dismiss();
-                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                Util.ToastLong(getApplicationContext(),getString(R.string.error));
             }
         });
 
@@ -255,7 +252,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         .start(this);
 
             }catch (Exception e){
-                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                Util.ToastLong(getApplicationContext(),getString(R.string.error));
             }
 
         }

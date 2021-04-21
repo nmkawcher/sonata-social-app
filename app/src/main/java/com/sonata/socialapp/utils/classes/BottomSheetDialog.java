@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.interfaces.AccountManagerClicks;
 
 import org.json.JSONArray;
@@ -43,7 +43,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.bottom_sheet_layout, container,false);
 
         RelativeLayout addAccount = view.findViewById(R.id.user_lay_add_account);
-        if(list.length()> GenelUtil.ACCOUNT_LIMIT-1){
+        if(list.length()> Util.ACCOUNT_LIMIT-1){
             addAccount.setVisibility(View.GONE);
         }
         else{

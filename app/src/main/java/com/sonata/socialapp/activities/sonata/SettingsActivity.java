@@ -10,30 +10,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.Switch;
 
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.socialview.Hashtag;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.SonataUser;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -49,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -134,11 +118,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         nightMode = findViewById(R.id.settingnightmodeswitch);
-        nightMode.setChecked(GenelUtil.getNightMode());
+        nightMode.setChecked(Util.getNightMode());
         nightMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                GenelUtil.saveNightMode(isChecked);
+                Util.saveNightMode(isChecked);
                 if(isChecked){
                     AppCompatDelegate.setDefaultNightMode(
                             AppCompatDelegate.MODE_NIGHT_YES);
@@ -166,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String id = ParseUser.getCurrentUser().getObjectId();
                         ParseUser.logOut();
-                        GenelUtil.removeUserFromCache(id,SettingsActivity.this);
+                        Util.removeUserFromCache(id,SettingsActivity.this);
                         startActivity(new Intent(SettingsActivity.this, StartActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         dialog.dismiss();
                         SettingsActivity.this.onBackPressed();

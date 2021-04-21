@@ -17,9 +17,8 @@ import android.widget.RelativeLayout;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
 import java.util.HashMap;
@@ -49,7 +48,7 @@ public class ChangeUsernameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -74,7 +73,7 @@ public class ChangeUsernameActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().length()>0){
-                    if(!s.toString().equals(GenelUtil.getCurrentUser().getUsername())){
+                    if(!s.toString().equals(Util.getCurrentUser().getUsername())){
                         if(save!=null){
                             save.setVisibility(View.VISIBLE);
                         }
@@ -104,7 +103,7 @@ public class ChangeUsernameActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!s.toString().equals(GenelUtil.getCurrentUser().getUsername())&&s.toString().length()>0){
+                if(!s.toString().equals(Util.getCurrentUser().getUsername())&&s.toString().length()>0){
                     if(progressBar!=null){
                         progressBar.setVisibility(View.VISIBLE);
                     }
@@ -113,14 +112,14 @@ public class ChangeUsernameActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             // Do something after 5s = 5000ms
-                            if(GenelUtil.isAlive(ChangeUsernameActivity.this)){
+                            if(Util.isAlive(ChangeUsernameActivity.this)){
                                 if(t.equals(editText.getText().toString())){
                                     HashMap<String,String> params =new HashMap<>();
                                     params.put("username",editText.getText().toString().trim());
                                     ParseCloud.callFunctionInBackground("checkUsername", params, new FunctionCallback<String>() {
                                         @Override
                                         public void done(String object, ParseException e) {
-                                            if(GenelUtil.isAlive(ChangeUsernameActivity.this)){
+                                            if(Util.isAlive(ChangeUsernameActivity.this)){
                                                 if(e==null){
                                                     if(object!=null){
                                                         if(object.equals("canTake")){
@@ -180,7 +179,7 @@ public class ChangeUsernameActivity extends AppCompatActivity {
         };
 
         editText = findViewById(R.id.changeusernameedittext);
-        editText.setText(GenelUtil.getCurrentUser().getUsername());
+        editText.setText(Util.getCurrentUser().getUsername());
         editText.addTextChangedListener(textWatcher);
         editText.setFilters(new InputFilter[] {
                 new InputFilter.AllCaps() {
@@ -205,9 +204,9 @@ public class ChangeUsernameActivity extends AppCompatActivity {
                     ParseCloud.callFunctionInBackground("updateUsername", params, new FunctionCallback<HashMap>() {
                         @Override
                         public void done(HashMap object, ParseException e) {
-                            if(GenelUtil.isAlive(ChangeUsernameActivity.this)){
+                            if(Util.isAlive(ChangeUsernameActivity.this)){
                                 if(e==null){
-                                    GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) object.get("user")),ChangeUsernameActivity.this);
+                                    Util.saveNewUser(Util.convertUserToJson((SonataUser) object.get("user")),ChangeUsernameActivity.this);
                                     progressDialog.dismiss();
                                     onBackPressed();
                                 }

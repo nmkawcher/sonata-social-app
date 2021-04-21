@@ -19,7 +19,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.SaveCallback;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.tylersuehr.socialtextview.SocialTextView;
@@ -169,7 +169,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Observable.fromCallable(() -> {
             try {
                 File dst = new File(media.getContext().getCacheDir()+File.separator+"copiedimage"+(System.currentTimeMillis()%10));
-                GenelUtil.copy(message.getUri(),dst,media.getContext(),null);
+                Util.copy(message.getUri(),dst,media.getContext(),null);
                 imageZipperFile[0] = new ImageZipper(media.getContext())
                         .setQuality(70)
                         .compressToFile(dst);

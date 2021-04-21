@@ -6,19 +6,16 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.parse.ParseCloud;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ChooseCategoryActivity extends AppCompatActivity {
 
@@ -32,7 +29,7 @@ public class ChooseCategoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);

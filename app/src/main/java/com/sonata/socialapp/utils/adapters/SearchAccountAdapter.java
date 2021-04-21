@@ -14,9 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
-import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;

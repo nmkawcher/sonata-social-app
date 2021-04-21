@@ -21,7 +21,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.BlockedPersonAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
@@ -65,7 +65,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -186,7 +186,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
     }
 
     private void initList(List<SonataUser> objects,boolean hasmore,Date date) {
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             postson = !hasmore;
             this.date = date;
             if(objects.size()==0){
@@ -287,7 +287,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
     @Override
     public void goToProfileClick(int position) {
         SonataUser user = list.get(position).getUser();
-        if(GenelUtil.clickable(700)){
+        if(Util.clickable(700)){
             if(!user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                 startActivity(new Intent(PendingFollowRequestsActivity.this, GuestProfileActivity.class).putExtra("user",user));
             }
@@ -317,7 +317,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
                                 }
                                 else{
                                     buttonText.setText(getString(R.string.follow));
-                                    GenelUtil.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
+                                    Util.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
                                 }
 
 
@@ -341,7 +341,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
                                 }
                                 else{
                                     buttonText.setText(getString(R.string.follow));
-                                    GenelUtil.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
+                                    Util.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
                                 }
 
 
@@ -369,7 +369,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
                                 }
                                 else{
                                     buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                    GenelUtil.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
+                                    Util.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
                                 }
 
 
@@ -393,7 +393,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
                                 }
                                 else{
                                     buttonText.setText(buttonText.getContext().getString(R.string.unfollow));
-                                    GenelUtil.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
+                                    Util.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
                                 }
 
 
@@ -421,7 +421,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
                             }
                             else{
                                 buttonText.setText(getString(R.string.accept));
-                                GenelUtil.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
+                                Util.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -443,7 +443,7 @@ public class PendingFollowRequestsActivity extends AppCompatActivity implements 
                             }
                             else{
                                 buttonText.setText(buttonText.getContext().getString(R.string.requestsent));
-                                GenelUtil.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
+                                Util.ToastLong(PendingFollowRequestsActivity.this,getString(R.string.error));
                             }
 
 

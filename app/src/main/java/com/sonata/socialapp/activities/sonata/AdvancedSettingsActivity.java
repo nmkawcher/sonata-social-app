@@ -21,7 +21,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -78,7 +78,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
         else{
             spinner.setSelection(0);
             privateAccount = findViewById(R.id.settingprivateaccountswitch);
-            privateAccount.setChecked(Objects.requireNonNull(GenelUtil.getCurrentUser()).getPrivate());
+            privateAccount.setChecked(Objects.requireNonNull(Util.getCurrentUser()).getPrivate());
             onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -96,7 +96,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                         progressDialog.dismiss();
                                     }
                                     else{
-                                        GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
+                                        Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
                                         buttonView.setOnCheckedChangeListener(null);
                                         buttonView.setChecked(false);
                                         buttonView.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -120,7 +120,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                         progressDialog.dismiss();
                                     }
                                     else{
-                                        GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
+                                        Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
                                         buttonView.setOnCheckedChangeListener(null);
                                         buttonView.setChecked(true);
                                         buttonView.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -178,11 +178,11 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                 ParseCloud.callFunctionInBackground("switchAccountType", params, new FunctionCallback<HashMap>() {
                                     @Override
                                     public void done(HashMap object, ParseException e) {
-                                        if(GenelUtil.isAlive(AdvancedSettingsActivity.this)){
+                                        if(Util.isAlive(AdvancedSettingsActivity.this)){
                                             if(e==null){
                                                 prvAccountLayout.setVisibility(View.GONE);
                                                 progressDialog.dismiss();
-                                                GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.atchanged));
+                                                Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.atchanged));
 
                                             }
                                             else{
@@ -190,7 +190,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                                 spinner.setSelection(0);
                                                 spinner.setOnItemSelectedListener(onItemSelectedListener);
                                                 progressDialog.dismiss();
-                                                GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
+                                                Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
                                             }
                                         }
 
@@ -232,11 +232,11 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                 ParseCloud.callFunctionInBackground("switchAccountType", params, new FunctionCallback<HashMap>() {
                                     @Override
                                     public void done(HashMap object, ParseException e) {
-                                        if(GenelUtil.isAlive(AdvancedSettingsActivity.this)){
+                                        if(Util.isAlive(AdvancedSettingsActivity.this)){
                                             if(e==null){
                                                 privateAccount = findViewById(R.id.settingprivateaccountswitch);
                                                 prvAccountLayout.setVisibility(View.VISIBLE);
-                                                privateAccount.setChecked(Objects.requireNonNull(GenelUtil.getCurrentUser()).getPrivate());
+                                                privateAccount.setChecked(Objects.requireNonNull(Util.getCurrentUser()).getPrivate());
                                                 onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
                                                     @Override
                                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -254,7 +254,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                                                             progressDialog.dismiss();
                                                                         }
                                                                         else{
-                                                                            GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
+                                                                            Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
                                                                             buttonView.setOnCheckedChangeListener(null);
                                                                             buttonView.setChecked(false);
                                                                             buttonView.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -278,7 +278,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                                                             progressDialog.dismiss();
                                                                         }
                                                                         else{
-                                                                            GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
+                                                                            Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
                                                                             buttonView.setOnCheckedChangeListener(null);
                                                                             buttonView.setChecked(true);
                                                                             buttonView.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -293,7 +293,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                                 };
                                                 privateAccount.setOnCheckedChangeListener(onCheckedChangeListener);
                                                 progressDialog.dismiss();
-                                                GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.atchanged));
+                                                Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.atchanged));
 
                                             }
                                             else{
@@ -301,7 +301,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity {
                                                 spinner.setSelection(1);
                                                 spinner.setOnItemSelectedListener(onItemSelectedListener);
                                                 progressDialog.dismiss();
-                                                GenelUtil.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
+                                                Util.ToastLong(AdvancedSettingsActivity.this,getString(R.string.error));
                                             }
                                         }
 

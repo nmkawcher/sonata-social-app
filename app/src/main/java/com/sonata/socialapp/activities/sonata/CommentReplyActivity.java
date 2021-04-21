@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -47,9 +46,8 @@ import com.parse.ParseUser;
 import com.sonata.socialapp.R;
 import com.sonata.socialapp.socialview.Mention;
 import com.sonata.socialapp.socialview.SocialAutoCompleteTextView;
-import com.sonata.socialapp.utils.GenelUtil;
-import com.sonata.socialapp.utils.MyApp;
-import com.sonata.socialapp.utils.adapters.ComReplyAdapter;
+import com.sonata.socialapp.utils.Util;
+import com.sonata.socialapp.utils.adapters.CommentReplyAdapter;
 import com.sonata.socialapp.utils.adapters.MentionAdapter;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.Post;
@@ -77,7 +75,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
     RecyclerView recyclerView;
     private boolean postson=false;
     private LinearLayoutManager linearLayoutManager;
-    ComReplyAdapter adapter;
+    CommentReplyAdapter adapter;
     Post post;
     private boolean loading=true;
     Date date;
@@ -114,7 +112,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -200,13 +198,13 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                 @Override
                                 public void run() {
                                     // Do something after 5s = 5000ms
-                                    if(GenelUtil.isAlive(CommentReplyActivity.this)){
+                                    if(Util.isAlive(CommentReplyActivity.this)){
                                         if(t.equals(commenttext.getText().toString())){
                                             HashMap<String, Object> params = new HashMap<>();
                                             params.put("text",queryString.replace("@","").toLowerCase());
                                             ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                                 Log.e("done","done");
-                                                if(GenelUtil.isAlive(CommentReplyActivity.this)){
+                                                if(Util.isAlive(CommentReplyActivity.this)){
 
                                                     if(e==null){
                                                         List<SonataUser> object = (List<SonataUser>) objecta.get("users");
@@ -260,13 +258,13 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                             @Override
                             public void run() {
                                 // Do something after 5s = 5000ms
-                                if(GenelUtil.isAlive(CommentReplyActivity.this)){
+                                if(Util.isAlive(CommentReplyActivity.this)){
                                     if(t.equals(commenttext.getText().toString())){
                                         HashMap<String, Object> params = new HashMap<>();
                                         params.put("text",t.replace("@","").toLowerCase());
                                         ParseCloud.callFunctionInBackground("searchPerson", params, (FunctionCallback<HashMap>) (objecta, e) -> {
                                             Log.e("done","done");
-                                            if(GenelUtil.isAlive(CommentReplyActivity.this)){
+                                            if(Util.isAlive(CommentReplyActivity.this)){
                                                 if(e==null){
                                                     List<SonataUser> object = (List<SonataUser>) objecta.get("users");
                                                     if(t.equals(commenttext.getText().toString())){
@@ -309,7 +307,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
         });
         if(Objects.requireNonNull(getIntent()).getBooleanExtra("reply",false)){
             commenttext.requestFocus();
-            GenelUtil.showKeyboard(this);
+            Util.showKeyboard(this);
         }
 
 
@@ -344,7 +342,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
         linearLayoutManager=new LinearLayoutManager(CommentReplyActivity.this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter=new ComReplyAdapter();
+        adapter=new CommentReplyAdapter();
         adapter.setContext(list,
                 Glide.with(CommentReplyActivity.this),CommentReplyActivity.this);
         adapter.setHasStableIds(true);
@@ -474,7 +472,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                         adapter.notifyDataSetChanged();
                                         recyclerView.scrollToPosition(list.size()-1);
                                         alertDialog.dismiss();
-                                        GenelUtil.hideKeyboard(CommentReplyActivity.this);
+                                        Util.hideKeyboard(CommentReplyActivity.this);
                                         commenttext.setText("");
                                         commenttext.clearFocus();
 
@@ -495,10 +493,10 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                         }
                                         else{
                                             if(e.getMessage().equals("CommentsDisabled")){
-                                                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
+                                                Util.ToastLong(getApplicationContext(),getString(R.string.commentdisable));
                                             }
                                             else{
-                                                GenelUtil.ToastLong(getApplicationContext(),getString(R.string.error));
+                                                Util.ToastLong(getApplicationContext(),getString(R.string.error));
                                             }
                                         }
                                     }
@@ -531,7 +529,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
         commenttext.append("");
         commenttext.setSelection(commenttext.getText().length());
         commenttext.requestFocus();
-        GenelUtil.showKeyboard(this);
+        Util.showKeyboard(this);
 
     }
 
@@ -603,7 +601,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
 
     private void initList(List<Comment> objects,boolean hasmore,Date date){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             postson = !hasmore;
             this.date = date;
             if(objects.size()==0){
@@ -771,7 +769,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
         ulist.add(String.valueOf(0));
 
-        GenelUtil.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
+        Util.showImage(ulist,post.getMediaList(),imageView,pos,adapter);
     }
 
     @Override
@@ -826,12 +824,12 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                             if(e==null){
                                 post.setSaved(true);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentReplyActivity.this,getString(R.string.commentsaved));
+                                Util.ToastLong(CommentReplyActivity.this,getString(R.string.commentsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentReplyActivity.this,getString(R.string.error));
+                                Util.ToastLong(CommentReplyActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -851,12 +849,12 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                             if(e==null){
                                 post.setSaved(false);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentReplyActivity.this,getString(R.string.commentunsaved));
+                                Util.ToastLong(CommentReplyActivity.this,getString(R.string.commentunsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentReplyActivity.this,getString(R.string.error));
+                                Util.ToastLong(CommentReplyActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -872,12 +870,12 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                         @Override
                         public void done(String object, ParseException e) {
                             if(e==null){
-                                GenelUtil.ToastLong(CommentReplyActivity.this,getString(R.string.reportsucces));
+                                Util.ToastLong(CommentReplyActivity.this,getString(R.string.reportsucces));
                                 progressDialog.dismiss();
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(CommentReplyActivity.this,getString(R.string.error));
+                                Util.ToastLong(CommentReplyActivity.this,getString(R.string.error));
                             }
                         }
                     });
@@ -916,7 +914,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                                     }
                                     else{
                                         progressDialog.dismiss();
-                                        GenelUtil.ToastLong(CommentReplyActivity.this,getString(R.string.error));
+                                        Util.ToastLong(CommentReplyActivity.this,getString(R.string.error));
                                     }
                                 }
                             });
@@ -945,7 +943,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                 upvoteimage.setImageDrawable( getDrawable(R.drawable.ic_upvote_blue));
                 votecount.setTextColor(Color.parseColor("#2d72bc"));
                 post.increment("vote",2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
 
 
                 //upvote
@@ -960,7 +958,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
 
 
                     //unupvote
@@ -973,7 +971,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                     upvoteimage.setImageDrawable(getDrawable(R.drawable.ic_upvote_blue));
                     votecount.setTextColor(Color.parseColor("#2d72bc"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
 
 
                     //upvote
@@ -998,7 +996,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                 votecount.setTextColor(Color.parseColor("#a64942"));
 
                 post.increment("vote",-2);
-                votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
+                votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
 
 
 
@@ -1013,7 +1011,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote));
                     votecount.setTextColor(Color.parseColor("#999999"));
                     post.increment("vote");
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
 
 
                     //undownvote
@@ -1026,7 +1024,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
                     downvoteimage.setImageDrawable(getDrawable(R.drawable.ic_downvote_red));
                     votecount.setTextColor(Color.parseColor("#a64942"));
                     post.increment("vote",-1);
-                    votecount.setText(GenelUtil.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
+                    votecount.setText(Util.ConvertNumber((int)post.getVote(),CommentReplyActivity.this));
 
 
                     //downvote
@@ -1050,7 +1048,7 @@ public class CommentReplyActivity extends AppCompatActivity implements CommentRe
 
     @Override
     public void onCommentSocialClick(int position, int clickType, String text) {
-        GenelUtil.handleLinkClicks(this,text,clickType);
+        Util.handleLinkClicks(this,text,clickType);
     }
 
 }

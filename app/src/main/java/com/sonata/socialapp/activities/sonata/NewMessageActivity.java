@@ -18,9 +18,8 @@ import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.adapters.SearchAccountAdapter;
-import com.sonata.socialapp.utils.adapters.SearchUserAdapter;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.SonataUser;
 import com.sonata.socialapp.utils.interfaces.BlockedAdapterClick;
@@ -42,7 +41,7 @@ public class NewMessageActivity extends AppCompatActivity implements BlockedAdap
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -71,7 +70,7 @@ public class NewMessageActivity extends AppCompatActivity implements BlockedAdap
 
         searchView = findViewById(R.id.searchView);
         searchView.requestFocus();
-        GenelUtil.showKeyboard(this);
+        Util.showKeyboard(this);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -81,7 +80,7 @@ public class NewMessageActivity extends AppCompatActivity implements BlockedAdap
                 object2.setType("load");
                 list.add(object2);
                 adapter.notifyDataSetChanged();
-                if(GenelUtil.isAlive(NewMessageActivity.this)){
+                if(Util.isAlive(NewMessageActivity.this)){
                     getReqs(searchText);
                 }
                 searchView.setIconified(false);
@@ -99,12 +98,12 @@ public class NewMessageActivity extends AppCompatActivity implements BlockedAdap
 
 
     private void getReqs(String searchStr){
-        if(GenelUtil.isAlive(this)){
+        if(Util.isAlive(this)){
             HashMap<String, Object> params = new HashMap<>();
             params.put("text",searchStr);
             ParseCloud.callFunctionInBackground("search", params, (FunctionCallback<List<HashMap>>) (objects, e) -> {
                 Log.e("done","done");
-                if(GenelUtil.isAlive(NewMessageActivity.this)){
+                if(Util.isAlive(NewMessageActivity.this)){
                     if(e==null){
                         if(searchText.equals(searchStr)){
                             if(objects!= null){
@@ -127,7 +126,7 @@ public class NewMessageActivity extends AppCompatActivity implements BlockedAdap
 
 
     private void initUser(List<SonataUser> objects) {
-        if(GenelUtil.isAlive(NewMessageActivity.this)){
+        if(Util.isAlive(NewMessageActivity.this)){
             if(list.size()>0){
                 if(list.get(list.size()-1).getType().equals("load")){
                     list.remove(list.size()-1);

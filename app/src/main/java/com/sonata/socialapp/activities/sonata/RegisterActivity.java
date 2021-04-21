@@ -10,11 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,9 +22,8 @@ import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
 import java.util.HashMap;
@@ -71,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 String url = "https://www.sonatasocialapp.com/user-agreement.html";
 
-                if(GenelUtil.getNightMode()){
+                if(Util.getNightMode()){
                     builder.setToolbarColor(Color.parseColor("#303030"));
                 }
                 else{
@@ -89,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 String url = "https://www.sonatasocialapp.com/privacy-policy.html";
 
-                if(GenelUtil.getNightMode()){
+                if(Util.getNightMode()){
                     builder.setToolbarColor(Color.parseColor("#303030"));
                 }
                 else{
@@ -142,11 +138,11 @@ public class RegisterActivity extends AppCompatActivity {
                                                             public void done(ParseUser user, ParseException e) {
                                                                 if(user!=null){
                                                                     if(e==null){
-                                                                        GenelUtil.saveNewUser(GenelUtil.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),RegisterActivity.this);
+                                                                        Util.saveNewUser(Util.convertUserToJson((SonataUser) ParseUser.getCurrentUser()),RegisterActivity.this);
                                                                         startActivity(new Intent(RegisterActivity.this,ChooseCategoryActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                                                         if(getIntent() != null && getIntent().getStringExtra("deplinkintent") != null){
                                                                             String text = getIntent().getStringExtra("deplinkintent");
-                                                                            String newS = text.substring(text.indexOf(GenelUtil.appUrl)+GenelUtil.appUrl.length());
+                                                                            String newS = text.substring(text.indexOf(Util.appUrl)+ Util.appUrl.length());
                                                                             if(newS.startsWith("/")){
                                                                                 newS = newS.substring(1);
                                                                             }

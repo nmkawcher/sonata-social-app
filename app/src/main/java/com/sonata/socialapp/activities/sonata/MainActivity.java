@@ -4,14 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,37 +15,23 @@ import android.widget.FrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
-import com.parse.ParseDecoder;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.fragments.GroupFragment;
 import com.sonata.socialapp.fragments.DiscoverFragment;
 import com.sonata.socialapp.fragments.HomeFragment;
 import com.sonata.socialapp.fragments.NotifFragment;
 import com.sonata.socialapp.fragments.ProfilFragment;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.classes.Post;
 import com.sonata.socialapp.utils.classes.SonataUser;
 
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 
@@ -131,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -149,16 +131,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ParseCloud.callFunctionInBackground("refreshOwnProfile", params, new FunctionCallback<HashMap>() {
             @Override
             public void done(HashMap object, ParseException e) {
-                if(!GenelUtil.isAlive(MainActivity.this)) return;
+                if(!Util.isAlive(MainActivity.this)) return;
                 if(e==null){
-                    if(Objects.requireNonNull(GenelUtil.getCurrentUser()).getNotifCount()>0){
-                        addBadgeAt(2,(int)GenelUtil.getCurrentUser().getNotifCount());
+                    if(Objects.requireNonNull(Util.getCurrentUser()).getNotifCount()>0){
+                        addBadgeAt(2,(int) Util.getCurrentUser().getNotifCount());
                     }
 
                     if(getSupportFragmentManager().findFragmentById(R.id.homeframehome)!=null){
                         HomeFragment notifFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.homeframehome);
                         assert notifFragment != null;
-                        notifFragment.addBadgeToMessages((int) GenelUtil.getCurrentUser().getMessageCount());
+                        notifFragment.addBadgeToMessages((int) Util.getCurrentUser().getMessageCount());
                     }
 
                     if(getSupportFragmentManager().findFragmentById(R.id.homeframeprofile)!=null){
@@ -184,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         String token = task.getResult();
                         HashMap<String,String> hash = new HashMap<>();
                         hash.put("token",token);
-                        hash.put("lang", GenelUtil.getCurrentCountryCode(MainActivity.this));
+                        hash.put("lang", Util.getCurrentCountryCode(MainActivity.this));
                         ParseCloud.callFunctionInBackground("saveUserDeviceToken",hash);
 
                     }

@@ -1,6 +1,5 @@
 package com.sonata.socialapp.utils;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -10,11 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -27,10 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.os.ConfigurationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -51,7 +46,6 @@ import com.sonata.socialapp.activities.sonata.CommentActivity;
 import com.sonata.socialapp.activities.sonata.DirectMessageActivity;
 import com.sonata.socialapp.activities.sonata.GuestProfileActivity;
 import com.sonata.socialapp.activities.sonata.HashtagActivity;
-import com.sonata.socialapp.activities.sonata.UploadActivity;
 import com.sonata.socialapp.utils.classes.Comment;
 import com.sonata.socialapp.utils.classes.ListObject;
 import com.sonata.socialapp.utils.classes.Message;
@@ -66,7 +60,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -74,13 +67,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -90,7 +82,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import static com.parse.Parse.getApplicationContext;
 
 
-public class GenelUtil {
+public class Util {
 
     public static Comment comment = null;
     private static long a;
@@ -99,7 +91,7 @@ public class GenelUtil {
     public static int TYPE_POST = 123;
     public static int TYPE_COMMENT = 124;
 
-    public static String appUrl = "sonatasocialapp.com";
+    public static String appUrl = "https://www.example.com";
 
 
     public static void messageLongClick(Message message,Context context){
@@ -202,9 +194,8 @@ public class GenelUtil {
         int c = 0;
         c = Math.min(Math.round((float)l/10),Math.round(((float)(l-1))/10));
         Log.e("Count Ads:",c+"");
-        AtomicBoolean isfinish = new AtomicBoolean(false);
+        AtomicInteger loadCheck = new AtomicInteger(0);
         List<UnifiedNativeAd> tempList = new ArrayList<>();
-        final int[] loadCheck = {0};
         int finalC = c;
         if(c>0){
             for(int i = 0; i < c; i++){
@@ -212,14 +203,10 @@ public class GenelUtil {
                         .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                             @Override
                             public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                                loadCheck[0]++;
+                                loadCheck.set(loadCheck.get()+1);
                                 tempList.add(unifiedNativeAd);
-                                if(loadCheck[0] == finalC){
-                                    if(!isfinish.get()){
-                                        isfinish.set(true);
-                                        listener.done(tempList);
-                                    }
-
+                                if(loadCheck.get() == finalC){
+                                    listener.done(tempList);
                                 }
                             }
                         })
@@ -228,13 +215,9 @@ public class GenelUtil {
                             public void onAdFailedToLoad(LoadAdError adError) {
                                 Log.e("Ad Error Code:",adError.getCode()+"");
                                 Log.e("Ad Error Code:",adError.getMessage()+"");
-                                loadCheck[0]++;
-
-                                if(loadCheck[0] == finalC){
-                                    if(!isfinish.get()){
-                                        isfinish.set(true);
-                                        listener.done(tempList);
-                                    }
+                                loadCheck.set(loadCheck.get()+1);
+                                if(loadCheck.get() == finalC){
+                                    listener.done(tempList);
                                 }
                             }
                         }).build();
@@ -242,18 +225,6 @@ public class GenelUtil {
 
                 adLoader.loadAd(new AdRequest.Builder().build());
             }
-
-            Log.e("Delay Öncesi zaman : ",System.currentTimeMillis()+"");
-            final Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(!isfinish.get()){
-                        isfinish.set(true);
-                        listener.done(tempList);
-                    }
-                }
-            }, Math.max(c * 4500, 7000));
         }
         else{
             listener.done(new ArrayList<>());
@@ -310,10 +281,10 @@ public class GenelUtil {
 
     public static String getUrlOfObject(ParseObject object){
         if(object.getClassName().equals("_User")){
-            return "https://www.sonatasocialapp.com/user/"+((ParseUser)object).getUsername();
+            return appUrl+"/user/"+((ParseUser)object).getUsername();
         }
         else if(object.getClassName().equals("Post")){
-            return "https://www.sonatasocialapp.com/post/"+object.getObjectId();
+            return appUrl+"/post/"+object.getObjectId();
         }
         return "";
     }
@@ -374,7 +345,7 @@ public class GenelUtil {
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -393,12 +364,12 @@ public class GenelUtil {
                             if(e==null){
                                 post.setSaved(true);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.postsaved));
+                                Util.ToastLong(context,context.getString(R.string.postsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -417,12 +388,12 @@ public class GenelUtil {
                             if(e==null){
                                 post.setSaved(false);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.postunsaved));
+                                Util.ToastLong(context,context.getString(R.string.postunsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -437,12 +408,12 @@ public class GenelUtil {
                         @Override
                         public void done(String object, ParseException e) {
                             if(e==null){
-                                GenelUtil.ToastLong(context,context.getString(R.string.reportsucces));
+                                Util.ToastLong(context,context.getString(R.string.reportsucces));
                                 progressDialog.dismiss();
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -463,11 +434,11 @@ public class GenelUtil {
                                 post.setCommentable(true);
                                 progressDialog.dismiss();
 
-                                commentNumber.setText(GenelUtil.ConvertNumber((int)post.getCommentnumber(),context));
+                                commentNumber.setText(Util.ConvertNumber((int)post.getCommentnumber(),context));
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -506,7 +477,7 @@ public class GenelUtil {
                                     }
                                     else{
                                         progressDialog.dismiss();
-                                        GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                        Util.ToastLong(context,context.getString(R.string.error));
                                     }
                                 }
                             });
@@ -590,7 +561,7 @@ public class GenelUtil {
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -609,12 +580,12 @@ public class GenelUtil {
                             if(e==null){
                                 post.setSaved(true);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.postsaved));
+                                Util.ToastLong(context,context.getString(R.string.postsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -633,12 +604,12 @@ public class GenelUtil {
                             if(e==null){
                                 post.setSaved(false);
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.postunsaved));
+                                Util.ToastLong(context,context.getString(R.string.postunsaved));
 
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -653,12 +624,12 @@ public class GenelUtil {
                         @Override
                         public void done(String object, ParseException e) {
                             if(e==null){
-                                GenelUtil.ToastLong(context,context.getString(R.string.reportsucces));
+                                Util.ToastLong(context,context.getString(R.string.reportsucces));
                                 progressDialog.dismiss();
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -679,11 +650,11 @@ public class GenelUtil {
                                 post.setCommentable(true);
                                 progressDialog.dismiss();
 
-                                commentNumber.setText(GenelUtil.ConvertNumber((int)post.getCommentnumber(),context));
+                                commentNumber.setText(Util.ConvertNumber((int)post.getCommentnumber(),context));
                             }
                             else{
                                 progressDialog.dismiss();
-                                GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                Util.ToastLong(context,context.getString(R.string.error));
                             }
                         }
                     });
@@ -720,7 +691,7 @@ public class GenelUtil {
                                     }
                                     else{
                                         progressDialog.dismiss();
-                                        GenelUtil.ToastLong(context,context.getString(R.string.error));
+                                        Util.ToastLong(context,context.getString(R.string.error));
                                     }
                                 }
                             });
@@ -791,7 +762,7 @@ public class GenelUtil {
                     if(!url.startsWith("http")){
                         url = "http://"+url;
                     }
-                    if(GenelUtil.getNightMode()){
+                    if(Util.getNightMode()){
                         builder.setToolbarColor(Color.parseColor("#303030"));
                     }
                     else{
@@ -807,7 +778,7 @@ public class GenelUtil {
                 if(!url.startsWith("http")){
                     url = "http://"+url;
                 }
-                if(GenelUtil.getNightMode()){
+                if(Util.getNightMode()){
                     builder.setToolbarColor(Color.parseColor("#303030"));
                 }
                 else{
@@ -1021,44 +992,6 @@ public class GenelUtil {
         }
     }
 
-    public static void saveRestore(boolean nightMode){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("restore", 0); // 0 - for private mode
-        SharedPreferences.Editor editor = pref.edit();
-
-        editor.putBoolean("restore",nightMode);
-        editor.apply();
-    }
-
-    public static boolean getRestore(){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("restore", 0);
-        return pref.getBoolean("restore",false);
-    }
-
-    public static void saveUploadTexts(String text){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("uploadrestore", 0); // 0 - for private mode
-        SharedPreferences.Editor editor = pref.edit();
-
-        editor.putString("utext",text);
-        editor.apply();
-    }
-
-    public static String getUploadText(){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("uploadrestore", 0);
-        return pref.getString("utext","");
-    }
-
-    public static void saveUploadUri(String text){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("uploadrestore", 0); // 0 - for private mode
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("uuri",text);
-        editor.apply();
-    }
-
-    public static Uri getUploadUri(){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("uploadrestore", 0);
-        return Uri.parse(pref.getString("uuri",""));
-    }
-
 
 
     public static void copy(Uri uri, File dst, Context context, ProgressDialog progressDialog) throws IOException {
@@ -1139,26 +1072,6 @@ public class GenelUtil {
     }
 
 
-
-
-
-
-
-
-
-    public static String getBase64(File file){
-        String base64 = "";
-        try {/*from   w w w .  ja  va  2s  .  c om*/
-            byte[] buffer = new byte[(int) file.length() + 100];
-            @SuppressWarnings("resource")
-            int length = new FileInputStream(file).read(buffer);
-            base64 = Base64.encodeToString(buffer, 0, length,
-                    Base64.DEFAULT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return base64;
-    }
 
     public static void ToastLong (Context context, String message){
         Toast.makeText(context,message, Toast.LENGTH_LONG).show();
@@ -1269,12 +1182,6 @@ public class GenelUtil {
         view.show(true);
 
 
-
-
-
-
-
-
     }
 
     public static void copyText(String text,Context context){
@@ -1284,7 +1191,7 @@ public class GenelUtil {
             clipboard.setPrimaryClip(clip);
             ToastLong(context,context.getString(R.string.linkcopied));
         }catch (Exception e){
-            GenelUtil.ToastLong(getApplicationContext(),getApplicationContext().getString(R.string.error));
+            Util.ToastLong(getApplicationContext(),getApplicationContext().getString(R.string.error));
         }
     }
 

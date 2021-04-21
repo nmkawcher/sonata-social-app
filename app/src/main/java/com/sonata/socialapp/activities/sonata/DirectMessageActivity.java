@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.jcminarro.roundkornerlayout.RoundKornerRelativeLayout;
@@ -35,17 +34,15 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.livequery.OkHttp3SocketClientFactory;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
 import com.sonata.socialapp.R;
-import com.sonata.socialapp.utils.GenelUtil;
+import com.sonata.socialapp.utils.Util;
 import com.sonata.socialapp.utils.MyApp;
 import com.sonata.socialapp.utils.adapters.MessageAdapter;
 import com.sonata.socialapp.utils.classes.Chat;
 import com.sonata.socialapp.utils.classes.Message;
 import com.sonata.socialapp.utils.classes.SonataUser;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,7 +55,6 @@ import java.util.List;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
 
 public class DirectMessageActivity extends AppCompatActivity implements MessageAdapter.MessageClick {
 
@@ -94,7 +90,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(GenelUtil.getNightMode()){
+        if(Util.getNightMode()){
             setTheme(R.style.ThemeNight);
         }else{
             setTheme(R.style.ThemeDay);
@@ -188,7 +184,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
 
 
     private void setUpRecyclerView(String key){
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         list=new ArrayList<>();
         linearLayoutManager=new LinearLayoutManager(DirectMessageActivity.this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -225,7 +221,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     }
 
     private void getMessages(Date date,Chat chat){
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         loading = true;
         HashMap<String,Object> params = new HashMap<>();
         params.put("date",date);
@@ -234,7 +230,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
             @Override
             public void done(HashMap object, ParseException e) {
                 Log.e("done","cloud code done");
-                if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
+                if(!Util.isAlive(DirectMessageActivity.this)) return;
                 if(e==null){
 
                     setUpNewMessages((List<Message>) object.get("messages"),(boolean)object.get("hasmore"),(Date)object.get("date"));
@@ -247,7 +243,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
                     }
                     else{
                         Log.e("Error Message",e.getMessage());
-                        GenelUtil.ToastLong(DirectMessageActivity.this,getString(R.string.error));
+                        Util.ToastLong(DirectMessageActivity.this,getString(R.string.error));
                         finish();
                     }
                 }
@@ -256,7 +252,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     }
 
     private void getChatAndMessages(String id){
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         loading = true;
         HashMap<String,Object> params = new HashMap<>();
         params.put("to",id);
@@ -264,7 +260,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
             @Override
             public void done(HashMap object, ParseException e) {
                 Log.e("done","cloud code done");
-                if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
+                if(!Util.isAlive(DirectMessageActivity.this)) return;
                 if(e==null){
                     chat = object.get("chat") != null ? (Chat) object.get("chat") : null;
                     setUpAfterFetch((List<Message>) object.get("messages"), object.get("hasmore") != null && (boolean) object.get("hasmore"),object.get("date") != null?(Date)object.get("date"): Calendar.getInstance().getTime());
@@ -277,7 +273,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
                     }
                     else{
                         Log.e("Error Message",e.getMessage());
-                        GenelUtil.ToastLong(DirectMessageActivity.this,getString(R.string.error));
+                        Util.ToastLong(DirectMessageActivity.this,getString(R.string.error));
                         finish();
                     }
                 }
@@ -286,7 +282,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     }
 
     private void setUpNewMessages(List<Message> tempList, boolean hasmore, Date date) {
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         this.hasmore = hasmore;
         this.date = date;
 
@@ -309,7 +305,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((result) -> {
-                    if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
+                    if(!Util.isAlive(DirectMessageActivity.this)) return;
                     if(list.size()>0 && list.get(list.size()-1).getType().equals("load")){
                         list.remove(list.size()-1);
                         //adapter.notifyDataSetChanged();
@@ -335,7 +331,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     }
 
     private void setUpAfterFetch(List<Message> tempList, boolean hasmore, Date date) {
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         this.hasmore = hasmore;
         this.date = date;
         if(chat != null) {
@@ -359,7 +355,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((result) -> {
-                        if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
+                        if(!Util.isAlive(DirectMessageActivity.this)) return;
                         int preSize = list.size();
                         if(hasmore){
                             Message m = new Message();
@@ -409,7 +405,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     }
 
     private void setSendClick(){
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -462,7 +458,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     }
 
     private void sendFirstMessage(){
-        if(!GenelUtil.isAlive(this)) return;
+        if(!Util.isAlive(this)) return;
         ProgressDialog progressDialog = new ProgressDialog(DirectMessageActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.sendmessage));
@@ -478,7 +474,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
         ParseCloud.callFunctionInBackground("sendFirstMessage", params, new FunctionCallback<HashMap>() {
             @Override
             public void done(HashMap object, ParseException e) {
-                if(!GenelUtil.isAlive(DirectMessageActivity.this)) return;
+                if(!Util.isAlive(DirectMessageActivity.this)) return;
                 if(e==null){
 
                     chat = object.get("chat") != null ? (Chat) object.get("chat") : null;
@@ -491,7 +487,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
                     progressDialog.dismiss();
                 }
                 else{
-                    GenelUtil.ToastLong(DirectMessageActivity.this,getString(R.string.error));
+                    Util.ToastLong(DirectMessageActivity.this,getString(R.string.error));
                     progressDialog.dismiss();
                 }
             }
@@ -515,7 +511,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
                     handler.post(new Runnable() {
                         public void run() {
                             Log.e("LiveQuery","id "+object.getObjectId());
-                            if(!object.getOwner().equals(GenelUtil.getCurrentUser().getObjectId())){
+                            if(!object.getOwner().equals(Util.getCurrentUser().getObjectId())){
                                 list.add(0,object);
                                 //Log.e("chat id",chat.getObjectId());
                                 adapter.notifyItemInserted(0);
@@ -564,7 +560,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     @Override
     public void onTextClick(int position, int clickType, String text) {
         if(!isDialogShown){
-            GenelUtil.handleLinkClicks(this,text,clickType);
+            Util.handleLinkClicks(this,text,clickType);
         }
     }
 
@@ -572,7 +568,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
     @Override
     public void onTextLongClick(int position) {
         clickCheck = System.currentTimeMillis();
-        GenelUtil.messageLongClick(list.get(position),this);
+        Util.messageLongClick(list.get(position),this);
     }
 
     long clickCheck = 0;
@@ -597,7 +593,7 @@ public class DirectMessageActivity extends AppCompatActivity implements MessageA
             json.put("height",2000);
             ulist2.add(json);
 
-            GenelUtil.showImage(ulist,ulist2
+            Util.showImage(ulist,ulist2
                     ,media,0,null);
         } catch (Exception e) {
             e.printStackTrace();
