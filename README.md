@@ -1,6 +1,7 @@
 ## Fully Functional Social Media App for Android
 
 **Here some images from the app.**
+
 ![](https://raw.githubusercontent.com/uzaysan/sonata-sociala-app/master/screenshots/unnamed.png)
 
 
