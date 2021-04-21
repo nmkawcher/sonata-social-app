@@ -9,7 +9,7 @@
 
 -  Authentication system. Users can register and login.
 
-- Posting images or videos. USer is limited to 4 images or 60 seconds of video per post.
+- Posting images or videos. User is limited to 4 images or 60 seconds of video per post.
 
 - Searching users and posts.
 
@@ -32,6 +32,8 @@
 - Multiple account support. So user can switch between account without entering password again.
 
 - Supports both light and dark theme.
+
+- And other regular social media features like mentions, hashtags etc..
 
 ## Set up Backend
 - You need to use my backend repo for this app. (https://github.com/uzaysan/social-app-backend). Instructions on how to setup backend is written there.
